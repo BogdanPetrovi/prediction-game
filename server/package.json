@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@bogdanpet/hltv": "file:../../predikcijeHltv/HLTV/bogdanpet-hltv-3.5.1.tgz",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
