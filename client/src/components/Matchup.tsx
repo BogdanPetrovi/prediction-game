@@ -12,7 +12,7 @@ interface MatchupProps {
 
 const Matchup: React.FC<MatchupProps> = ({ match, setPredictions }) => {
   const [active, setActive] = useState('')
-  console.log("Matchup rendered")
+
   const formatedDate = (): string => {
     const date = match.date && format(new Date(match.date), 'dd.MM HH:mm');
     return date || ''

@@ -7,7 +7,7 @@ const Navbar = () => {
   const pathname = usePathname()
 
   return (
-    <div className="h-10 flex gap-5 px-5">
+    <div className="h-10 flex gap-5 px-5 mb-8">
       <NavbarCard placeholder="play" active={pathname === '/'} />
       <NavbarCard placeholder="leaderboard" active={pathname === '/leaderboard'} />
       <NavbarCard placeholder="history" active={pathname === '/history'} />

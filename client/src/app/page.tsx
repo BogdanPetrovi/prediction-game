@@ -21,7 +21,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-3/5 mx-auto min-h-[calc(100vh-7.5rem)] flex flex-col pt-8 items-center gap-10 pb-10">
+    <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center gap-10 pb-10 select-none">
       {
         matchesExampleArray.map(match => (
           <Matchup
