@@ -2,21 +2,32 @@
 
 import { format } from 'date-fns'
 import Match from '../types/match'
-import { useState } from 'react'
+import React, { useState, memo } from 'react'
+import Prediction from '@/types/prediction'
 
-const Matchup = ({ match }: { match: Match }) => {
+interface MatchupProps {
+  match: Match,
+  setPredictions: (prediction: Prediction) => void,
+}
+
+const Matchup: React.FC<MatchupProps> = ({ match, setPredictions }) => {
   const [active, setActive] = useState('')
- 
+  console.log("Matchup rendered")
   const formatedDate = (): string => {
     const date = match.date && format(new Date(match.date), 'dd.MM HH:mm');
     return date || ''
   }
 
+  const handleChange = (predictedTeam: string) => {
+    setActive(predictedTeam)
+    setPredictions({ matchId: match.id, predictedTeam })
+  }
+
   return (
     <div className="relative w-full h-20 bg-gradient-to-l from-30% from-[#667EEA] to-[#9333EA] rounded-xl flex items-center">
       {/* Team 1 */}
-      <div className="group flex items-center gap-3 relative w-1/2 h-full cursor-pointer duration-300" onClick={() => setActive(match.team1.name)}>
-        <img src={ match.team1.logo } className={`${active === match.team1.name ? 'size-[4.5rem]' : 'size-16 group-hover:size-[4.5rem]'} ml-4 drop-shadow-xl/70 duration-300`} />
+      <div className="group flex items-center gap-3 relative w-1/2 h-full cursor-pointer duration-300" onClick={() => handleChange(match.team1.name)}>
+        <img src={ match.team1.logo } className={`${active === match.team1.name ? 'size-[4.5rem]' : 'size-16 group-hover:size-[4.5rem]'} ml-4 drop-shadow-xl/50 duration-300`} />
         <h2 className="hidden md:block text-3xl lg:text-4xl font-semibold">{ match.team1.name }</h2>
       </div>
 
@@ -29,9 +40,9 @@ const Matchup = ({ match }: { match: Match }) => {
           clipPath: active === match.team1.name ? `polygon(14% 0, 100% 0, 100% 100%, 10% 100%)` 
                   : active === match.team2.name ? `polygon(10% 0, 100% 0, 100% 100%, 14% 100%)` : 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)',
         }}
-        onClick={() => setActive(match.team2.name)}
+        onClick={() => handleChange(match.team2.name)}
       >
-        <img src={ match.team2.logo } className={`${active === match.team2.name ? 'size-[4.5rem]' : 'size-16 group-hover:size-[4.5rem]'} mr-4 drop-shadow-xl/70 duration-300`} />
+        <img src={ match.team2.logo } className={`${active === match.team2.name ? 'size-[4.5rem]' : 'size-16 group-hover:size-[4.5rem]'} mr-4 drop-shadow-xl/50 duration-300`} />
         <h2 className="hidden md:block text-3xl lg:text-4xl text-[#f9fafd] font-semibold ml-4 lg:ml-0">{ match.team2.name }</h2>
       </div>
 
@@ -53,4 +64,4 @@ const Matchup = ({ match }: { match: Match }) => {
   )
 }
 
-export default Matchup
+export default memo(Matchup)
