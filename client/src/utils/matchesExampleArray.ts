@@ -1,4 +1,6 @@
-const matchesExampleArray = [
+import Match from "@/types/match"
+
+const matchesExampleArray: Array<Match> = [
   {
     "id": 2387098,
     "date": 1761465600000,
