@@ -37,3 +37,33 @@
       background-position: 0% 50%;
   }
 }
+
+.prediction-box {
+  animation: prediction-box-animation 0.5s forwards;
+}
+
+.close {
+  animation: close 0.5s forwards;
+}
+
+@keyframes prediction-box-animation {
+  0%{
+    width: 0rem;
+    font-size: 0;
+  }
+  100% {
+    width: 7.5rem;
+    font-size: 3.5rem;
+  }
+}
+
+@keyframes close {
+  0% {
+    width: 7.5rem;
+    font-size: 3.5rem;
+  }
+  100% {
+    width: 0;
+    font-size: 0;
+  }
+}
