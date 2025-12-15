@@ -18,11 +18,18 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "morgan": "^1.10.1"
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "pg": "^8.16.3",
+    "pg-pool": "^3.10.1",
+    "redis": "^5.10.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^24.7.2",
+    "@types/pg-pool": "^2.0.6",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",

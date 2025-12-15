@@ -2,11 +2,14 @@
 
 import matchesExampleArray from "@/utils/matchesExampleArray";
 import Matchup from "../components/Matchup"
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Prediction from "@/types/prediction";
+import backend from "@/services/api/backend";
+import Match from "@/types/match";
 
 export default function Home() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
+  const [matches, setMatches]= useState<Match[]>([])
 
   const handleUserPredictionChange = useCallback(({ matchId, predictedTeam }: Prediction) => {
     setUserPredictions(prev => {
@@ -20,10 +23,20 @@ export default function Home() {
     return console.log(userPredictions)
   }
 
+  useEffect(() => {
+    const fetchMatches = async () => {
+      const result = await backend.get('/matches')
+
+      setMatches(result.data)
+    }
+
+    fetchMatches()
+  }, [setMatches])
+
   return (
     <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center gap-10 pb-10 select-none">
       {
-        matchesExampleArray.map(match => (
+        matches.map(match => (
           <Matchup
             match={match}
             setPredictions={handleUserPredictionChange}

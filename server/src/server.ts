@@ -1,11 +1,8 @@
-import express, { Request, Response } from 'express';
-import { FullEvent, HLTV } from '@bogdanpet/hltv';
+import app from './index.js';
+import 'dotenv/config';
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
-app.get('/', async (req: Request, res: Response) => {
-  res.send('Hello World!');
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
-
-export default app;

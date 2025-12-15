@@ -1,32 +1,33 @@
 CREATE DATABASE predictions;
 
 CREATE TABLE users (
-id SERIAL PRIMARY KEY,
-username VARCHAR(50) UNIQUE NOT NULL,
-discord TEXT,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  discord TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE events (
-  id SERIAL PRIMARY KEY,
+  id BIGINT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   logo VARCHAR(255) NOT NULL,
-  start_date DATE,
-  end_date DATE
+  start_date BIGINT,
+  end_date BIGINT
+  is_active BOOLEAN
 );
 
 CREATE TYPE team_info AS (
   name VARCHAR(100),
   logo VARCHAR(255)
-)
+);
 
 CREATE TABLE matches (
-  id SERIAL PRIMARY KEY,
+  id BIGINT PRIMARY KEY,
   team1 team_info NOT NULL,
   team2 team_info NOT NULL,
   eventId INT REFERENCES events(id),
-  date TIMESTAMP,
-  format INT,
+  date BIGINT,
+  format TEXT,
   winnerTeam team_info,
   result VARCHAR(20),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -47,5 +48,5 @@ CREATE TABLE leaderboard (
   eventId INT REFERENCES events(id),
   points INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(userId, eventsId)
+  UNIQUE(userId, eventId)
 );
