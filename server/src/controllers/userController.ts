@@ -11,8 +11,12 @@ export const getMatches = async (req: Request, res: Response) => {
 
     if(matches)
       return res.status(200).json(JSON.parse(matches))
-    
-    const apiResult = await HLTV.getMatches(8857)
+
+    const activeTournamentId = await redisClient.get("active_tournament")
+    if(activeTournamentId === null )
+      return res.status(200).json([]) 
+
+    const apiResult = await HLTV.getMatches(parseInt(activeTournamentId))
     console.log('HLTV is checking for the latest matches...')
 
     res.status(200).json(apiResult);

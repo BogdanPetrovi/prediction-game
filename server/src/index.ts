@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors'
 
 import userRouter from './routes/userRoutes.js';
+import adminRouter from './routes/adminRoutes.js'
 
 const app = express();
 
@@ -15,5 +16,6 @@ app.use(express.json())
 app.use(helmet())
 
 app.use(userRouter)
+app.use(adminRouter)
 
 export default app;
