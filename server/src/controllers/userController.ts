@@ -22,7 +22,7 @@ export const getMatches = async (req: Request, res: Response) => {
     res.status(200).json(apiResult);
 
     redisClient.set("matches", JSON.stringify(apiResult), {
-      EX: 3600
+      EX: 1800
     });
 
     return apiResult.map((match) => {
