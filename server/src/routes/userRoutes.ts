@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { getMatches } from "../controllers/userController.js";
+import { getLeaderboard, getMatches } from "../controllers/userController.js";
 
 const router = Router();
 
 router.get('/matches', getMatches)
+
+router.get('/get-leaderboard', getLeaderboard)
 
 export default router

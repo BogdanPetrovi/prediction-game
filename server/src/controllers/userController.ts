@@ -48,3 +48,37 @@ export const getMatches = async (req: Request, res: Response) => {
     return res.status(500).send('Unknown error')
   }
 }
+
+export const getLeaderboard = async (req: Request, res: Response) => {
+  const { page } = req.query
+  try {
+    const activeTournamentId = await redisClient.get("active_tournament")
+    if(activeTournamentId === null )
+      return res.status(200).json([]) 
+
+    const offset = (parseInt(page as string) - 1) * 10;
+    const leaderboardResult = await database.query(`SELECT users.username, leaderboard.points FROM leaderboard
+                                        JOIN users ON users.id = leaderboard.userid
+                                        WHERE eventId = $1
+                                        ORDER BY points DESC
+                                        LIMIT 10 OFFSET $2;`, [activeTournamentId, offset])
+    const countResult = await database.query("SELECT COUNT(*) FROM leaderboard;");
+
+    const pages = Math.ceil(countResult.rows[0].count / 10)
+
+    return res.status(200).json({pages, leaderboard: leaderboardResult.rows})
+  } catch (err) {
+    console.log(err)
+
+    if(err instanceof Error)
+      return res.status(500).send(err.message)
+    if(err instanceof TypeError)
+      return res.status(400).send(err.message)
+    if(err instanceof DatabaseError)
+      return res.status(400).send(err.message)
+    if(err instanceof ErrorReply)
+      return res.status(500).send(err.message)
+    
+    return res.status(500).send('Unknown error')
+  }
+}

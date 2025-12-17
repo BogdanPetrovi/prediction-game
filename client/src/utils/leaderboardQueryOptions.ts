@@ -1,9 +1,21 @@
 import { queryOptions } from "@tanstack/react-query"
-import { leaderboardCut } from "./leaderboardExapmleArray"
+import LeaderboardItem from "@/types/leaderboardItem"
+import backend from "@/services/api/backend"
 
 const leaderboardQueryOptions = (page: number) => queryOptions({
   queryKey: ["leaderboard", { page }],
-  queryFn: () => leaderboardCut(page)
+  queryFn: () => getLeaderboard(page)
 })
+
+const getLeaderboard = async (page: number): Promise<apiLeaderboardType> => {
+  const result = await backend.get(`/get-leaderboard?page=${page}`)
+
+  return result.data
+}
+
+interface apiLeaderboardType {
+  pages: number,
+  leaderboard: Array<LeaderboardItem>
+}
 
 export default leaderboardQueryOptions

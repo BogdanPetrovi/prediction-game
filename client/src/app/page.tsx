@@ -1,15 +1,21 @@
 'use client'
 
-import matchesExampleArray from "@/utils/matchesExampleArray";
 import Matchup from "../components/Matchup"
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import Prediction from "@/types/prediction";
 import backend from "@/services/api/backend";
 import Match from "@/types/match";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
-  const [matches, setMatches]= useState<Match[]>([])
+  const { data, isPending, error } = useQuery({
+    queryKey: ['matches'],
+    queryFn: async (): Promise<Match[]> => {
+       const result = await backend.get('/matches')
+       return result.data
+    }
+  })
 
   const handleUserPredictionChange = useCallback(({ matchId, predictedTeam }: Prediction) => {
     setUserPredictions(prev => {
@@ -23,20 +29,14 @@ export default function Home() {
     return console.log(userPredictions)
   }
 
-  useEffect(() => {
-    const fetchMatches = async () => {
-      const result = await backend.get('/matches')
+  if(isPending) return <h1>Loading</h1>
 
-      setMatches(result.data)
-    }
+  if(error) return <h1>Error</h1>
 
-    fetchMatches()
-  }, [setMatches])
-
-  return (
+  if(data) return (
     <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center gap-10 pb-10 select-none">
       {
-        matches.map(match => (
+        data.map(match => (
           <Matchup
             match={match}
             setPredictions={handleUserPredictionChange}

@@ -9,22 +9,21 @@ import { useEffect, useState } from "react"
 const LeaderboardPage = () => {
   const [page, setPage] = useState(1);
 
-  const { data, isPending } = useQuery(leaderboardQueryOptions(page));
+  const { data, isPending, error } = useQuery(leaderboardQueryOptions(page));
   const queryClient = useQueryClient();
   useEffect(() => {
     queryClient.prefetchQuery(leaderboardQueryOptions(page+1))
   }, [page])
   
-  // will get this information from backend
-  const totalPages = 3;
-  
   if(isPending) return <h1>Loading</h1>
 
-  return (
+  if(error) return <h1>Error</h1>
+
+  if(data) return (
     <>
-      <div className="w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none overflow-y-hidden ">
+      <div className="min-h-[40rem] w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none overflow-y-hidden ">
         {
-          data && data.map((user, index) => (
+          data.leaderboard.map((user, index) => (
             <LeaderboardEntry
               item={user}
               ranking={(index+1) + (( page-1 ) *10)}
@@ -37,18 +36,20 @@ const LeaderboardPage = () => {
         <PaginationControl
           page={page}
           setPage={setPage}
-          totalPages={totalPages}
+          totalPages={data.pages}
           direction="back"
         />
         <PaginationControl
           page={page}
           setPage={setPage}
-          totalPages={totalPages}
+          totalPages={data.pages}
           direction="next"
         />
       </div>
-    </> 
+    </>
   )
+
+  return <h1>There is no leaderboard</h1>
 }
 
 export default LeaderboardPage
