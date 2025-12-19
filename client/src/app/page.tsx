@@ -13,9 +13,8 @@ export default function Home() {
   const { data, isPending, error } = useQuery({
     queryKey: ['matches'],
     queryFn: async (): Promise<Match[]> => {
-      await new Promise(resolve => setTimeout(resolve, 100000000000))
-       const result = await backend.get('/matches')
-       return result.data
+      const result = await backend.get('/matches')
+      return result.data
     }
   })
 
@@ -35,7 +34,7 @@ export default function Home() {
 
   if(error) return <h1>Error</h1>
 
-  if(data) return (
+  if(data && data.length > 0) return (
     <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center gap-10 pb-10 select-none">
       {
         data.map(match => (
@@ -51,4 +50,10 @@ export default function Home() {
       </button>
     </div>
   );
+
+  return (
+    <div className="w-full mt-20 flex justify-center text-4xl font-bold">
+      <h2>There are currently no active matches, check back again later!</h2>
+    </div>
+  )
 }

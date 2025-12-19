@@ -50,7 +50,11 @@ const LeaderboardPage = () => {
     </>
   )
 
-  return <h1>There is no leaderboard</h1>
+  return (
+  <div className="w-full mt-20 flex justify-center text-4xl font-bold">
+    <h2>There is currently no leaderboard, check back again later!</h2>
+  </div>
+  )
 }
 
 export default LeaderboardPage
