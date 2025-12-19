@@ -1,4 +1,4 @@
-import tournamentHistory from "@/types/tournamentHistory"
+import tournamentHistory from "@/types/TournamentHistory"
 
 const HistoryCard = ({ historyCardProps }: { historyCardProps: tournamentHistory }) => { 
   return (

@@ -1,9 +1,9 @@
 "use client"
 
 import { format } from 'date-fns'
-import Match from '../types/match'
+import Match from '../types/Match'
 import React, { useState, memo } from 'react'
-import Prediction from '@/types/prediction'
+import Prediction from '@/types/Prediction'
 
 interface MatchupProps {
   match: Match,

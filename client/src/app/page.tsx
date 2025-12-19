@@ -2,11 +2,14 @@
 
 import Matchup from "../components/Matchup"
 import { useCallback, useState } from "react";
-import Prediction from "@/types/prediction";
+import Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
-import Match from "@/types/match";
+import Match from "@/types/Match";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
+import dynamic from "next/dynamic";
+
+const Event = dynamic(() => import('../components/shared/Event'))
 
 export default function Home() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
@@ -35,7 +38,10 @@ export default function Home() {
   if(error) return <h1>Error</h1>
 
   if(data && data.length > 0) return (
-    <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center gap-10 pb-10 select-none">
+    <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center relative gap-10 pb-10 select-none">
+      <div className="-mb-7">
+        <Event />
+      </div>
       {
         data.map(match => (
           <Matchup

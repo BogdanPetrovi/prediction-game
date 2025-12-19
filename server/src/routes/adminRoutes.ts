@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { addTournament } from "../controllers/adminController.js";
+import { addEvent } from "../controllers/adminController.js";
 
 const router = Router();
 
-router.post('/admin/addTournament/:id', addTournament)
+router.post('/admin/addEvent/:id', addEvent)
 
 export default router

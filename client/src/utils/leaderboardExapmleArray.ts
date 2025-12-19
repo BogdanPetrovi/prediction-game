@@ -1,4 +1,4 @@
-import LeaderboardItem from "@/types/leaderboardItem"
+import LeaderboardItem from "@/types/LeaderboardItem"
 
 // this will be on backend but have to make it working now
 export const leaderboardCut = ( page: number ): Array<LeaderboardItem> => {

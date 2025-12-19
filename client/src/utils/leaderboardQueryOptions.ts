@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query"
-import LeaderboardItem from "@/types/leaderboardItem"
+import LeaderboardItem from "@/types/LeaderboardItem"
 import backend from "@/services/api/backend"
 
 const leaderboardQueryOptions = (page: number) => queryOptions({
@@ -8,7 +8,7 @@ const leaderboardQueryOptions = (page: number) => queryOptions({
 })
 
 const getLeaderboard = async (page: number): Promise<apiLeaderboardType> => {
-  const result = await backend.get(`/get-leaderboard?page=${page}`)
+  const result = await backend.get(`/leaderboard?page=${page}`)
 
   return result.data
 }

@@ -1,4 +1,4 @@
-import LeaderboardItem from "@/types/leaderboardItem"
+import LeaderboardItem from "@/types/LeaderboardItem"
 
 const LeaderboardEntry = ({ ranking, item }: { ranking: number, item: LeaderboardItem }) => {
 

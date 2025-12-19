@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { getLeaderboard, getMatches } from "../controllers/userController.js";
+import { getEvent, getLeaderboard, getMatches } from "../controllers/userController.js";
 
 const router = Router();
 
 router.get('/matches', getMatches)
 
-router.get('/get-leaderboard', getLeaderboard)
+router.get('/leaderboard', getLeaderboard)
+
+router.get('/event', getEvent)
 
 export default router

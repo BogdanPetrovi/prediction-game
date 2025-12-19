@@ -3,7 +3,7 @@ import redisClient from "../config/redis.js";
 import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 
-export const addTournament = async (req: Request, res: Response) => {
+export const addEvent = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { active } = req.query;
   
@@ -25,12 +25,12 @@ export const addTournament = async (req: Request, res: Response) => {
                         [event.id, event.name, event.logo, event.dateStart, event.dateEnd, active || false])
 
     if(active) {
-      await redisClient.del("active_tournament")
+      await redisClient.del("active_event")
       await redisClient.del("matches")
-      await redisClient.set("active_tournament", id)  
+      await redisClient.set("active_event", id)  
     }
 
-    return res.status(200).send("You succesfully added/updated tournament!");
+    return res.status(200).send("You succesfully added/updated event!");
   } catch (err) {
     console.log(err)
   }

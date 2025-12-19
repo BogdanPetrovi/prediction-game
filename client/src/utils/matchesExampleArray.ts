@@ -1,4 +1,4 @@
-import Match from "@/types/match"
+import Match from "@/types/Match"
 
 const matchesExampleArray: Array<Match> = [
   {

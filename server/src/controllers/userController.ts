@@ -12,11 +12,11 @@ export const getMatches = async (req: Request, res: Response) => {
     if(matches)
       return res.status(200).json(JSON.parse(matches))
 
-    const activeTournamentId = await redisClient.get("active_tournament")
-    if(activeTournamentId === null )
+    const activeEventId = await redisClient.get("active_event")
+    if(activeEventId === null )
       return res.status(200).json([]) 
 
-    const apiResult = await HLTV.getMatches(parseInt(activeTournamentId))
+    const apiResult = await HLTV.getMatches(parseInt(activeEventId))
     console.log('HLTV is checking for the latest matches...')
 
     res.status(200).json(apiResult);
@@ -52,8 +52,8 @@ export const getMatches = async (req: Request, res: Response) => {
 export const getLeaderboard = async (req: Request, res: Response) => {
   const { page } = req.query
   try {
-    const activeTournamentId = await redisClient.get("active_tournament")
-    if(activeTournamentId === null )
+    const activeEventId = await redisClient.get("active_event")
+    if(activeEventId === null )
       return res.status(200).json([]) 
 
     const offset = (parseInt(page as string) - 1) * 10;
@@ -61,8 +61,8 @@ export const getLeaderboard = async (req: Request, res: Response) => {
                                         JOIN users ON users.id = leaderboards.user_id
                                         WHERE event_id = $1
                                         ORDER BY points DESC
-                                        LIMIT 10 OFFSET $2;`, [activeTournamentId, offset])
-    const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeTournamentId]);
+                                        LIMIT 10 OFFSET $2;`, [activeEventId, offset])
+    const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeEventId]);
 
     const pages = Math.ceil(countResult.rows[0].count / 10)
 
@@ -80,5 +80,19 @@ export const getLeaderboard = async (req: Request, res: Response) => {
       return res.status(500).send(err.message)
     
     return res.status(500).send('Unknown error')
+  }
+}
+
+export const getEvent = async (req: Request, res: Response) => {
+  try {
+    const activeEventId = await redisClient.get("active_event")
+    if(activeEventId === null)
+      return res.status(200).json([])
+
+    const result = await database.query("SELECT logo, name FROM events WHERE id=$1", [activeEventId])
+
+    return res.status(200).json(result.rows[0])
+  } catch (err) {
+    
   }
 }

@@ -5,7 +5,10 @@ import LeaderboardEntry from "@/components/ui/LeaderboardEntry"
 import PaginationControl from "@/components/ui/PaginationControl"
 import leaderboardQueryOptions from "@/utils/leaderboardQueryOptions"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
+
+const Event = dynamic(() => import('../../components/shared/Event'))
 
 const LeaderboardPage = () => {
   const [page, setPage] = useState(1);
@@ -22,7 +25,10 @@ const LeaderboardPage = () => {
 
   if(data && data.leaderboard) return (
     <>
-      <div className="min-h-[40rem] w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none overflow-y-hidden ">
+      <div className="min-h-[40rem] mt-4 w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative">
+        <div className="absolute -top-12">
+          <Event />
+        </div>
         {
           data.leaderboard.map((user, index) => (
             <LeaderboardEntry
