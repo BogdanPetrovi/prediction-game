@@ -26,7 +26,7 @@ export const getMatches = async (req: Request, res: Response) => {
     });
 
     return apiResult.map((match) => {
-      database.query(`INSERT INTO matches (id, team1, team2, eventId, date, format)
+      database.query(`INSERT INTO matches (id, team1, team2, event_id, date, format)
         VALUES ($1, ($2, $3), ($4, $5), $6, $7, $8)
         ON CONFLICT(id)
         DO UPDATE SET date = EXCLUDED.date;`, 
@@ -57,12 +57,12 @@ export const getLeaderboard = async (req: Request, res: Response) => {
       return res.status(200).json([]) 
 
     const offset = (parseInt(page as string) - 1) * 10;
-    const leaderboardResult = await database.query(`SELECT users.username, leaderboard.points FROM leaderboard
-                                        JOIN users ON users.id = leaderboard.userid
-                                        WHERE eventId = $1
+    const leaderboardResult = await database.query(`SELECT users.username, leaderboards.points FROM leaderboards
+                                        JOIN users ON users.id = leaderboards.user_id
+                                        WHERE event_id = $1
                                         ORDER BY points DESC
                                         LIMIT 10 OFFSET $2;`, [activeTournamentId, offset])
-    const countResult = await database.query("SELECT COUNT(*) FROM leaderboard WHERE eventId = $1;", [activeTournamentId]);
+    const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeTournamentId]);
 
     const pages = Math.ceil(countResult.rows[0].count / 10)
 

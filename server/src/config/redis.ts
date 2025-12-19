@@ -21,9 +21,10 @@ const redisClient = createClient();
   } catch (err) {
     console.error("Ping failed: " + err)
   }
-  await redisClient.del(["matches"])
+  await redisClient.del(["matches", "active_tournament"])
   const activeTournaments = await database.query("SELECT * FROM events WHERE is_active=true;")
-  await redisClient.set('active_tournament', activeTournaments.rows[0].id)
+  if(activeTournaments.rows[0])
+    await redisClient.set('active_tournament', activeTournaments.rows[0].id)
 })()
 
 export default redisClient

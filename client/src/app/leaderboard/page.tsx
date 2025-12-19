@@ -20,7 +20,7 @@ const LeaderboardPage = () => {
 
   if(error) return <h1>Error</h1>
 
-  if(data && data.leaderboard.length > 0) return (
+  if(data && data.leaderboard) return (
     <>
       <div className="min-h-[40rem] w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none overflow-y-hidden ">
         {

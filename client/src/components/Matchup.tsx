@@ -57,8 +57,8 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions }) => {
           src={ match.team2.logo } 
           className={
             `${active === match.team2.name ? 'size-[4.5rem]' 
-              : active === match.team1.name ? 'size-16 group-hover:size-[4.5rem] opacity-50 group-hover:opacity-80'
-              : !match.live && 'size-16 group-hover:size-[4.5rem]'} mr-4 drop-shadow-xl/50 duration-300`
+              : active === match.team1.name ? 'group-hover:size-[4.5rem] opacity-50 group-hover:opacity-80'
+              : !match.live && 'group-hover:size-[4.5rem]'} size-16 mr-4 drop-shadow-xl/50 duration-300`
             } 
           />
         <h2 

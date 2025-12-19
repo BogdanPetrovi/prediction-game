@@ -25,28 +25,28 @@ CREATE TABLE matches (
   id BIGINT PRIMARY KEY,
   team1 team_info NOT NULL,
   team2 team_info NOT NULL,
-  eventId INT REFERENCES events(id),
+  event_id INT REFERENCES events(id),
   date BIGINT,
   format TEXT,
-  winnerTeam team_info,
+  winner_team team_info,
   result VARCHAR(20),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE predictions (
   id SERIAL PRIMARY KEY,
-  userId INT REFERENCES users(id),
-  matchId INT REFERENCES matches(id),
+  user_id INT REFERENCES users(id),
+  match_id INT REFERENCES matches(id),
   predicted_winner VARCHAR(100) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(userId, matchId)
+  UNIQUE(user_id, match_id)
 );
 
-CREATE TABLE leaderboard (
+CREATE TABLE leaderboards (
   id SERIAL PRIMARY KEY,
-  userId INT REFERENCES users(id),
-  eventId INT REFERENCES events(id),
+  user_id INT REFERENCES users(id),
+  event_id INT REFERENCES events(id),
   points INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(userId, eventId)
+  UNIQUE(user_id, event_id)
 );
