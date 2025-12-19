@@ -26,6 +26,7 @@ export const addTournament = async (req: Request, res: Response) => {
 
     if(active) {
       await redisClient.del("active_tournament")
+      await redisClient.del("matches")
       await redisClient.set("active_tournament", id)  
     }
 

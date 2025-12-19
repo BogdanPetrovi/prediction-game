@@ -62,7 +62,7 @@ export const getLeaderboard = async (req: Request, res: Response) => {
                                         WHERE eventId = $1
                                         ORDER BY points DESC
                                         LIMIT 10 OFFSET $2;`, [activeTournamentId, offset])
-    const countResult = await database.query("SELECT COUNT(*) FROM leaderboard;");
+    const countResult = await database.query("SELECT COUNT(*) FROM leaderboard WHERE eventId = $1;", [activeTournamentId]);
 
     const pages = Math.ceil(countResult.rows[0].count / 10)
 

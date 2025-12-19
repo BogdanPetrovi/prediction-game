@@ -36,7 +36,7 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions }) => {
           group flex items-center gap-3 relative w-1/2 h-full duration-300`}
         onClick={() => handleChange(match.team1.name)}
       >
-        <img src={ match.team1.logo } className={`${active === match.team1.name ? 'size-[4.5rem]' : !match.live && 'size-16 group-hover:size-[4.5rem]'} ml-4 drop-shadow-xl/50 duration-300`} />
+        <img src={ match.team1.logo } className={`${active === match.team1.name ? 'size-[4.5rem]' : !match.live && 'group-hover:size-[4.5rem]'} size-16 ml-4 drop-shadow-xl/50 duration-300`} />
         <h2 className="hidden md:block text-3xl lg:text-4xl font-semibold">{ match.team1.name }</h2>
       </div>
 

@@ -6,12 +6,14 @@ import Prediction from "@/types/prediction";
 import backend from "@/services/api/backend";
 import Match from "@/types/match";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/shared/Loading";
 
 export default function Home() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
   const { data, isPending, error } = useQuery({
     queryKey: ['matches'],
     queryFn: async (): Promise<Match[]> => {
+      await new Promise(resolve => setTimeout(resolve, 100000000000))
        const result = await backend.get('/matches')
        return result.data
     }
@@ -29,7 +31,7 @@ export default function Home() {
     return console.log(userPredictions)
   }
 
-  if(isPending) return <h1>Loading</h1>
+  if(isPending) return <Loading />
 
   if(error) return <h1>Error</h1>
 
