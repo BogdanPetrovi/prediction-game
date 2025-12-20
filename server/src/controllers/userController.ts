@@ -93,6 +93,42 @@ export const getEvent = async (req: Request, res: Response) => {
 
     return res.status(200).json(result.rows[0])
   } catch (err) {
-    
+    console.log(err)
+  }
+}
+
+export const getHistory = async (req: Request, res: Response) => {
+  try {
+    const result = await database.query(`WITH RankedLeaderboards AS (
+                                          SELECT users.username, events.name, events.logo, events.id,
+                                          ROW_NUMBER() OVER (PARTITION BY events.id ORDER BY leaderboards.points DESC) as rank
+                                          FROM leaderboards
+                                          JOIN users ON leaderboards.user_id = users.id
+                                          JOIN events ON leaderboards.event_id = events.id
+                                          WHERE events.is_active = false
+                                        )
+                                        SELECT username, name, logo, id, rank
+                                        FROM RankedLeaderboards
+                                        WHERE rank <= 3
+                                        ORDER BY id, rank;`);
+
+    const response = result.rows.reduce((accumulator, current) => {
+      // name is event name
+      if(!accumulator[current.name]){
+        accumulator[current.name] = {
+          placements: {},
+          logo: current.logo
+        }
+      }
+
+      const places = ['firstPlace', 'secondPlace', 'thirdPlace']
+      accumulator[current.name].placements[places[current.rank - 1]] = current.username
+
+      return accumulator
+    }, {})
+
+    return res.status(200).json(response)
+  } catch (err) {
+    console.log(err)
   }
 }
