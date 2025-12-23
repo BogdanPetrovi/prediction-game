@@ -28,7 +28,7 @@ CREATE TABLE matches (
   event_id INT REFERENCES events(id),
   date BIGINT,
   format TEXT,
-  winner_team team_info,
+  winner_team TEXT,
   result VARCHAR(20),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

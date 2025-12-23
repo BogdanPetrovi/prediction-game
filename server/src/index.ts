@@ -6,6 +6,8 @@ import cors from 'cors'
 import userRouter from './routes/userRoutes.js';
 import adminRouter from './routes/adminRoutes.js'
 
+import './cron/calculatePoints.js'
+
 const app = express();
 
 app.use(morgan('dev'))
