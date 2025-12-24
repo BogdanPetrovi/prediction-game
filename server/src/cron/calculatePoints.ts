@@ -20,28 +20,38 @@ const calculatePoints = async () => {
     }
 
     // calculate points and updates leaderboards table
-    // TO DO: Penalize users that didn't place a prediction on a match 
-    await database.query(`WITH calculated_points AS (
-                          SELECT users.id AS user_id,
-                          SUM(CASE WHEN predictions.predicted_winner = matches.winner_team THEN 1 ELSE -1 END) AS points
-                          FROM predictions
-                          JOIN matches ON matches.id = predictions.match_id 
-                          JOIN users ON users.id = predictions.user_id 
-                          WHERE matches.event_id = $1
-                          AND matches.result IS NOT NULL
-                          GROUP BY users.id
-                        )
-                        INSERT INTO leaderboards (user_id, event_id, points)
-                        SELECT user_id, $1, points FROM calculated_points
-                        ON CONFLICT (user_id, event_id)
-                        DO UPDATE SET points = EXCLUDED.points;`, [activeEventId])
+    await database.query(`WITH active_players AS (
+                          SELECT DISTINCT predictions.user_id FROM predictions
+                          JOIN matches ON matches.id = predictions.match_id
+                          WHERE matches.event_id = $1	
+                          ),
+                          finished_matches AS (
+                            SELECT id AS match_id FROM matches
+                            WHERE result IS NOT NULL AND event_id = $1
+                          ),
+                          user_match_combinations AS (
+                            SELECT * FROM active_players
+                            CROSS JOIN finished_matches
+                          )
+                          INSERT INTO leaderboards (user_id, event_id, points)
+                          SELECT user_match_combinations.user_id, $1, 
+                          SUM(
+                            CASE 
+                              WHEN predictions.predicted_winner IS NULL THEN -1
+                              WHEN predictions.predicted_winner = matches.winner_team THEN 1 ELSE -1 
+                            END) AS points
+                          FROM user_match_combinations
+                          LEFT JOIN predictions ON predictions.match_id = user_match_combinations.match_id 
+                                               AND predictions.user_id = user_match_combinations.user_id
+                          LEFT join matches ON matches.id = user_match_combinations.match_id
+                          GROUP BY user_match_combinations.user_id
+                          ON CONFLICT (user_id, event_id)
+                          DO UPDATE SET points = EXCLUDED.points, updated_at = CURRENT_TIMESTAMP;`, [activeEventId])
 
-    
     console.log("Cron job finished successfully at: ", new Date())
-    
   } catch (err) {
     console.log("Error in cron job points calculation: ", err)
   }
 }
 
-cron.schedule("* */8 * * *", calculatePoints)
+cron.schedule("0 */8 * * *", calculatePoints)

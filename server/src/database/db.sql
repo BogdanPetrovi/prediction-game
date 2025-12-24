@@ -47,6 +47,6 @@ CREATE TABLE leaderboards (
   user_id INT REFERENCES users(id),
   event_id INT REFERENCES events(id),
   points INT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(user_id, event_id)
 );
