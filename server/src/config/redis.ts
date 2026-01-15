@@ -2,7 +2,7 @@ import { matchesGlob } from 'path';
 import { createClient } from 'redis';
 import database from '../database/database.js';
 
-const redisClient = createClient();
+export const redisClient = createClient();
 
 (async () => {
   redisClient.on("error", (err) => { 

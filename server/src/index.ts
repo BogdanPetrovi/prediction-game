@@ -11,6 +11,8 @@ import authRouter from './routes/authRoutes.js'
 
 import './cron/calculatePoints.js'
 import configurePassport from './config/passport.js';
+import redisClient from './config/redis.js';
+import { RedisStore } from 'connect-redis';
 
 const app = express();
 
@@ -28,9 +30,19 @@ app.use(helmet())
 configurePassport()
 app.use(passport.initialize())
 app.use(session({
+  store: new RedisStore({
+    client: redisClient,
+    prefix: "sess:"
+  }),
   secret: process.env.SESSION_SECRET!,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    // for production
+    // secure: true,
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }))
 app.use(passport.session())
 

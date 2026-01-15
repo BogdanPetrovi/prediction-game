@@ -2,8 +2,8 @@ CREATE DATABASE predictions;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  username VARCHAR(50) UNIQUE NOT NULL,
-  discord TEXT,
+  username VARCHAR(50) NOT NULL,
+  discord_id UNIQUE BIGINT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -15,7 +15,7 @@ CREATE TABLE events (
   end_date BIGINT
   is_active BOOLEAN
 );
-
+ 
 CREATE TYPE team_info AS (
   name VARCHAR(100),
   logo VARCHAR(255)

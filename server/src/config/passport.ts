@@ -1,6 +1,7 @@
 import passport from 'passport'
 import { Strategy as DiscordStrategy } from 'passport-discord'
 import 'dotenv/config';
+import database from '../database/database.js';
 
 const configurePassport = () => {
   const scopes = ['identify'];
@@ -19,11 +20,22 @@ const configurePassport = () => {
         clientSecret: process.env.DISCORD_SECRET!,
         callbackURL: process.env.DISCORD_CALLBACK_URL,
         scope: scopes
-    },
-    function(accessToken, refreshToken, profile, cb) {
-        console.log(profile)
-        cb(null, profile)
-    }));
+      },
+      async function(accessToken, refreshToken, profile, cb) {
+          try {
+            const result = await database.query("SELECT * FROM users WHERE discord_id = $1;", [profile.id])
+            if(result.rows.length !== 0)
+              return cb(null, result.rows[0])
+
+            const newUser = await database.query("INSERT INTO users (username, discord_id) VALUES ($1, $2) RETURNING *;", [profile.global_name, profile.id])
+
+            return cb(null, newUser.rows[0])
+          } catch (err) {
+            console.log(err)
+            return cb(err)
+          }
+      })
+    );
   }
 }
 
