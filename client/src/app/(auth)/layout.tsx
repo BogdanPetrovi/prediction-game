@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
+import "../globals.css";
 import QueryProvider from "@/components/QueryProvider";
 
 const geistSans = Geist({
@@ -31,10 +29,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-          <div className="flex flex-col gap-3">
-            <Header />
-            <Navbar />
-          </div>
           {children}
         </QueryProvider>
       </body>

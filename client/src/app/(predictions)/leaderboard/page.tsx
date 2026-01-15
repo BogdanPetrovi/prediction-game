@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 
-const Event = dynamic(() => import('../../components/shared/Event'))
+const Event = dynamic(() => import('@/components/shared/Event'))
 
 const LeaderboardPage = () => {
   const [page, setPage] = useState(1);
