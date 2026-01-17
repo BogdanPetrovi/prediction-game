@@ -27,8 +27,6 @@ app.use(express.json())
 app.use(helmet())
 
 // auth settings
-configurePassport()
-app.use(passport.initialize())
 app.use(session({
   store: new RedisStore({
     client: redisClient,
@@ -44,7 +42,9 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24
   }
 }))
+app.use(passport.initialize())
 app.use(passport.session())
+configurePassport()
 
 // routers
 app.use(userRouter)
