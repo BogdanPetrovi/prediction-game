@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { getUser } from "../controllers/authController.js";
+import { getUser, logOut } from "../controllers/authController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 
 const router = Router();
@@ -13,5 +13,7 @@ router.get('/auth/discord/callback', passport.authenticate('discord', {
 }))
 
 router.get("/me", isLoggedIn, getUser);
+
+router.post('/logout', isLoggedIn, logOut);
 
 export default router
