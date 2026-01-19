@@ -4,6 +4,8 @@ import { DatabaseError } from "pg"
 import { HLTV } from "@bogdanpet/hltv"
 import redisClient from "../config/redis.js"
 import { ErrorReply } from "redis"
+import User from "../types/User.js"
+import Prediction from "../types/Prediction.js"
 
 export const getMatches = async (req: Request, res: Response) => {
   try {
@@ -65,8 +67,9 @@ export const getLeaderboard = async (req: Request, res: Response) => {
     const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeEventId]);
 
     const pages = Math.ceil(countResult.rows[0].count / 10)
-
-    return res.status(200).json({pages, leaderboard: leaderboardResult.rows})
+    
+    const pagesWithoutZero = pages === 0 ? 1 : pages
+    return res.status(200).json({pages: pagesWithoutZero, leaderboard: leaderboardResult.rows})
   } catch (err) {
     console.log(err)
 
@@ -130,5 +133,48 @@ export const getHistory = async (req: Request, res: Response) => {
     return res.status(200).json(response)
   } catch (err) {
     console.log(err)
+  }
+}
+
+export const predict = async (req: Request, res: Response) => {
+  const { predictions } = req.body;
+  const user = req.user as User;
+
+  try {
+    predictions.forEach(async (prediction: Prediction) => {
+      await database.query(
+        `INSERT INTO predictions (user_id, match_id, predicted_winner) VALUES ($1, $2, $3)
+        ON CONFLICT(user_id, match_id) 
+        DO UPDATE SET predicted_winner = EXCLUDED.predicted_winner;`,
+      [user.id, prediction.matchId, prediction.predictedTeam])
+    });
+
+    return res.sendStatus(200);
+  } catch (err) {
+    console.log(err)
+    return res.status(500);
+  }
+}
+
+export const getPredictions = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.user as User;
+    const activeEvent = await redisClient.get("active_event")
+
+    const result = await database.query(`SELECT matches.id , predicted_winner FROM predictions
+                                         JOIN matches ON matches.id = predictions.match_id 
+                                         WHERE user_id = $1 AND event_id = $2`, [id, activeEvent])
+
+    const predictions: Prediction[] = result.rows.map(prediction => {
+      return {
+        matchId: parseInt(prediction.id),
+        predictedTeam: prediction.predicted_winner
+      }
+    })
+    
+    return res.status(200).json({ predictions })
+  } catch (error) {
+    console.log(error)
+    return res.sendStatus(500)
   }
 }

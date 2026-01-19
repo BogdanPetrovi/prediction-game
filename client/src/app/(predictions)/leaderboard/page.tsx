@@ -25,7 +25,7 @@ const LeaderboardPage = () => {
 
   if(data && data.leaderboard) return (
     <>
-      <div className="min-h-[40rem] mt-4 w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative">
+      <div className="min-h-[40rem] mt-6 w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative">
         <div className="absolute -top-12">
           <Event />
         </div>

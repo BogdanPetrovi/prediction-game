@@ -1,4 +1,3 @@
-import cron from "node-cron";
 import redisClient from "../config/redis.js";
 import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
@@ -14,6 +13,7 @@ const calculatePoints = async () => {
     const results = await HLTV.getResults(parseInt(activeEventId))
     // insert results of the matches into the database
     for(const match of results) {
+      console.log(match)
       const winner = match.result.team1 > match.result.team2 ? 'team1' : 'team2';
       const result = `${match.result.team1}:${match.result.team2}`
       await database.query('UPDATE matches SET winner_team = $1, result = $2 WHERE id = $3 AND result IS NULL AND winner_team IS NULL;', [winner, result, match.id])
@@ -54,4 +54,4 @@ const calculatePoints = async () => {
   }
 }
 
-cron.schedule("0 */8 * * *", calculatePoints)
+export default calculatePoints

@@ -13,11 +13,18 @@ const Event = dynamic(() => import('@/components/shared/Event'))
 
 export default function Play() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
-  const { data, isPending, error } = useQuery({
+  const matches = useQuery({
     queryKey: ['matches'],
     queryFn: async (): Promise<Match[]> => {
       const result = await backend.get('/matches')
       return result.data
+    }
+  })
+  const predictions = useQuery({
+    queryKey: ['predictions'],
+    queryFn: async (): Promise<Prediction[]> => {
+      const result = await backend.get('/predictions')
+      return result.data.predictions
     }
   })
 
@@ -30,23 +37,26 @@ export default function Play() {
   }, [])
   
   const handleSubmit = async () => {
-    return console.log(userPredictions)
+    return backend.post('/predict', {
+      predictions: userPredictions
+    })
   }
 
-  if(isPending) return <Loading />
+  if(matches.isPending) return <Loading />
 
-  if(error) return <h1>Error</h1>
+  if(matches.error) return <h1>Error</h1>
 
-  if(data && data.length > 0) return (
+  if(matches.data && matches.data.length > 0 && predictions.data) return (
     <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center relative gap-10 pb-10 select-none">
       <div className="-mb-7">
         <Event />
       </div>
       {
-        data.map(match => (
+        matches.data.map(match => (
           <Matchup
             match={match}
             setPredictions={handleUserPredictionChange}
+            backendPrediction={predictions.data.find(el => el.matchId === match.id)}
             key={match.id}
           />
         ))

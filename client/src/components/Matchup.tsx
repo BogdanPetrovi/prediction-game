@@ -10,10 +10,11 @@ import Team2 from './ui/Team2'
 interface MatchupProps {
   match: Match,
   setPredictions: (prediction: Prediction) => void,
+  backendPrediction: Prediction | undefined
 }
 
-const Matchup: React.FC<MatchupProps> = ({ match, setPredictions }) => {
-  const [selectedTeam, setSelectedTeam] = useState('')
+const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction }) => {
+  const [selectedTeam, setSelectedTeam] = useState(backendPrediction?.predictedTeam || '')
 
   const formatedDate = (): string => {
     const date = match.date && format(new Date(match.date), 'dd.MM HH:mm');
