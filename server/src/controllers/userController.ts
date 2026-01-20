@@ -62,7 +62,7 @@ export const getLeaderboard = async (req: Request, res: Response) => {
     const leaderboardResult = await database.query(`SELECT users.username, leaderboards.points FROM leaderboards
                                         JOIN users ON users.id = leaderboards.user_id
                                         WHERE event_id = $1
-                                        ORDER BY points DESC
+                                        ORDER BY points DESC, discord_id ASC
                                         LIMIT 10 OFFSET $2;`, [activeEventId, offset])
     const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeEventId]);
 
