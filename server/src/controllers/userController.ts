@@ -6,6 +6,7 @@ import redisClient from "../config/redis.js"
 import { ErrorReply } from "redis"
 import User from "../types/User.js"
 import Prediction from "../types/Prediction.js"
+import RecentPredictions from "../types/RecentPredictions.js"
 
 export const getMatches = async (req: Request, res: Response) => {
   try {
@@ -156,14 +157,16 @@ export const predict = async (req: Request, res: Response) => {
   }
 }
 
+// get predictions from active tournament and unfinished matches
 export const getPredictions = async (req: Request, res: Response) => {
+  const { id } = req.user as User;
+  
   try {
-    const { id } = req.user as User;
     const activeEvent = await redisClient.get("active_event")
 
     const result = await database.query(`SELECT matches.id , predicted_winner FROM predictions
                                          JOIN matches ON matches.id = predictions.match_id 
-                                         WHERE user_id = $1 AND event_id = $2`, [id, activeEvent])
+                                         WHERE user_id = $1 AND event_id = $2 AND result IS NULL;`, [id, activeEvent])
 
     const predictions: Prediction[] = result.rows.map(prediction => {
       return {
@@ -173,6 +176,53 @@ export const getPredictions = async (req: Request, res: Response) => {
     })
     
     return res.status(200).json({ predictions })
+  } catch (error) {
+    console.log(error)
+    return res.sendStatus(500)
+  }
+}
+
+// gets all predictions from the last 3 weeks
+export const getRecentPredictions = async (req: Request, res: Response) => {
+  const { id } = req.user as User;
+
+  try {
+    const result = await database.query(`SELECT matches.id, team1, team2, predicted_winner, winner_team, result FROM predictions
+                                          JOIN matches ON predictions.match_id = matches.id
+                                          WHERE user_id = $1
+                                          AND predictions.created_at >= NOW() - INTERVAL '21 days'
+                                          ORDER BY predictions.created_at DESC;`, [id])
+    
+    const recentPredictions: RecentPredictions[] = result.rows.map(prediction => {
+      // prediction type is (teamName, teamLogo) and this functions will make a JSON out of it, as well as change naming to camel casing
+      // postgresql sometimes saves name with quotes, resulting in cutting off first or last letter by quotes
+      const team1NameAndLogoWithoutQuotes = prediction.team1.replaceAll('"', '')
+      const team1CommaIndex = team1NameAndLogoWithoutQuotes.indexOf(",")
+      const team1Name = team1NameAndLogoWithoutQuotes.substring(1, team1CommaIndex)
+      const team1Logo = team1NameAndLogoWithoutQuotes.substring(team1CommaIndex + 1, team1NameAndLogoWithoutQuotes.length - 1)
+
+      const team2NameAndLogoWithoutQuotes = prediction.team2.replaceAll('"', '')
+      const team2CommaIndex = team2NameAndLogoWithoutQuotes.indexOf(",")
+      const team2Name = team2NameAndLogoWithoutQuotes.substring(1, team2CommaIndex)
+      const team2Logo = team2NameAndLogoWithoutQuotes.substring(team2CommaIndex + 1, team2NameAndLogoWithoutQuotes.length - 1)
+
+      return {
+        id: prediction.id,
+        team1: {
+          name: team1Name,
+          logo: team1Logo
+        },
+        team2: {
+          name: team2Name,
+          logo: team2Logo
+        },
+        predictedWinner: prediction.predicted_winner,
+        winnerTeam: prediction.winner_team,
+        result: prediction.result
+      }
+    });
+
+    return res.status(200).json(recentPredictions)
   } catch (error) {
     console.log(error)
     return res.sendStatus(500)
