@@ -39,7 +39,7 @@ const Team2: React.FC<Team2Props> = ({ selectedTeam, handleChange, match }) => {
             }>?</h2>
       }
       <h2 
-        className={`${ selectedTeam === 'team1' ? 'opacity-50 group-hover:opacity-80 ' : '' } hidden md:block text-3xl lg:text-4xl text-[#f9fafd] font-semibold ml-4 lg:ml-0 duration-300`}
+        className={`${ selectedTeam === 'team1' ? 'opacity-50 group-hover:opacity-80 ' : '' } hidden md:block text-end text-3xl xl:text-4xl text-[#f9fafd] font-semibold ml-4 lg:ml-0 duration-300`}
       >
         { match.team2.name }
       </h2>

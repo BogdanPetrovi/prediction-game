@@ -21,7 +21,7 @@ const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match }) => {
         :
         <h2 className={`${selectedTeam === 'team1' ? 'text-[4.5rem]' : !match.live && 'group-hover:text-[4.5rem]'} text-[4rem] font-bold ml-4 drop-shadow-xl/50 duration-300`}>?</h2>
       }
-      <h2 className="hidden md:block text-3xl lg:text-4xl font-semibold">{ match.team1.name }</h2>
+      <h2 className="hidden md:block text-3xl xl:text-4xl font-semibold">{ match.team1.name }</h2>
     </div>
   )
 }
