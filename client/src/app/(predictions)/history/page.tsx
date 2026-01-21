@@ -20,7 +20,7 @@ const HistoryPage = () => {
 
   if(data)
     return (
-      <div className="h-[calc(98vh-9.5rem)] w-full flex justify-around select-none">
+      <div className="min-h-[calc(98vh-9.5rem)] w-full px-40 flex flex-col gap-8 pb-10 select-none">
         {
           Object.entries(data).reverse().map(([eventName, eventData]) => (
             <HistoryCard 

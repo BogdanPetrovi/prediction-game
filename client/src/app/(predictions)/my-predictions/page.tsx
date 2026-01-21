@@ -27,7 +27,7 @@ const MyPredictionsPage = () => {
   }
 
   return (
-    <div className="w-11/12 min-h-[calc(100vh-9.5rem)] mx-auto flex flex-col items-center select-none mb-10">
+    <div className="w-11/12 min-h-[calc(100vh-9.5rem)] mx-auto flex flex-col items-center select-none pb-10">
       <h2 className="text-4xl font-bold">Your recent predictions</h2>
       <div className="w-full mt-5 flex justify-center gap-10 flex-wrap">
         {

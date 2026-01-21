@@ -62,7 +62,7 @@ export default function Play() {
 
   if(matches.data && matches.data.length > 0 && predictions.data) return (
     <>
-      <div className="w-3/5 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center relative gap-10 pb-10 select-none">
+      <div className="w-3/5 -mt-6 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center relative gap-10 pb-10 select-none">
         <div className="-mb-7">
           <Event />
         </div>
