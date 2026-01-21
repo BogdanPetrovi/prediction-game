@@ -38,32 +38,30 @@
   }
 }
 
-.prediction-box {
-  animation: prediction-box-animation 0.5s forwards;
-}
-
-.close {
-  animation: close 0.5s forwards;
-}
-
-@keyframes prediction-box-animation {
-  0%{
-    width: 0rem;
-    font-size: 0;
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  100% {
-    width: 7.5rem;
-    font-size: 3.5rem;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
-@keyframes close {
-  0% {
-    width: 7.5rem;
-    font-size: 3.5rem;
+@keyframes toast-progress {
+  from {
+    width: 0%;
   }
-  100% {
-    width: 0;
-    font-size: 0;
+  to {
+    width: 100%;
   }
+}
+
+.toast-slide-in {
+  animation: toast-slide-in 0.3s ease-out;
+}
+
+.toast-progress {
+  animation: toast-progress linear forwards;
 }
