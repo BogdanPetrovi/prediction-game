@@ -25,8 +25,8 @@ const LeaderboardPage = () => {
 
   if(data && data.leaderboard) return (
     <>
-      <div className="min-h-[40rem] mt-6 w-3/5 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative">
-        <div className="absolute -top-12">
+      <div className="w-[90%] xl:w-3/5 h-[46rem] xl:mt-6 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative overflow-hidden xl:overflow-visible">
+        <div className="hidden xl:block xl:absolute -top-12">
           <Event />
         </div>
         {
@@ -38,8 +38,8 @@ const LeaderboardPage = () => {
             />
           ))
         }
-      </div>
-      <div className="w-3/5 mx-auto flex justify-end pr-3 text-3xl gap-5 mt-1">
+      </div> 
+      <div className="w-3/5 place-self-end xl:mx-auto flex justify-end pr-10 md:pr-14 xl:pr-3 text-3xl gap-10 lg:gap-5 mt-1">
         <PaginationControl
           page={page}
           setPage={setPage}
@@ -57,7 +57,7 @@ const LeaderboardPage = () => {
   )
 
   return (
-  <div className="w-full mt-20 flex justify-center text-4xl font-bold">
+  <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
     <h2>There is currently no leaderboard, check back again later!</h2>
   </div>
   )
