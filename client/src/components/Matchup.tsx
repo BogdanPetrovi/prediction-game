@@ -1,6 +1,5 @@
 "use client"
 
-import { format } from 'date-fns'
 import Match from '../types/Match'
 import React, { useState, memo } from 'react'
 import Prediction from '@/types/Prediction'
@@ -17,7 +16,13 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPredict
   const [selectedTeam, setSelectedTeam] = useState(backendPrediction?.predictedTeam || '')
 
   const formatedDate = (): string => {
-    const date = match.date && format(new Date(match.date), 'dd.MM HH:mm');
+    const date = match.date && new Intl.DateTimeFormat('sr-RS', {
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      hour12: false
+                                    }).format(match.date);
     return date || ''
   }
 
