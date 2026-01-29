@@ -191,7 +191,8 @@ export const getRecentPredictions = async (req: Request, res: Response) => {
                                           JOIN matches ON predictions.match_id = matches.id
                                           WHERE user_id = $1
                                           AND predictions.created_at >= NOW() - INTERVAL '21 days'
-                                          ORDER BY predictions.created_at DESC;`, [id])
+                                          ORDER BY predictions.created_at DESC
+                                          LIMIT 30;`, [id])
     
     const recentPredictions: RecentPredictions[] = result.rows.map(prediction => {
       // prediction type is (teamName, teamLogo) and this functions will make a JSON out of it, as well as change naming to camel casing
