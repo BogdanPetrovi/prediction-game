@@ -10,7 +10,7 @@ export default async function middleware(req: NextRequest) {
   try {
     const cookieHeader = req.headers.get('cookie')
 
-    const result = await backend.get('/me', {
+    const result = await backend.get('/auth/me', {
       headers: {
         'Cookie': cookieHeader
       }

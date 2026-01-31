@@ -1,5 +1,6 @@
 "use client"
 
+import Error from "@/components/shared/Error"
 import Loading from "@/components/shared/Loading"
 import LeaderboardEntry from "@/components/ui/LeaderboardEntry"
 import PaginationControl from "@/components/ui/PaginationControl"
@@ -21,9 +22,15 @@ const LeaderboardPage = () => {
   
   if(isPending) return <Loading />
 
-  if(error) return <h1>Error</h1>
+  if(error) return <Error err={error} />
 
-  if(data && data.leaderboard) return (
+  if(!data || !data.leaderboard) return (
+    <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
+      <h2>There is currently no leaderboard, check back again later!</h2>
+    </div>
+  )
+
+  return (
     <>
       <div className="w-[90%] xl:w-3/5 h-[46rem] xl:mt-6 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative overflow-hidden xl:overflow-visible">
         <div className="hidden xl:block xl:absolute -top-12">
@@ -54,12 +61,6 @@ const LeaderboardPage = () => {
         />
       </div>
     </>
-  )
-
-  return (
-  <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
-    <h2>There is currently no leaderboard, check back again later!</h2>
-  </div>
   )
 }
 

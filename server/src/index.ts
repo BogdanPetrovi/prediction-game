@@ -14,6 +14,7 @@ import calculatePoints from './utils/calculatePoints.js';
 import configurePassport from './config/passport.js';
 import redisClient from './config/redis.js';
 import { RedisStore } from 'connect-redis';
+import globalErrorHandler from './utils/globalErrorHandler.js';
 
 const app = express();
 
@@ -52,7 +53,9 @@ cron.schedule("0 */6 * * *", calculatePoints)
 
 // routers
 app.use(userRouter)
-app.use(adminRouter)
-app.use(authRouter)
+app.use("/admin", adminRouter)
+app.use("/auth", authRouter)
+
+app.use(globalErrorHandler)
 
 export default app;

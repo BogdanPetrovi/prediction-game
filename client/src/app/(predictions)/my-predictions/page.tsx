@@ -5,18 +5,23 @@ import PredictionHistoryCard from "@/components/ui/PredictionHistoryCard"
 import backend from "@/services/api/backend"
 import { useQuery } from "@tanstack/react-query"
 import RecentPredictions from "@/types/RecentPredictions"
+import Error from "@/components/shared/Error"
 
 const MyPredictionsPage = () => {
-  const { data, isPending } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryKey: ['recent-predictions'],
     queryFn: async (): Promise<RecentPredictions[]> => {
       const result = await backend.get("/recent-predictions")
 
       return result.data
-    }
+    },
+    staleTime: 1000 * 10,
+    gcTime: 1000 * 20
   })
 
   if (isPending) return <Loading />
+  
+  if(error) return <Error err={error} />
 
   if (!data || data.length === 0) {
     return (

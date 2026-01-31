@@ -24,7 +24,7 @@ const UserSvg = () => {
   }, []);
 
   const handleLogOut = async () => {
-    const response = await backend.post('/logout')
+    const response = await backend.post('/auth/logout')
     
     if(response.status === 200)
       redirect('/login')

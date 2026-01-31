@@ -5,9 +5,9 @@ import isLoggedIn from "../middlewares/isLoggedIn.js";
 
 const router = Router();
 
-router.get("/auth/discord", passport.authenticate('discord'))
+router.get("/discord", passport.authenticate('discord'))
 
-router.get('/auth/discord/callback', passport.authenticate('discord', {
+router.get('/discord/callback', passport.authenticate('discord', {
   successRedirect: 'http://localhost:3000/play',
   failureRedirect: 'http://localhost:3000/login'
 }))
