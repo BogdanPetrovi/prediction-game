@@ -1,21 +1,23 @@
 import { Router } from "express";
-import { getEvent, getHistory, getLeaderboard, getMatches, getPredictions, getRecentPredictions, predict } from "../controllers/userController.js";
+import { getEvent, getHistory, getLeaderboard, getMatches, getPredictions, getRecentPredictions, getUsersLeaderboardPlaceAndPage, predict } from "../controllers/userController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 
 const router = Router();
 
-router.get('/matches', getMatches)
+router.get('/matches', isLoggedIn, getMatches)
 
-router.get('/leaderboard', getLeaderboard)
+router.get('/leaderboard', isLoggedIn, getLeaderboard)
 
-router.get('/event', getEvent)
+router.get('/event', isLoggedIn, getEvent)
 
-router.get('/history', getHistory)
+router.get('/history', isLoggedIn, getHistory)
 
 router.post('/predict', isLoggedIn, predict)
 
 router.get('/predictions', isLoggedIn, getPredictions)
 
 router.get('/recent-predictions', isLoggedIn, getRecentPredictions)
+
+router.get('/users-ledaerboard-page', isLoggedIn, getUsersLeaderboardPlaceAndPage)
 
 export default router

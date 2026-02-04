@@ -1,10 +1,10 @@
 "use client"
 
-import MyPosition from "@/components/MyPosition"
 import Error from "@/components/shared/Error"
 import Loading from "@/components/shared/Loading"
 import LeaderboardEntry from "@/components/ui/LeaderboardEntry"
 import PaginationControl from "@/components/ui/PaginationControl"
+import ToTop from "@/components/ui/ToTop"
 import leaderboardQueryOptions from "@/utils/leaderboardQueryOptions"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dynamic from "next/dynamic"
@@ -17,14 +17,27 @@ const Event = dynamic(() => import('@/components/shared/Event'),
   }
 )
 
+const MyPosition = dynamic (() => import('@/components/MyPosition'), 
+  {
+    ssr: false,
+    loading: () => <></>
+  }
+)
+
 const LeaderboardPage = () => {
   const [page, setPage] = useState(1);
   const [showEvent, setShowEvent] = useState(false)
+  const [showMyPosition, setShowMyPosition] = useState(false)
 
   const { data, isPending, error } = useQuery(leaderboardQueryOptions(page));
   const queryClient = useQueryClient();
   useEffect(() => {
     setShowEvent(true)
+    setShowMyPosition(true)
+
+    if(page !== 1)
+      queryClient.prefetchQuery(leaderboardQueryOptions(page-1))
+
     queryClient.prefetchQuery(leaderboardQueryOptions(page+1))
   }, [page])
   
@@ -54,7 +67,9 @@ const LeaderboardPage = () => {
           ))
         }
       </div> 
-      <div className="w-3/5 place-self-end xl:mx-auto flex justify-end pr-10 md:pr-14 xl:pr-3 text-3xl gap-10 lg:gap-5 mt-1">
+      <div className="w-3/5 place-self-end xl:mx-auto flex items-center justify-end pr-10 md:pr-14 xl:pr-3 text-3xl gap-10 lg:gap-5 mt-1 select-none">
+        { showMyPosition && <MyPosition setPage={setPage} /> } 
+        { page !== 1 && <ToTop handleClick={() => setPage(1)} /> }
         <PaginationControl
           page={page}
           setPage={setPage}

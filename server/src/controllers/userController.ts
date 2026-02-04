@@ -46,15 +46,15 @@ export const getLeaderboard = async (req: Request, res: Response) => {
     return res.status(200).json([]) 
 
   const offset = (parseInt(page as string) - 1) * 10;
-  const leaderboardResult = await database.query(`SELECT users.username, leaderboards.points FROM leadaerboards
-                                      JOIN users ON users.id = leaderboards.user_id
-                                      WHERE event_id = $1
-                                      ORDER BY points DESC, discord_id ASC
-                                      LIMIT 10 OFFSET $2;`, [activeEventId, offset])
+  const leaderboardResult = await database.query(`SELECT users.username, leaderboards.points
+                                                  FROM leaderboards
+                                                  JOIN users ON users.id = leaderboards.user_id
+                                                  WHERE event_id = $1
+                                                  ORDER BY points DESC, discord_id DESC, users.id ASC
+                                                  LIMIT 10 OFFSET $2;`, [activeEventId, offset])
   const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeEventId]);
 
   const pages = Math.ceil(countResult.rows[0].count / 10)
-  
   const pagesWithoutZero = pages === 0 ? 1 : pages
   return res.status(200).json({pages: pagesWithoutZero, leaderboard: leaderboardResult.rows})
 }
@@ -177,4 +177,30 @@ export const getRecentPredictions = async (req: Request, res: Response) => {
   });
 
   return res.status(200).json(recentPredictions)
+}
+
+export const getUsersLeaderboardPlaceAndPage = async (req: Request, res: Response) => {
+  const { id } = req.user as User;
+  const activeEventId = await redisClient.get("active_event")
+  if(activeEventId === null)
+    return res.status(200).json(null)
+
+  const placeOnLeaderboard = await database.query(`
+      WITH full_leaderboard AS (
+        SELECT users.id, ROW_NUMBER() OVER(ORDER BY points DESC, discord_id DESC, users.id ASC) AS place
+        FROM leaderboards
+        JOIN users ON users.id = leaderboards.user_id
+        WHERE event_id = $1
+      )
+      SELECT place FROM full_leaderboard
+      WHERE id = $2;
+  `, [activeEventId, id])
+  
+  if(placeOnLeaderboard.rows.length < 1)
+    return res.status(200).json({ page: null, place:null })
+  
+  const place: number = placeOnLeaderboard.rows[0].place
+  const page: number = Math.ceil(place / 10);
+
+  return res.status(200).json({ page, place })
 }

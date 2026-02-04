@@ -15,7 +15,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({ setPage, page, to
           return totalPages
         } else 
           return prev+1 })} 
-        className={`${page === totalPages ? 'text-neutral-500 cursor-not-allowed ' : 'cursor-pointer '} font-extrabold`}> 
+        className={`${page === totalPages ? 'text-neutral-500 cursor-not-allowed ' : 'cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200'} font-extrabold`}> 
         &gt; 
       </button>
     )
@@ -27,7 +27,7 @@ const PaginationControl: React.FC<PaginationControlProps> = ({ setPage, page, to
         return 1
       } else 
         return prev-1 })} 
-      className={`${page === 1 ? 'text-neutral-500 cursor-not-allowed ' : 'cursor-pointer '} font-extrabold`}> 
+      className={`${page === 1 ? 'text-neutral-500 cursor-not-allowed ' : 'cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200 '} font-extrabold `}> 
       &lt; 
     </button>
   )
