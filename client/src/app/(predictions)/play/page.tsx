@@ -1,7 +1,7 @@
 'use client'
 
 import Matchup from "@/components/Matchup"
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
 import Match from "@/types/Match";
@@ -11,13 +11,23 @@ import dynamic from "next/dynamic";
 import Toast from "@/components/ui/Toast";
 import Error from "@/components/shared/Error";
 
-const Event = dynamic(() => import('@/components/shared/Event'))
+const Event = dynamic(() => import('@/components/shared/Event'),
+  {
+    ssr: false,
+    loading: () => <></>
+  }
+)
 
 export default function Play() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
+  const [showEvent, setShowEvent] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
+
+  useEffect(() => {
+    setShowEvent(true)
+  }, [])
 
   const matches = useQuery({
     queryKey: ['matches'],
@@ -73,7 +83,7 @@ export default function Play() {
     <>
       <div className="w-4/5 lg:w-3/5 -mt-4 lg:-mt-6 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center relative gap-10 pb-10 select-none">
         <div className="-mb-7">
-          <Event />
+          {showEvent && <Event />}
         </div>
         {
           matches.data.map(match => (

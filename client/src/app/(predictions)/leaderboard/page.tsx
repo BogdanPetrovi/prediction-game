@@ -1,5 +1,6 @@
 "use client"
 
+import MyPosition from "@/components/MyPosition"
 import Error from "@/components/shared/Error"
 import Loading from "@/components/shared/Loading"
 import LeaderboardEntry from "@/components/ui/LeaderboardEntry"
@@ -9,14 +10,21 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 
-const Event = dynamic(() => import('@/components/shared/Event'))
+const Event = dynamic(() => import('@/components/shared/Event'),
+  {
+    ssr: false,
+    loading: () => <></>
+  }
+)
 
 const LeaderboardPage = () => {
   const [page, setPage] = useState(1);
+  const [showEvent, setShowEvent] = useState(false)
 
   const { data, isPending, error } = useQuery(leaderboardQueryOptions(page));
   const queryClient = useQueryClient();
   useEffect(() => {
+    setShowEvent(true)
     queryClient.prefetchQuery(leaderboardQueryOptions(page+1))
   }, [page])
   
@@ -34,7 +42,7 @@ const LeaderboardPage = () => {
     <>
       <div className="w-[90%] xl:w-3/5 h-[46rem] xl:mt-6 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative overflow-hidden xl:overflow-visible">
         <div className="hidden xl:block xl:absolute -top-12">
-          <Event />
+          {showEvent && <Event />}
         </div>
         {
           data.leaderboard.map((user, index) => (
