@@ -7,10 +7,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import React, { Dispatch, SetStateAction } from "react"
 
 interface MyPositionProps {
+  page: number,
   setPage: Dispatch<SetStateAction<number>>
 }
 
-const MyPosition: React.FC<MyPositionProps> = ({ setPage }) => {
+const MyPosition: React.FC<MyPositionProps> = ({ page, setPage }) => {
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ['users-ledaerboard-page'],
@@ -33,7 +34,7 @@ const MyPosition: React.FC<MyPositionProps> = ({ setPage }) => {
   if(data.page === null || data.place === null) return <></>
 
   return(
-    <div className="text-2xl font-semibold cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200" 
+    <div className={`${page === data.page ? "hidden" : ""} text-xl xl:text-2xl font-semibold cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200`}
       onMouseEnter={prefetchPage}
       onClick={() => setPage(data.page!)}>
       <h2>My position</h2>

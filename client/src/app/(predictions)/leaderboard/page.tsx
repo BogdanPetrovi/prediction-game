@@ -24,16 +24,25 @@ const MyPosition = dynamic (() => import('@/components/MyPosition'),
   }
 )
 
+const LastUpdated = dynamic (() => import('@/components/LastUpdated'), 
+  {
+    ssr: false,
+    loading: () => <></>
+  }
+)
+
 const LeaderboardPage = () => {
   const [page, setPage] = useState(1);
   const [showEvent, setShowEvent] = useState(false)
   const [showMyPosition, setShowMyPosition] = useState(false)
+  const [showLastUpdated, setShowLastUpdated] = useState(false)
 
   const { data, isPending, error } = useQuery(leaderboardQueryOptions(page));
   const queryClient = useQueryClient();
   useEffect(() => {
     setShowEvent(true)
     setShowMyPosition(true)
+    setShowLastUpdated(true)
 
     if(page !== 1)
       queryClient.prefetchQuery(leaderboardQueryOptions(page-1))
@@ -67,21 +76,24 @@ const LeaderboardPage = () => {
           ))
         }
       </div> 
-      <div className="w-3/5 place-self-end xl:mx-auto flex items-center justify-end pr-10 md:pr-14 xl:pr-3 text-3xl gap-10 lg:gap-5 mt-1 select-none">
-        { showMyPosition && <MyPosition setPage={setPage} /> } 
-        { page !== 1 && <ToTop handleClick={() => setPage(1)} /> }
-        <PaginationControl
-          page={page}
-          setPage={setPage}
-          totalPages={data.pages}
-          direction="back"
-        />
-        <PaginationControl
-          page={page}
-          setPage={setPage}
-          totalPages={data.pages}
-          direction="next"
-        />
+      <div className="w-full xl:w-3/5 xl:mx-auto flex items-start justify-between px-5 md:px-14 xl:px-3 text-3xl mt-1 select-none">
+        { showLastUpdated && <LastUpdated /> }
+        <div className="flex gap-3 lg:gap-5">
+          { showMyPosition && <MyPosition page={page} setPage={setPage} /> } 
+          { page !== 1 && <ToTop handleClick={() => setPage(1)} /> }
+          <PaginationControl
+            page={page}
+            setPage={setPage}
+            totalPages={data.pages}
+            direction="back"
+          />
+          <PaginationControl
+            page={page}
+            setPage={setPage}
+            totalPages={data.pages}
+            direction="next"
+          />
+        </div>
       </div>
     </>
   )

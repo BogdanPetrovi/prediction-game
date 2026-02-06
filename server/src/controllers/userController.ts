@@ -204,3 +204,31 @@ export const getUsersLeaderboardPlaceAndPage = async (req: Request, res: Respons
 
   return res.status(200).json({ page, place })
 }
+
+export const getLastLeaderboardUpdateAt = async (req: Request, res: Response) => {
+  const activeEventId = await redisClient.get("active_event")
+  if(activeEventId === null)
+    return res.status(200).json(null)
+
+  const result = await database.query(`SELECT updated_at FROM leaderboards 
+                                       WHERE event_id = $1
+                                       ORDER BY updated_at DESC
+                                       LIMIT 1;`, [activeEventId])
+
+  if(!result || !result.rows[0].updated_at)
+    return res.status(200).json(null)
+
+  const date = new Date(result.rows[0].updated_at)
+  // converting date to right time zone
+  date.setHours(date.getHours() + 1)
+
+  const formatedDate = new Intl.DateTimeFormat('sr-RS', {
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      hour12: false
+                                    }).format(date);
+
+  return res.status(200).json({ lastUpdated: formatedDate })
+}
