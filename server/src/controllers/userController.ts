@@ -4,6 +4,7 @@ import { HLTV } from "@bogdanpet/hltv"
 import redisClient from "../config/redis.js"
 import User from "../types/User.js"
 import Prediction from "../types/Prediction.js"
+import History from "../types/History.js"
 import RecentPredictions from "../types/RecentPredictions.js"
 
 export const getMatches = async (req: Request, res: Response, next: NextFunction) => {
@@ -71,8 +72,8 @@ export const getEvent = async (req: Request, res: Response) => {
 
 export const getHistory = async (req: Request, res: Response) => {
   const result = await database.query(`WITH RankedLeaderboards AS (
-                                        SELECT users.username, events.name, events.logo, events.id,
-                                        ROW_NUMBER() OVER (PARTITION BY events.id ORDER BY leaderboards.points DESC) as rank
+                                        SELECT users.username, events.name, events.logo, events.id, events.start_date AS date,
+                                          ROW_NUMBER() OVER (PARTITION BY events.id ORDER BY leaderboards.points DESC) AS rank
                                         FROM leaderboards
                                         JOIN users ON leaderboards.user_id = users.id
                                         JOIN events ON leaderboards.event_id = events.id
@@ -81,24 +82,36 @@ export const getHistory = async (req: Request, res: Response) => {
                                       SELECT username, name, logo, id, rank
                                       FROM RankedLeaderboards
                                       WHERE rank <= 3
-                                      ORDER BY id, rank;`);
+                                      ORDER BY date DESC;`);
 
-  const response = result.rows.reduce((accumulator, current) => {
-    // name is event name
-    if(!accumulator[current.name]){
-      accumulator[current.name] = {
-        placements: {},
-        logo: current.logo
+  const arrayOfEventsWithRanking = result.rows.reduce((accumulator: History[], current) => {
+    const eventIndex = accumulator.findIndex(event => event.name === current.name)
+
+    if(eventIndex >= 0){
+      if(current.rank === '1'){
+        accumulator[eventIndex].placements.firstPlace = current.username
+      } else if(current.rank === '2') {
+        accumulator[eventIndex].placements.secondPlace = current.username
+      } else {
+        accumulator[eventIndex].placements.thirdPlace = current.username
       }
+
+    } else {
+      accumulator.push({
+      name: current.name,
+      logo: current.logo,
+      placements: current.rank === '1' ? 
+                    { firstPlace: current.username } : 
+                  current.rank === '2' ? 
+                    { secondPlace: current.username } : 
+                  { thirdPlace: current.username }
+      })
     }
 
-    const places = ['firstPlace', 'secondPlace', 'thirdPlace']
-    accumulator[current.name].placements[places[current.rank - 1]] = current.username
-
     return accumulator
-  }, {})
+  }, [])
 
-  return res.status(200).json(response)
+  return res.status(200).json(arrayOfEventsWithRanking)
 }
 
 export const predict = async (req: Request, res: Response) => {

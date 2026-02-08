@@ -1,10 +1,10 @@
-export default interface EventHistory{
+export default interface History{
   name: string,
   logo: string,
   placements: Placements
 }
 
-export interface Placements {
+interface Placements {
   firstPlace?: string,
   secondPlace?: string,
   thirdPlace?: string
