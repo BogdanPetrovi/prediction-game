@@ -7,7 +7,6 @@ export default async function middleware(req: NextRequest) {
 
   try {
     const cookieHeader = req.headers.get("cookie");
-
     const response = await fetch(
       'https://api.countersite.gg/auth/me',
       {
@@ -20,27 +19,45 @@ export default async function middleware(req: NextRequest) {
 
     const data = await response.json();
 
+    // KRITIČNO - čuvaj Set-Cookie header da bi ga vratio browseru
+    const setCookieHeader = response.headers.get("set-cookie");
+
     if (isRouteProtected) {
-      if (data.loggedIn) return NextResponse.next();
+      if (data.loggedIn) {
+        const nextResponse = NextResponse.next();
+        // Prosleđuj Set-Cookie ako postoji
+        if (setCookieHeader) {
+          nextResponse.headers.set("set-cookie", setCookieHeader);
+        }
+        return nextResponse;
+      }
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
-    if (data.loggedIn)
-      return NextResponse.redirect(new URL("/play", req.url));
+    if (data.loggedIn) {
+      const redirectResponse = NextResponse.redirect(new URL("/play", req.url));
+      if (setCookieHeader) {
+        redirectResponse.headers.set("set-cookie", setCookieHeader);
+      }
+      return redirectResponse;
+    }
 
-    if (pathname === "/")
+    if (pathname === "/") {
       return NextResponse.redirect(new URL("/login", req.url));
+    }
 
-    return NextResponse.next();
+    const nextResponse = NextResponse.next();
+    if (setCookieHeader) {
+      nextResponse.headers.set("set-cookie", setCookieHeader);
+    }
+    return nextResponse;
+
   } catch (error) {
     console.log("Middleware error:", error);
-
     if (isRouteProtected)
       return NextResponse.redirect(new URL("/login", req.url));
-
     if (pathname === "/")
       return NextResponse.redirect(new URL("/login", req.url));
-
     return NextResponse.next();
   }
 }
