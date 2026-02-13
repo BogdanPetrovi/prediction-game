@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
     const cookieHeader = req.headers.get("cookie");
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
+      'https://api.countersite.gg//auth/me',
       {
         method: "GET",
         headers: {
