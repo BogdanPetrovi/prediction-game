@@ -2,7 +2,7 @@
 
 import Matchup from "@/components/Matchup"
 import { useCallback, useEffect, useState } from "react";
-import Prediction from "@/types/Prediction";
+import type Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
 import Match from "@/types/Match";
 import { useQuery } from "@tanstack/react-query";
