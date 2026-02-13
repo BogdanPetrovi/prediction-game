@@ -20,7 +20,7 @@ export default function Login() {
 
         <button
           className="w-full p-2 flex items-center justify-center gap-2 text-xl font-bold bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-xl cursor-pointer shadow-lg duration-300"
-          onClick={() => redirect('http://localhost:5000/auth/discord')}
+          onClick={() => redirect('https://api.countersite.gg/auth/discord')}
         >
           <DiscordLogo />
           Prijavi se putem Discorda
