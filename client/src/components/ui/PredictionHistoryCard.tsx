@@ -24,7 +24,7 @@ const PredictionHistoryCard:React.FC<RecentPredictions> = ({ predictedWinner, re
       {/* result for finished or "vs" for upcoming */}
       {
         result ? 
-        <div className="w-1/3 mx-auto text-xl xl:text-4xl font-bold text-white">
+        <div className="w-1/3 flex justify-center text-xl xl:text-4xl font-bold text-white">
           { result }
         </div>
         :
