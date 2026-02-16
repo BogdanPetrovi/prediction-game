@@ -21,7 +21,7 @@ const LastUpdated = () => {
 
   return (
     <div className="text-xl xl:text-2xl font-semibold flex items-end w-1/3">
-      <h2>Last updated: {data.lastUpdated}</h2>
+      <h2>Ažurirano: {data.lastUpdated}</h2>
     </div>
   )
 }

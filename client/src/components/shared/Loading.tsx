@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 
 const Loading = () => {
-  const phrases =["Loading", "Planting", "Rotating", "Arguing with green", "Holding angle", "Buying AWP", "Rush B", "Breaking table"]
+  const phrases =["Učitavanje", "Plentovanje bombe", "Rotiranje", "Green what is your problem", "Držanje uglova", "Kupovanje AWP-a sa $4750", "Rush B", "Lomnjenje stola"]
   const [activePhrase, setActivePhrase] = useState(phrases[0])
 
   useEffect(() => {

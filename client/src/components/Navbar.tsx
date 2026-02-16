@@ -8,9 +8,9 @@ const Navbar = () => {
 
   return (
     <div className="h-10 flex gap-5 px-5 mb-8">
-      <NavbarCard placeholder="play" active={pathname === '/play'} />
-      <NavbarCard placeholder="leaderboard" active={pathname === '/leaderboard'} />
-      <NavbarCard placeholder="history" active={pathname === '/history'} />
+      <NavbarCard placeholder="igraj" active={pathname === '/igraj'} />
+      <NavbarCard placeholder="tabela" active={pathname === '/tabela'} />
+      <NavbarCard placeholder="istorija" active={pathname === '/istorija'} />
     </div>
   )
 }

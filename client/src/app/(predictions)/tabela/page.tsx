@@ -56,7 +56,7 @@ const LeaderboardPage = () => {
 
   if(!data || !data.leaderboard) return (
     <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
-      <h2>There is currently no leaderboard, check back again later!</h2>
+      <h2>Trenutno nema tabele, proverite kasnije!</h2>
     </div>
   )
 

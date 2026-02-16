@@ -26,15 +26,15 @@ const MyPredictionsPage = () => {
   if (!data || data.length === 0) {
     return (
       <div className="px-6 py-4 text-gray-300 text-3xl">
-        There is no recent predictions.
+        Nema skorašnjih predikcija.
       </div>
     )
   }
 
   return (
-    <div className="w-[95%] lg:w-full min-h-[calc(100vh-9.5rem)] mx-auto flex flex-col items-center select-none pb-10">
-      <h2 className="text-4xl font-bold text-center lg:text-left">Your recent predictions</h2>
-      <div className="w-full mt-5 flex flex-col lg:flex-row justify-center gap-10 lg:flex-wrap">
+    <div className="w-[95%] xl:w-full min-h-[calc(100vh-9.5rem)] mx-auto flex flex-col items-center select-none pb-10">
+      <h2 className="text-4xl font-bold text-center xl:text-left">Tvoje skorašnje predikcije</h2>
+      <div className="w-full mt-5 flex flex-col xl:flex-row justify-center gap-10 xl:flex-wrap">
         {
           data.map(prediction => (
             <PredictionHistoryCard 

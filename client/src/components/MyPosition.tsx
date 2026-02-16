@@ -37,7 +37,7 @@ const MyPosition: React.FC<MyPositionProps> = ({ page, setPage }) => {
     <div className={`${page === data.page ? "hidden" : ""} text-xl xl:text-2xl font-semibold cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200`}
       onMouseEnter={prefetchPage}
       onClick={() => setPage(data.page!)}>
-      <h2>My position</h2>
+      <h2>Moja pozicija</h2>
     </div>
   )
 }

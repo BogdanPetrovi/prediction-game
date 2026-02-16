@@ -57,11 +57,11 @@ export default function Play() {
       await backend.post('/predict', {
         predictions: userPredictions
       })
-      setToastMessage('Successfully updated your predictions!')
+      setToastMessage('Predikcije su uspešno sačuvane!')
       setToastType('success')
       setShowToast(true)
     } catch (error) {
-      setToastMessage('Failed to update predictions. Please try again.')
+      setToastMessage('Nismo uspeli da sačuvamo predikcije, pokušajte ponovo.')
       setToastType('error')
       setShowToast(true)
     }
@@ -75,7 +75,7 @@ export default function Play() {
 
   if(!matches.data || matches.data.length < 1 || !predictions.data) return (
     <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
-      <h2>There are currently no active matches, check back again later!</h2>
+      <h2>Trenutno nema predstojećih mečeva, proverite kasnije!</h2>
     </div>
   )
 
@@ -96,7 +96,7 @@ export default function Play() {
           ))
         }
         <button className="bg-secondary hover:bg-[#2F333F] active:bg-[#3a3e4a] w-4/5 lg:w-1/3 hover:w-2/5 h-16 rounded-3xl cursor-pointer font-bold text-4xl drop-shadow-2xl/100 duration-300" onClick={handleSubmit}>
-          Submit
+          Potvrdi
         </button>
       </div>
 
@@ -105,7 +105,7 @@ export default function Play() {
           message={toastMessage}
           type={toastType}
           onClose={() => setShowToast(false)}
-          duration={6000}
+          duration={3000}
         />
       )}
     </>

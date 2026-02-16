@@ -14,8 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Prediction game",
-  description: "Predict cs2 results",
+  title: "Counter Site predikcije",
+  description: "Counter strike predikcije. Pogadjaj koje ce ekipe pobediti na najvecim turnirima u counter strikeu!",
+  category: "Counter strike",
+  icons: {
+    icon: "/favicon.ico"
+  }
 };
 
 export default function RootLayout({

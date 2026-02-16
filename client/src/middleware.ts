@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const protectedRoutes = ["/play", "/leaderboard", "/my-predictions", "/history"];
+  const protectedRoutes = ["/igraj", "/tabela", "/moje-predikcije", "/istorija"];
   const isRouteProtected = protectedRoutes.includes(pathname);
 
   try {
@@ -19,13 +19,11 @@ export default async function middleware(req: NextRequest) {
 
     const data = await response.json();
 
-    // KRITIČNO - čuvaj Set-Cookie header da bi ga vratio browseru
     const setCookieHeader = response.headers.get("set-cookie");
 
     if (isRouteProtected) {
       if (data.loggedIn) {
         const nextResponse = NextResponse.next();
-        // Prosleđuj Set-Cookie ako postoji
         if (setCookieHeader) {
           nextResponse.headers.set("set-cookie", setCookieHeader);
         }
@@ -35,7 +33,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (data.loggedIn) {
-      const redirectResponse = NextResponse.redirect(new URL("/play", req.url));
+      const redirectResponse = NextResponse.redirect(new URL("/igraj", req.url));
       if (setCookieHeader) {
         redirectResponse.headers.set("set-cookie", setCookieHeader);
       }

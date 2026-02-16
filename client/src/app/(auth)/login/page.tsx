@@ -11,10 +11,10 @@ export default function Login() {
       <div className="rounded-2xl shadow-xl bg-[#020617]/10 border border-white/10 p-8 flex flex-col items-center text-center gap-6">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight text-white">
-            Predikcije
+            Counter Site Predikcije
           </h1>
           <p className="text-sm text-white/60">
-            Svojke predikcije, igraj i osvoji nagrade
+            Counter-Strike predikcije
           </p>
         </div>
 

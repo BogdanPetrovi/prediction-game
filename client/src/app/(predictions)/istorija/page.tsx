@@ -23,7 +23,7 @@ const HistoryPage = () => {
 
   if(!data || data.length < 1) return (
     <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
-      <h2>There is currently no finished events, check back again later!</h2>
+      <h2>Trenutno nema završenih turnira, proverite kasnije!</h2>
     </div>
   )
 
