@@ -6,6 +6,7 @@ import User from "../types/User.js"
 import Prediction from "../types/Prediction.js"
 import History from "../types/History.js"
 import RecentPredictions from "../types/RecentPredictions.js"
+import Match from "../types/Match.js"
 
 export const getMatches = async (req: Request, res: Response, next: NextFunction) => {
   const matches = await redisClient.get("matches");
@@ -244,4 +245,43 @@ export const getLastLeaderboardUpdateAt = async (req: Request, res: Response) =>
                                     }).format(date);
 
   return res.status(200).json({ lastUpdated: formatedDate })
+}
+
+export const getVotesPrecentage = async (req: Request, res: Response) => {
+  const matches = await redisClient.get("matches")
+
+  if(!matches)
+    return res.status(200).json([])
+
+
+  const votes = await Promise.all(
+    JSON.parse(matches).map(async (match: Match) => {
+      const result = await database.query(`SELECT predicted_winner, COUNT(*) AS votes
+                                            FROM predictions
+                                            WHERE match_id = $1
+                                            GROUP BY predicted_winner;`, [match.id])
+
+      if(result.rows.length === 0)
+        return { id: match.id, team1: 0, team2: 0 }
+
+      if(result.rows.length === 1){
+        return {
+          id: match.id,
+          team1: result.rows[0].predicted_winner === 'team1' ? 100 : 0,
+          team2: result.rows[0].predicted_winner === 'team2' ? 100 : 0
+        }
+      }
+      
+      const allVotes = Number(result.rows[0].votes) + Number(result.rows[1].votes)
+      const precentageTeam1 = result.rows[0].predicted_winner === 'team1' ? ( (result.rows[0].votes / allVotes) * 100 ) : ( (result.rows[0].votes / allVotes) * 100 )
+
+      return {
+        id: match.id,
+        team1: Number(precentageTeam1.toFixed(1)),
+        team2: Number((100 - precentageTeam1).toFixed(1))
+      }
+    })
+  )
+
+  return res.status(200).json(votes)
 }

@@ -1,13 +1,16 @@
 import Match from "@/types/Match"
 import React from "react"
+import WinPercent from "./WinPrecent"
+import PredictedTeamEnum from "@/types/PredictedTeamEnum"
 
 interface Team1Props {
-  selectedTeam: string,
+  selectedTeam: PredictedTeamEnum,
   match: Match,
-  handleChange: (team: string) => void
+  handleChange: (team: PredictedTeamEnum) => void,
+  votePrecentage?: number
 }
 
-const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match }) => {
+const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, votePrecentage }) => {
   return (
     <div 
       className={
@@ -21,7 +24,8 @@ const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match }) => {
         :
         <h2 className={`${selectedTeam === 'team1' ? 'text-[4.5rem]' : !match.live && 'group-hover:text-[4.5rem]'} text-[4rem] font-bold ml-4 drop-shadow-xl/50 duration-300`}>?</h2>
       }
-      <h2 className="hidden md:block text-3xl xl:text-4xl font-semibold">{ match.team1.name }</h2>
+      <h2 className="hidden md:block text-3xl xl:text-4xl font-semibold w-min 2xl:w-fit">{ match.team1.name }</h2>
+      <WinPercent value={votePrecentage || 0} team="team1" selected={ selectedTeam } isLive={ match.live } />
     </div>
   )
 }

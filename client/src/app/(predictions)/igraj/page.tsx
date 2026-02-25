@@ -10,6 +10,7 @@ import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
 import Toast from "@/components/ui/Toast";
 import Error from "@/components/shared/Error";
+import VotesPrecentages from "@/types/VotesPrecentages";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -43,6 +44,13 @@ export default function Play() {
       return result.data.predictions
     }
   })
+  const votesPrecentages = useQuery({
+    queryKey: ['votes-pecentages'],
+    queryFn: async (): Promise<VotesPrecentages[]> => {
+      const result = await backend.get('/votes-precentages')
+      return result.data
+    }
+  })
 
   const handleUserPredictionChange = useCallback(({ matchId, predictedTeam }: Prediction) => {
     setUserPredictions(prev => {
@@ -73,7 +81,7 @@ export default function Play() {
 
   if(predictions.error) return <Error err={predictions.error} />
 
-  if(!matches.data || matches.data.length < 1 || !predictions.data) return (
+  if(!matches.data || matches.data.length < 1 || !predictions.data || !votesPrecentages.data) return (
     <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
       <h2>Trenutno nema predstojećih mečeva, proverite kasnije!</h2>
     </div>
@@ -91,6 +99,7 @@ export default function Play() {
               match={match}
               setPredictions={handleUserPredictionChange}
               backendPrediction={predictions.data.find(el => el.matchId === match.id)}
+              votesPrecentages={votesPrecentages.data.find(el => el.id === match.id)}
               key={match.id}
             />
           ))

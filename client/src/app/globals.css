@@ -38,14 +38,21 @@
   }
 }
 
-@keyframes toast-slide-in {
+@keyframes slide-in {
   from {
     transform: translateX(100%);
-    opacity: 0;
   }
   to {
     transform: translateX(0);
-    opacity: 1;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 
@@ -58,8 +65,12 @@
   }
 }
 
-.toast-slide-in {
-  animation: toast-slide-in 0.3s ease-out;
+.slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.slide-in-left {
+  animation: slide-in-left 0.3s ease-out;
 }
 
 .toast-progress {

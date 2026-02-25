@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getEvent, getHistory, getLastLeaderboardUpdateAt, getLeaderboard, getMatches, getPredictions, getRecentPredictions, getUsersLeaderboardPlaceAndPage, predict } from "../controllers/userController.js";
+import { getEvent, getHistory, getLastLeaderboardUpdateAt, getLeaderboard, getMatches, getPredictions, getRecentPredictions, getUsersLeaderboardPlaceAndPage, getVotesPrecentage, predict } from "../controllers/userController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 
 const router = Router();
@@ -21,5 +21,7 @@ router.get('/recent-predictions', isLoggedIn, getRecentPredictions)
 router.get('/users-ledaerboard-page', isLoggedIn, getUsersLeaderboardPlaceAndPage)
 
 router.get('/leaderboard-last-update-at', isLoggedIn, getLastLeaderboardUpdateAt)
+
+router.get('/votes-precentages', isLoggedIn, getVotesPrecentage)
 
 export default router

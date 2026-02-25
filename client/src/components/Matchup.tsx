@@ -5,15 +5,18 @@ import React, { useState, memo } from 'react'
 import Prediction from '@/types/Prediction'
 import Team1 from './ui/Team1'
 import Team2 from './ui/Team2'
+import VotesPrecentages from '@/types/VotesPrecentages'
+import PredictedTeamEnum from '@/types/PredictedTeamEnum'
 
 interface MatchupProps {
   match: Match,
   setPredictions: (prediction: Prediction) => void,
-  backendPrediction: Prediction | undefined
+  backendPrediction: Prediction | undefined,
+  votesPrecentages?: VotesPrecentages
 }
 
-const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction }) => {
-  const [selectedTeam, setSelectedTeam] = useState(backendPrediction?.predictedTeam || '')
+const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction, votesPrecentages }) => {
+  const [selectedTeam, setSelectedTeam] = useState<PredictedTeamEnum>(backendPrediction?.predictedTeam || '')
 
   const formatedDate = (): string => {
     const date = match.date && new Intl.DateTimeFormat('sr-RS', {
@@ -26,7 +29,7 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPredict
     return date || ''
   }
 
-  const handleChange = (predictedTeam: string) => {
+  const handleChange = (predictedTeam: PredictedTeamEnum) => {
     if(match.live) return
 
     setSelectedTeam(predictedTeam)
@@ -41,27 +44,34 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPredict
         selectedTeam={selectedTeam}
         handleChange={handleChange}
         match={match}
+        votePrecentage={votesPrecentages?.team1 === 0 && votesPrecentages?.team2 === 0 ? selectedTeam === 'team1' ? 100 : 0 : votesPrecentages?.team1}
       />
 
       <Team2
         selectedTeam={selectedTeam}
         handleChange={handleChange}
         match={match}
+        votePrecentage={votesPrecentages?.team1 === 0 && votesPrecentages?.team2 === 0 ? selectedTeam === 'team2' ? 100 : 0 : votesPrecentages?.team2}
       />
+      
+      
+      {/* grid grid-cols-3 */}
+      <div className='absolute left-2 -bottom-7  w-full pr-4 flex justify-between'>
+        {/* Displays date or live */}
+        <div className='justify-self-start'>
+          {
+            match.live ? 
+              <h3 className='font-semibold text-xl text-red-600 animate-pulse'>Live</h3>
+            :
+              <h3 className='font-semibold text-xl'>{ formatedDate() }</h3>
+          }
+        </div>
 
-      {/* Displays date or live */}
-      <div className='absolute left-2 -bottom-7'>
-        {
-          match.live ? 
-            <h3 className='font-semibold text-xl text-red-600 animate-pulse'>Live</h3>
-          :
-            <h3 className='font-semibold text-xl'>{ formatedDate() }</h3>
-        }
-      </div>
+        {/* Displays match format */}
+        <div className='justify-self-end'>
+          <h3 className='font-semibold text-xl capitalize'>{ match.format }</h3>
+        </div>
 
-      {/* Displays match format */}
-      <div className='absolute right-2 -bottom-7'>
-        <h3 className='font-semibold text-xl capitalize'>{ match.format }</h3>
       </div>
     </div>
   )

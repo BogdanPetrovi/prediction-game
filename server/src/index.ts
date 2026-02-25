@@ -23,6 +23,7 @@ app.use(morgan('dev'))
 app.use(cors({
   origin: process.env.ORIGIN || 'http://localhost:3000',
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST']
 }))
 app.use(express.json())
@@ -49,7 +50,10 @@ app.use(passport.session())
 configurePassport()
 
 // cron job
-cron.schedule("0 */6 * * *", calculatePoints)
+cron.schedule("0 13 * * *", calculatePoints)
+cron.schedule("0 17 * * *", calculatePoints)
+cron.schedule("0 21 * * *", calculatePoints)
+cron.schedule("0 0 * * *", calculatePoints)
 
 // routers
 app.use(userRouter)
