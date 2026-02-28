@@ -7,13 +7,14 @@ const calculatePoints = async () => {
 
   try {
     const activeEventId = await redisClient.get("active_event")
-    if(activeEventId === null)
+    const activeParentEventId = await redisClient.get("active_parent_event")
+    if(activeEventId === null || activeParentEventId === null)
       return console.log("There is no active events. Cron job is finished at: ", new Date())
 
+    console.log('Checking HLTV for latest results...')
     const results = await HLTV.getResults(parseInt(activeEventId))
     // insert results of the matches into the database
     for(const match of results) {
-      console.log(match)
       const winner = match.result.team1 > match.result.team2 ? 'team1' : 'team2';
       const result = `${match.result.team1}:${match.result.team2}`
       await database.query('UPDATE matches SET winner_team = $1, result = $2 WHERE id = $3 AND result IS NULL AND winner_team IS NULL;', [winner, result, match.id])
@@ -21,13 +22,15 @@ const calculatePoints = async () => {
 
     // calculate points and updates leaderboards table
     await database.query(`WITH active_players AS (
-                          SELECT DISTINCT predictions.user_id FROM predictions
-                          JOIN matches ON matches.id = predictions.match_id
-                          WHERE matches.event_id = $1	
+                            SELECT DISTINCT predictions.user_id FROM predictions
+                            JOIN matches ON matches.id = predictions.match_id
+                            JOIN events ON matches.event_id = events.id
+                            WHERE ( events.id = $1 OR events.parent_event_id = $1 )	
                           ),
                           finished_matches AS (
-                            SELECT id AS match_id FROM matches
-                            WHERE result IS NOT NULL AND event_id = $1
+                            SELECT matches.id AS match_id FROM matches
+                            JOIN events ON matches.event_id = events.id
+                            WHERE result IS NOT NULL AND ( events.id = $1 OR events.parent_event_id = $1 )	
                           ),
                           user_match_combinations AS (
                             SELECT * FROM active_players
@@ -46,7 +49,7 @@ const calculatePoints = async () => {
                           LEFT join matches ON matches.id = user_match_combinations.match_id
                           GROUP BY user_match_combinations.user_id
                           ON CONFLICT (user_id, event_id)
-                          DO UPDATE SET points = EXCLUDED.points, updated_at = CURRENT_TIMESTAMP;`, [activeEventId])
+                          DO UPDATE SET points = EXCLUDED.points, updated_at = CURRENT_TIMESTAMP;`, [activeParentEventId])
 
     console.log("Cron job finished successfully at: ", new Date())
   } catch (err) {

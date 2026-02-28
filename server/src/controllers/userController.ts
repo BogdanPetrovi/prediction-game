@@ -43,8 +43,8 @@ export const getMatches = async (req: Request, res: Response, next: NextFunction
 export const getLeaderboard = async (req: Request, res: Response) => {
   const { page } = req.query
 
-  const activeEventId = await redisClient.get("active_event")
-  if(activeEventId === null )
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null )
     return res.status(200).json([]) 
 
   const offset = (parseInt(page as string) - 1) * 10;
@@ -53,8 +53,8 @@ export const getLeaderboard = async (req: Request, res: Response) => {
                                                   JOIN users ON users.id = leaderboards.user_id
                                                   WHERE event_id = $1
                                                   ORDER BY points DESC, discord_id DESC, users.id ASC
-                                                  LIMIT 10 OFFSET $2;`, [activeEventId, offset])
-  const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeEventId]);
+                                                  LIMIT 10 OFFSET $2;`, [activeParentEventId, offset])
+  const countResult = await database.query("SELECT COUNT(*) FROM leaderboards WHERE event_id = $1;", [activeParentEventId]);
 
   const pages = Math.ceil(countResult.rows[0].count / 10)
   const pagesWithoutZero = pages === 0 ? 1 : pages
@@ -72,13 +72,23 @@ export const getEvent = async (req: Request, res: Response) => {
 }
 
 export const getHistory = async (req: Request, res: Response) => {
-  const result = await database.query(`WITH RankedLeaderboards AS (
+  const result = await database.query(`WITH finished_events AS (
+                                        SELECT id FROM events
+                                        WHERE parent_event_id IS NULL
+                                          AND is_active = false
+                                          AND NOT EXISTS (
+                                            SELECT 1 FROM events AS child
+                                            WHERE child.parent_event_id = events.id
+                                              AND child.is_active = true
+                                          )
+                                      ),
+                                      RankedLeaderboards AS (
                                         SELECT users.username, events.name, events.logo, events.id, events.start_date AS date,
                                           ROW_NUMBER() OVER (PARTITION BY events.id ORDER BY leaderboards.points DESC) AS rank
                                         FROM leaderboards
                                         JOIN users ON leaderboards.user_id = users.id
                                         JOIN events ON leaderboards.event_id = events.id
-                                        WHERE events.is_active = false
+                                        WHERE events.id IN (SELECT id FROM finished_events) AND events.parent_event_id IS NULL
                                       )
                                       SELECT username, name, logo, id, rank
                                       FROM RankedLeaderboards
@@ -195,8 +205,8 @@ export const getRecentPredictions = async (req: Request, res: Response) => {
 
 export const getUsersLeaderboardPlaceAndPage = async (req: Request, res: Response) => {
   const { id } = req.user as User;
-  const activeEventId = await redisClient.get("active_event")
-  if(activeEventId === null)
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null)
     return res.status(200).json(null)
 
   const placeOnLeaderboard = await database.query(`
@@ -208,7 +218,7 @@ export const getUsersLeaderboardPlaceAndPage = async (req: Request, res: Respons
       )
       SELECT place FROM full_leaderboard
       WHERE id = $2;
-  `, [activeEventId, id])
+  `, [activeParentEventId, id])
   
   if(placeOnLeaderboard.rows.length < 1)
     return res.status(200).json({ page: null, place:null })
@@ -220,14 +230,14 @@ export const getUsersLeaderboardPlaceAndPage = async (req: Request, res: Respons
 }
 
 export const getLastLeaderboardUpdateAt = async (req: Request, res: Response) => {
-  const activeEventId = await redisClient.get("active_event")
-  if(activeEventId === null)
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null)
     return res.status(200).json(null)
 
   const result = await database.query(`SELECT updated_at FROM leaderboards 
                                        WHERE event_id = $1
                                        ORDER BY updated_at DESC
-                                       LIMIT 1;`, [activeEventId])
+                                       LIMIT 1;`, [activeParentEventId])
 
   if(!result || !result.rows[0].updated_at)
     return res.status(200).json(null)

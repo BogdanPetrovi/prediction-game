@@ -8,7 +8,7 @@ const router = Router();
 router.get("/discord", passport.authenticate('discord'))
 
 router.get('/discord/callback', passport.authenticate('discord', {
-  successRedirect: 'http://localhost:3000/play',
+  successRedirect: 'http://localhost:3000/igraj',
   failureRedirect: 'http://localhost:3000/login'
 }))
 

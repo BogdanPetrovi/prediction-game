@@ -3,6 +3,6 @@ import { addEvent } from "../controllers/adminController.js";
 
 const router = Router();
 
-router.post('/addEvent/:id', addEvent)
+router.post('/addEvent', addEvent)
 
 export default router

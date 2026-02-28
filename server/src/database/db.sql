@@ -12,8 +12,9 @@ CREATE TABLE events (
   name VARCHAR(100) NOT NULL,
   logo VARCHAR(255) NOT NULL,
   start_date BIGINT,
-  end_date BIGINT
-  is_active BOOLEAN
+  end_date BIGINT,
+  is_active BOOLEAN,
+  parent_event_id BIGINT REFERENCES events(id)
 );
  
 CREATE TYPE team_info AS (
