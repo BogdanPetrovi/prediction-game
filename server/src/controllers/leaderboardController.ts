@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import redisClient from "../config/redis.js";
 import database from "../database/database.js";
 import User from "../types/User.js";
+import { Page } from "../schemas/leaderboard.schemas.js";
+import { UserType } from "../schemas/shared.schemas.js";
 
 export const getLeaderboard = async (req: Request, res: Response) => {
   const { page } = req.query
@@ -10,7 +12,9 @@ export const getLeaderboard = async (req: Request, res: Response) => {
   if(activeParentEventId === null )
     return res.status(200).json([]) 
 
-  const offset = (parseInt(page as string) - 1) * 10;
+  const parsedPage = Page.parse(page)
+
+  const offset = (parsedPage - 1) * 10;
   const leaderboardResult = await database.query(`SELECT users.username, leaderboards.points
                                                   FROM leaderboards
                                                   JOIN users ON users.id = leaderboards.user_id
@@ -25,7 +29,8 @@ export const getLeaderboard = async (req: Request, res: Response) => {
 }
 
 export const getUsersLeaderboardPlaceAndPage = async (req: Request, res: Response) => {
-  const { id } = req.user as User;
+  const user = req.user;
+  const { id } = UserType.parse(user);
   const activeParentEventId = await redisClient.get("active_parent_event")
   if(activeParentEventId === null)
     return res.status(200).json(null)

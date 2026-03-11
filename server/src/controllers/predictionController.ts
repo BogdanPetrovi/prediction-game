@@ -4,24 +4,30 @@ import database from "../database/database.js";
 import User from "../types/User.js";
 import Prediction from "../types/Prediction.js";
 import RecentPredictions from "../types/RecentPredictions.js";
+import { PredictionsArray } from "../schemas/prediction.schemas.js";
+import { UserType } from "../schemas/shared.schemas.js";
 
 export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
-  const user = req.user as User;
+  const user = req.user;
+  const { id } = UserType.parse(user)
 
-  predictions.forEach(async (prediction: Prediction) => {
+  const parsedPredictions = PredictionsArray.parse(predictions)
+
+  parsedPredictions.forEach(async prediction => {
     await database.query(
       `INSERT INTO predictions (user_id, match_id, predicted_winner) VALUES ($1, $2, $3)
       ON CONFLICT(user_id, match_id) 
       DO UPDATE SET predicted_winner = EXCLUDED.predicted_winner;`,
-    [user.id, prediction.matchId, prediction.predictedTeam])
+    [id, prediction.matchId, prediction.predictedWinner])
   });
 
   return res.sendStatus(200);
 }
 
 export const getPredictions = async (req: Request, res: Response) => {
-  const { id } = req.user as User;
+  const user = req.user;
+  const { id } = UserType.parse(user)
   
   const activeEvent = await redisClient.get("active_event")
 
@@ -40,7 +46,8 @@ export const getPredictions = async (req: Request, res: Response) => {
 }
 
 export const getRecentPredictions = async (req: Request, res: Response) => {
-  const { id } = req.user as User;
+  const user = req.user;
+  const { id } = UserType.parse(user)
 
   const result = await database.query(`SELECT matches.id, team1, team2, predicted_winner, winner_team, result FROM predictions
                                         JOIN matches ON predictions.match_id = matches.id
