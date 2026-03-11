@@ -1,6 +1,10 @@
 import { Router } from "express";
-import { getEvent, getHistory, getLastLeaderboardUpdateAt, getLeaderboard, getMatches, getPredictions, getRecentPredictions, getUsersLeaderboardPlaceAndPage, getVotesPrecentage, predict } from "../controllers/userController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
+import { getMatches, getVotesPrecentage } from "../controllers/matchController.js";
+import { getLastLeaderboardUpdateAt, getLeaderboard, getUsersLeaderboardPlaceAndPage } from "../controllers/leaderboardController.js";
+import { getPredictions, getRecentPredictions, predict } from "../controllers/predictionController.js";
+import { getHistory } from "../controllers/historyController.js";
+import { getEvent } from "../controllers/eventController.js";
 
 const router = Router();
 

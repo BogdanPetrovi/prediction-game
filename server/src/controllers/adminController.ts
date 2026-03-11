@@ -22,14 +22,14 @@ export const addEvent = async (req: Request, res: Response) => {
                           VALUES ($1, $2, $3, $4, $5, $6, $7)
                           ON CONFLICT(id) DO UPDATE 
                           SET is_active = EXCLUDED.is_active, parent_event_id = EXCLUDED.parent_event_id;`,
-                        [event.id, event.name, event.logo, event.dateStart, event.dateEnd, isActive || false, parentEventId])
+                        [event.id, event.name, event.logo, event.dateStart, event.dateEnd, isActive || false, parentEventId || null])
 
     if(isActive) {
       await redisClient.del("active_event")
       await redisClient.del("matches")
       await redisClient.del("active_parent_event")
-      await redisClient.set("active_event", id)  
-      await redisClient.set("active_parent_event", parentEventId)
+      await redisClient.set("active_event", id)
+      await redisClient.set("active_parent_event", parentEventId || id)
     }
 
     return res.status(200).send("You succesfully added/updated event!");

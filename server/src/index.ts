@@ -42,7 +42,7 @@ app.use(session({
   cookie: {
     // for production
     // secure: true,
-    maxAge: 1000 * 60 * 60 * 24
+    maxAge: 1000 * 60 * 60 * 24 * 20
   }
 }))
 app.use(passport.initialize())
