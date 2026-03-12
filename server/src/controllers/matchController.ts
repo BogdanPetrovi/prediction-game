@@ -3,6 +3,7 @@ import redisClient from "../config/redis.js";
 import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import Match from "../types/Match.js";
+import hltvWrapper from "../utils/hltvWrapper.js";
 
 export const getMatches = async (req: Request, res: Response) => {
   const matches = await redisClient.get("matches");
@@ -14,8 +15,8 @@ export const getMatches = async (req: Request, res: Response) => {
   if(activeEventId === null )
     return res.status(200).json([]) 
 
-  console.log('HLTV is checking for the latest matches...')
-  const apiResult = await HLTV.getMatches(parseInt(activeEventId))
+  console.log('HLTV is checking for the latest matches... ' + new Date().toISOString())
+  const apiResult = await hltvWrapper(HLTV.getMatches(parseInt(activeEventId)))
 
   res.status(200).json(apiResult);
 

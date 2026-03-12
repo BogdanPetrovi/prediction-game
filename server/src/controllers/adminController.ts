@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import redisClient from "../config/redis.js";
 import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
+import hltvWrapper from "../utils/hltvWrapper.js";
 
 export const addEvent = async (req: Request, res: Response) => {
   const { id, isActive, parentEventId } = req.body;
@@ -12,8 +13,8 @@ export const addEvent = async (req: Request, res: Response) => {
     return res.status(400).send("You need to provide id!")
 
   try {
-    console.log('Checking HLTV for event...')
-    const event = await HLTV.getEvent({ id: parseInt(id) })
+    console.log('Checking HLTV for event... ' + new Date().toISOString())
+    const event = await hltvWrapper(HLTV.getEvent({ id: parseInt(id) }))
 
     if(!event)
       return res.status(400).send("This event doesn't exists! Double check the id")
