@@ -17,9 +17,14 @@ import { RedisStore } from 'connect-redis';
 import globalErrorHandler from './utils/globalErrorHandler.js';
 
 const app = express();
+const isProduction = process.env.NODE_ENV === 'production'
+
+app.set('trust proxy', 1)
 
 // app settings
-app.use(morgan('dev'))
+app.use(morgan(isProduction ? 'common' : 'dev'))
+app.use(helmet())
+
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
@@ -27,7 +32,6 @@ app.use(cors({
   methods: ['GET', 'POST']
 }))
 app.use(express.json())
-app.use(helmet())
 
 // auth settings
 app.use(session({
@@ -40,8 +44,9 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    // for production
-    // secure: true,
+    secure: true,
+    sameSite: isProduction ? 'none': 'lax',
+    domain: isProduction ? '.countersite.gg' : undefined,
     maxAge: 1000 * 60 * 60 * 24 * 20
   }
 }))
