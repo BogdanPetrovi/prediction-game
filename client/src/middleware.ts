@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const protectedRoutes = ["/igraj", "/tabela", "/moje-predikcije", "/istorija"];
+  const protectedRoutes = ["/igraj", "/tabela", "/moje-predikcije", "/istorija", "/admin/mecevi"];
   const isRouteProtected = protectedRoutes.includes(pathname);
 
   try {
     const cookieHeader = req.headers.get("cookie");
     const response = await fetch(
-      'https://api.countersite.gg/auth/me',
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
       {
         method: "GET",
         headers: {

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import redisClient from "../config/redis.js";
 import database from "../database/database.js";
-import User from "../types/User.js";
 import Prediction from "../types/Prediction.js";
 import RecentPredictions from "../types/RecentPredictions.js";
 import { PredictionsArray } from "../schemas/prediction.schemas.js";
@@ -19,7 +18,7 @@ export const predict = async (req: Request, res: Response) => {
       `INSERT INTO predictions (user_id, match_id, predicted_winner) VALUES ($1, $2, $3)
       ON CONFLICT(user_id, match_id) 
       DO UPDATE SET predicted_winner = EXCLUDED.predicted_winner;`,
-    [id, prediction.matchId, prediction.predictedWinner])
+    [id, prediction.matchId, prediction.predictedTeam])
   });
 
   return res.sendStatus(200);

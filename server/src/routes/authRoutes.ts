@@ -8,8 +8,8 @@ const router = Router();
 router.get("/discord", passport.authenticate('discord'))
 
 router.get('/discord/callback', passport.authenticate('discord', {
-  successRedirect: 'http://localhost:3000/igraj',
-  failureRedirect: 'http://localhost:3000/login'
+  successRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/igraj`,
+  failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login`
 }))
 
 router.get("/me", isLoggedIn, getUser);

@@ -4,6 +4,45 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
+import { matchList } from "../schemas/admin.schemas.js";
+import Match from "../types/Match.js";
+
+
+export const adminMatches = async (req: Request, res: Response) => {
+  const matches = await redisClient.get("matches")
+  const expire = await redisClient.ttl("matches")
+
+  if(!matches || !expire)
+    return res.status(200).json({ matches: null, expire: null })
+  
+  const matchesArrayWithGuesses = await Promise.all(
+    JSON.parse(matches).map(async (match: Match) => {
+      const result = await database.query("SELECT COUNT(*) AS guesses FROM predictions WHERE match_id=$1;", [match.id])
+      return { ...match, guesses: Number(result.rows[0].guesses) }
+    })
+  ) 
+
+  return res.status(200).json({ 
+    matches: matchesArrayWithGuesses,
+    expire
+   })
+}
+
+export const updateMatches = async(req: Request, res: Response) => {
+  if(!req.body || !req.body.updatedList)
+    throw new AppError("You need to provide list of matches", 400)
+
+  const { updatedList } = req.body
+
+  const parsedUpdatedList = matchList.parse(updatedList)
+
+  await redisClient.del("matches")
+  await redisClient.set("matches", JSON.stringify(parsedUpdatedList), {
+    EX: 1800
+  })
+
+  return res.sendStatus(200)
+}
 
 export const addEvent = async (req: Request, res: Response) => {
   const { id, isActive, parentEventId } = req.body;
