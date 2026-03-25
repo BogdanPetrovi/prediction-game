@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const Prediction = z.object({
     matchId: z.number().positive(),
-    predictedWinner: z.enum(['team1', 'team2'])
+    predictedTeam: z.enum(['team1','team2'])
 })
 
 export const PredictionsArray = z.array(Prediction)

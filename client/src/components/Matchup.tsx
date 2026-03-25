@@ -7,6 +7,7 @@ import Team1 from './ui/Team1'
 import Team2 from './ui/Team2'
 import VotesPrecentages from '@/types/VotesPrecentages'
 import PredictedTeamEnum from '@/types/PredictedTeamEnum'
+import formatDate from '@/utils/formatDate'
 
 interface MatchupProps {
   match: Match,
@@ -18,16 +19,7 @@ interface MatchupProps {
 const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction, votesPrecentages }) => {
   const [selectedTeam, setSelectedTeam] = useState<PredictedTeamEnum>(backendPrediction?.predictedTeam || '')
 
-  const formatedDate = (): string => {
-    const date = match.date && new Intl.DateTimeFormat('sr-RS', {
-                                      day: '2-digit',
-                                      month: '2-digit',
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                      hour12: false
-                                    }).format(match.date);
-    return date || ''
-  }
+  const formatedDate = formatDate(match.date)
 
   const handleChange = (predictedTeam: PredictedTeamEnum) => {
     if(match.live) return
@@ -63,7 +55,7 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPredict
             match.live ? 
               <h3 className='font-semibold text-xl text-red-600 animate-pulse'>Live</h3>
             :
-              <h3 className='font-semibold text-xl'>{ formatedDate() }</h3>
+              <h3 className='font-semibold text-xl'>{ formatedDate }</h3>
           }
         </div>
 
