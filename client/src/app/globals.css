@@ -19,6 +19,9 @@
   --color-primary: #232833;
   --color-secondary: #1b1f27;
   --color-light-secondary: #252830;
+  --color-admin-input: #313749;
+  --color-admin-border: #424860;
+  --color-muted: #6c757d;
 }
 
 .animate-gradient-bg {
@@ -56,6 +59,17 @@
   }
 }
 
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 100%;
+    transform: translateY(0);
+  }
+}
+
 @keyframes toast-progress {
   from {
     width: 0%;
@@ -75,4 +89,8 @@
 
 .toast-progress {
   animation: toast-progress linear forwards;
+}
+
+.slide-down {
+  animation: slide-down 0.4s forwards;
 }
