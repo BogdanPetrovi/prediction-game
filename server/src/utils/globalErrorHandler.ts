@@ -15,17 +15,13 @@ export default function globalErrorHandler(
     console.error(err.message)
     return res.status(503).send(err.message)
   }
-  if(err instanceof ErrorReply){
+  if(err instanceof z.ZodError){
     console.error(err.message)
-    return res.status(503).send(err.message)
+    return res.status(400).send(err.message)
   }
   if(err instanceof TypeError){
     console.error(err.message)
     return res.status(500).send(err.message)
-  }
-  if(err instanceof z.ZodError){
-    console.error(err.message)
-    return res.status(400).send(err.message)
   }
   if(err instanceof CloudflareError){
     console.log(err.timestamp + ' ' + err.message)
@@ -33,6 +29,10 @@ export default function globalErrorHandler(
   }
   if(err instanceof AppError){
     return res.status(err.statusCode).send(err.message)
+  }
+  if(err instanceof ErrorReply){
+    console.error(err.message)
+    return res.status(503).send(err.message)
   }
   if(err instanceof Error){
     console.error(err.message)
