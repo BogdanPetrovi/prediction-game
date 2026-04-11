@@ -4,8 +4,9 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { matchList } from "../schemas/admin.schemas.js";
+import { event, matchList } from "../schemas/admin.schemas.js";
 import Match from "../types/Match.js";
+import z from "zod";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
@@ -44,37 +45,66 @@ export const updateMatches = async(req: Request, res: Response) => {
   return res.sendStatus(200)
 }
 
-export const addEvent = async (req: Request, res: Response) => {
-  const { id, isActive, parentEventId } = req.body;
-  
-  console.log(`New event id:${id} \n Parent event id:${parentEventId} \n Is event active:${isActive}`)
+export const searchEvent = async (req: Request, res: Response) => {
+  const { eventId } = z.object({ eventId: z.coerce.number() }).parse(req.query)
 
-  if(!id)
-    throw new AppError("You need to provide id!", 400)
+  const result = await database.query("SELECT * FROM events WHERE id=$1;", [eventId])
 
-  try {
-    console.log('Checking HLTV for event... ' + new Date().toISOString())
-    const event = await hltvWrapper(HLTV.getEvent({ id: parseInt(id) }))
-
-    if(!event)
-      throw new AppError("This event doesn't exists! Double check the id", 400)
-
-    await database.query(`INSERT INTO events (id, name, logo, start_date, end_date, is_active, parent_event_id)
-                          VALUES ($1, $2, $3, $4, $5, $6, $7)
-                          ON CONFLICT(id) DO UPDATE 
-                          SET is_active = EXCLUDED.is_active, parent_event_id = EXCLUDED.parent_event_id;`,
-                        [event.id, event.name, event.logo, event.dateStart, event.dateEnd, isActive || false, parentEventId || null])
-
-    if(isActive) {
-      await redisClient.del("active_event")
-      await redisClient.del("matches")
-      await redisClient.del("active_parent_event")
-      await redisClient.set("active_event", id)
-      await redisClient.set("active_parent_event", parentEventId || id)
-    }
-
-    return res.status(200).send("You succesfully added/updated event!");
-  } catch (err) {
-    console.log(err)
+  if(result.rows.length > 0){
+    return res.status(200).json({
+      id: result.rows[0].id,
+      logo: result.rows[0].logo,
+      name: result.rows[0].name,
+      startDate: result.rows[0].start_date,
+      endDate: result.rows[0].end_date
+    })
   }
+
+  console.log('Checking HLTV for event...')
+  const event = await hltvWrapper(HLTV.getEvent({ id: eventId }))
+
+  return res.status(200).json({
+      id: event.id,
+      logo: event.logo,
+      name: event.name,
+      startDate: event.dateStart,
+      endDate: event.dateEnd
+    })
+}
+
+export const searchParentEvent = async (req: Request, res: Response) => {
+  const { eventId } = z.object({ eventId: z.coerce.number() }).parse(req.query)
+  
+  const result = await database.query("SELECT * FROM events WHERE id=$1 AND parent_event_id IS NULL;", [eventId])
+
+  if(result.rows.length < 1)
+    throw new AppError("Event with this id doesn't exist in database, please add it first! Problem also may occure if it has parent event too.", 404)
+
+  res.sendStatus(200)
+}
+
+export const eventUpsert = async (req: Request, res: Response) => {
+  if(!req.body)
+    throw new AppError("You need to provide event", 400)
+
+  const parsedEvent = event.parse(req.body)
+
+  const result = await database.query(`INSERT INTO events (id, name, logo, start_date, end_date, is_active, parent_event_id)
+                                       VALUES ($1, $2, $3, $4, $5, $6, $7)
+                                       ON CONFLICT (id)
+                                       DO UPDATE SET name = EXCLUDED.name, logo = EXCLUDED.logo, start_date = EXCLUDED.start_date,
+                                          end_date = EXCLUDED.end_date, is_active = EXCLUDED.is_active, 
+                                          parent_event_id = EXCLUDED.parent_event_id;`,
+                                       [parsedEvent.id, parsedEvent.name, parsedEvent.logo, parsedEvent.startDate, parsedEvent.endDate,
+                                        parsedEvent.isActive, parsedEvent.parentEventId || null])
+  
+  if(parsedEvent.isActive){
+    await redisClient.del("active_event")
+    await redisClient.del("matches")
+    await redisClient.del("active_parent_event")
+    await redisClient.set("active_event", parsedEvent.id)
+    await redisClient.set("active_parent_event", parsedEvent.parentEventId || parsedEvent.id)
+  }
+
+  return res.sendStatus(200)
 }

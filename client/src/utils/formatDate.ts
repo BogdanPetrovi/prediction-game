@@ -1,4 +1,4 @@
-const formatDate = (date: number | undefined): string => {
+export const formatDateTime = (date: number | undefined): string => {
   const formatedDate = date && new Intl.DateTimeFormat('sr-RS', {
                                     day: '2-digit',
                                     month: '2-digit',
@@ -9,4 +9,11 @@ const formatDate = (date: number | undefined): string => {
   return formatedDate || ''
 }
 
-export default formatDate
+export const formatDateOnly = (date: number | undefined): string => {
+  const formatedDate = date && new Intl.DateTimeFormat('sr-RS', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                  }).format(date);
+  return formatedDate || ''
+}

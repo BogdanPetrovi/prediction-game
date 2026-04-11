@@ -7,7 +7,7 @@ import MatchCard from "@/components/ui/admin/MatchCard"
 import Toast from "@/components/ui/Toast"
 import backend from "@/services/api/backend"
 import AdminMatches, { MatchWithGuesses } from "@/types/AdminMatches"
-import formatDate from "@/utils/formatDate"
+import { formatDateTime } from "@/utils/formatDate"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useState } from "react"
@@ -78,7 +78,7 @@ export default function Matches() {
             <>
               <div className="text-3xl font-semibold mt-5 ml-5">
                 <h3>Meč id: {chosenMatch.id}</h3>
-                <h3>Datum i vreme: {formatDate(chosenMatch.date)}</h3>
+                <h3>Datum i vreme: {formatDateTime(chosenMatch.date)}</h3>
                 <h3>Format: {chosenMatch.format}</h3>
                 <h3>Tim 1: {chosenMatch.team1.name}</h3>
                 <h3>Tim 2: {chosenMatch.team2.name}</h3>

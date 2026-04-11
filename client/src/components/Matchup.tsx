@@ -7,7 +7,7 @@ import Team1 from './ui/Team1'
 import Team2 from './ui/Team2'
 import VotesPrecentages from '@/types/VotesPrecentages'
 import PredictedTeamEnum from '@/types/PredictedTeamEnum'
-import formatDate from '@/utils/formatDate'
+import { formatDateTime } from '@/utils/formatDate'
 
 interface MatchupProps {
   match: Match,
@@ -19,7 +19,7 @@ interface MatchupProps {
 const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction, votesPrecentages }) => {
   const [selectedTeam, setSelectedTeam] = useState<PredictedTeamEnum>(backendPrediction?.predictedTeam || '')
 
-  const formatedDate = formatDate(match.date)
+  const formatedDate = formatDateTime(match.date)
 
   const handleChange = (predictedTeam: PredictedTeamEnum) => {
     if(match.live) return

@@ -44,9 +44,9 @@ app.use(session({
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    secure: true,
+    secure: isProduction,
     sameSite: isProduction ? 'none': 'lax',
-    domain: isProduction ? '.countersite.gg' : undefined,
+    ...(isProduction && { domain: '.countersite.gg' }),
     maxAge: 1000 * 60 * 60 * 24 * 20
   }
 }))
