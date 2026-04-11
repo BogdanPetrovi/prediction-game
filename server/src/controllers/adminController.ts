@@ -98,5 +98,13 @@ export const eventUpsert = async (req: Request, res: Response) => {
                                        [parsedEvent.id, parsedEvent.name, parsedEvent.logo, parsedEvent.startDate, parsedEvent.endDate,
                                         parsedEvent.isActive, parsedEvent.parentEventId || null])
   
+  if(parsedEvent.isActive){
+    await redisClient.del("active_event")
+    await redisClient.del("matches")
+    await redisClient.del("active_parent_event")
+    await redisClient.set("active_event", parsedEvent.id)
+    await redisClient.set("active_parent_event", parsedEvent.parentEventId || parsedEvent.id)
+  }
+
   return res.sendStatus(200)
 }
