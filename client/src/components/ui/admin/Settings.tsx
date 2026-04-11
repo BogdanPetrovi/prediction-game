@@ -4,13 +4,16 @@ interface SettingsProps {
   isActive: boolean,
   setIsActive: Dispatch<SetStateAction<boolean>>,
   isParent: boolean,
-  setIsParent: Dispatch<SetStateAction<boolean>>
+  setIsParent: Dispatch<SetStateAction<boolean>>,
+  parentEventValue: string,
+  setParentEventValue: Dispatch<SetStateAction<string>>,
+  setIsParentVerified: Dispatch<SetStateAction<boolean>>
 }
 
 import { Dispatch, SetStateAction } from "react"
 import ParentEvent from "./ParentEvent"
 
-export default function Settings({ isActive, isParent, setIsActive, setIsParent }: SettingsProps) { 
+export default function Settings({ isActive, isParent, setIsActive, setIsParent, parentEventValue, setParentEventValue, setIsParentVerified }: SettingsProps) { 
   return (
     <>
       <div className="px-9 py-8 border-green-500/60 border-t-1 slide-down">
@@ -49,7 +52,7 @@ export default function Settings({ isActive, isParent, setIsActive, setIsParent 
         </div>
 
         {
-          isParent && <ParentEvent />
+          isParent && <ParentEvent parentEventValue={parentEventValue} setParentEventValue={setParentEventValue} setIsParentVerified={setIsParentVerified} />
         }
 
       </div>

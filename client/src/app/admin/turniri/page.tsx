@@ -8,6 +8,7 @@ import Error from "@/components/shared/Error";
 import { useState } from "react";
 import { useMutation, DefaultError } from "@tanstack/react-query";
 import Toast from "@/components/ui/Toast";
+import SaveEventButton from "@/components/ui/admin/SaveEventButton";
 
 export default function Events() {
   const [isPreview, setIsPreview] = useState(false)
@@ -15,6 +16,8 @@ export default function Events() {
   const [event, setEvent] = useState<FullEvent | null>(null)
   const [isActive, setIsActive] = useState<boolean>(true)
   const [isParent, setIsParent] = useState(false)
+  const [parentEventValue, setParentEventValue] = useState("")
+  const [isParentVerified, setIsParentVerified] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
@@ -46,14 +49,17 @@ export default function Events() {
     setIsSettings(false)
     setIsPreview(false)
     setEvent(null)
+    setIsParent(false)
+    setParentEventValue("")
+    setIsParentVerified(false)
   }
 
   const saveEvent = async () => {
     try {
       console.log({...event, isActive: isActive})
-      await backend.post('/admin/event-upsert', {...event, isActive: isActive})
+      await backend.post('/admin/event-upsert', {...event, isActive: isActive, parentEventId: parentEventValue})
       reset()
-      setToastMessage('Novi turnir je ubačen!')
+      setToastMessage('Turnir je uspešno ubačen/promenjen!')
       setToastType('success')
       setShowToast(true)
     } catch (error) {
@@ -77,21 +83,30 @@ export default function Events() {
           }
 
           {
-            isSettings && <Settings isActive={isActive} setIsActive={setIsActive} isParent={isParent} setIsParent={setIsParent} />
+            isSettings && 
+            <Settings 
+              isActive={isActive} 
+              setIsActive={setIsActive}
+              isParent={isParent} 
+              setIsParent={setIsParent} 
+              parentEventValue={parentEventValue} 
+              setParentEventValue={setParentEventValue} 
+              setIsParentVerified={setIsParentVerified} 
+            />
           }
           
         </div>
         {
         isSettings && 
           <div className="mt-3 w-[780px] flex justify-end gap-3">
-            <button onClick={reset} className="inline-flex text-center gap-2 px-5 py-3 rounded-lg border border-admin-border text-muted text-md font-bold cursor-pointer hover:border-red-500/40 hover:text-red-500/80 duration-300">
+            <button 
+              onClick={reset} 
+              className="inline-flex text-center gap-2 px-5 py-3 rounded-lg border border-admin-border text-muted text-md font-bold cursor-pointer hover:border-red-500/40 hover:text-red-500/80 duration-300"
+            >
               <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
               Resetuj
             </button>
-            <button onClick={saveEvent} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-green-300 text-green-300 text-md font-bold cursor-pointer hover:bg-green-500 hover:text-green-900 duration-300">
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-              Sačuvaj turnir
-            </button>
+            <SaveEventButton saveEvent={saveEvent} isDisabled={isParent && !isParentVerified} />
           </div>
         }
       </div>
