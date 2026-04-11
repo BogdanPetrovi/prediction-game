@@ -1,12 +1,12 @@
 'use client'
 
 import backend from "@/services/api/backend"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 interface ParentEventProps {
   parentEventValue: string,
-  setParentEventValue: Dispatch<SetStateAction<string>>,
-  setIsParentVerified: Dispatch<SetStateAction<boolean>>
+  setParentEventValue: (value: string) => void,
+  setIsParentVerified: (isVerified: boolean) => void
 }
 
 export default function ParentEvent({ parentEventValue, setIsParentVerified, setParentEventValue }: ParentEventProps) {

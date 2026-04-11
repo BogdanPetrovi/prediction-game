@@ -10,14 +10,17 @@ import { useMutation, DefaultError } from "@tanstack/react-query";
 import Toast from "@/components/ui/Toast";
 import SaveEventButton from "@/components/ui/admin/SaveEventButton";
 
+type Step = 'search' | 'preview' | 'settings'
+
 export default function Events() {
-  const [isPreview, setIsPreview] = useState(false)
-  const [isSettings, setIsSettings] = useState(false)
+  const [step, setStep] = useState<Step>('search')
   const [event, setEvent] = useState<FullEvent | null>(null)
   const [isActive, setIsActive] = useState<boolean>(true)
-  const [isParent, setIsParent] = useState(false)
-  const [parentEventValue, setParentEventValue] = useState("")
-  const [isParentVerified, setIsParentVerified] = useState(false)
+  const [parentEvent, setParentEvent] = useState({
+    isParent: false,
+    value: "",
+    isVerified: false
+  })
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
@@ -27,7 +30,7 @@ export default function Events() {
     mutationFn: (id: number) => backend.get(`/admin/search-event?eventId=${id}`).then(res => res.data),
     onSuccess: (data) => {
       setEvent(data)
-      setIsPreview(true)
+      setStep('preview')
     },
     onError: (err) => {
       setError(err)
@@ -35,29 +38,29 @@ export default function Events() {
   })
 
   const checkEvent = async (id: number) => {
-    setIsPreview(false)
-    setIsSettings(false)
+    setStep('search')
 
     mutation.mutate(id)
   }
 
   const onConfirm = () => {
-    setIsSettings(true)
+    setStep('settings')
   } 
 
   const reset = () => {
-    setIsSettings(false)
-    setIsPreview(false)
+    setStep('search')
     setEvent(null)
-    setIsParent(false)
-    setParentEventValue("")
-    setIsParentVerified(false)
+    setParentEvent({
+      isParent: false,
+      value: "",
+      isVerified: false
+    })
   }
 
   const saveEvent = async () => {
     try {
       console.log({...event, isActive: isActive})
-      await backend.post('/admin/event-upsert', {...event, isActive: isActive, parentEventId: parentEventValue})
+      await backend.post('/admin/event-upsert', {...event, isActive: isActive, parentEventId: parentEvent.value})
       reset()
       setToastMessage('Turnir je uspešno ubačen/promenjen!')
       setToastType('success')
@@ -79,25 +82,22 @@ export default function Events() {
           <SearchEvent onCheck={checkEvent} />
 
           {
-            isPreview && <PreviewEvent onConfirm={onConfirm} event={event} reset={reset} />
+            (step === 'preview' || step === 'settings') && <PreviewEvent onConfirm={onConfirm} event={event} reset={reset} />
           }
 
           {
-            isSettings && 
+            step === 'settings' && 
             <Settings 
               isActive={isActive} 
               setIsActive={setIsActive}
-              isParent={isParent} 
-              setIsParent={setIsParent} 
-              parentEventValue={parentEventValue} 
-              setParentEventValue={setParentEventValue} 
-              setIsParentVerified={setIsParentVerified} 
+              parentEvent={parentEvent}
+              setParentEvent={setParentEvent}
             />
           }
           
         </div>
         {
-        isSettings && 
+        step === 'settings' && 
           <div className="mt-3 w-[780px] flex justify-end gap-3">
             <button 
               onClick={reset} 
@@ -106,7 +106,7 @@ export default function Events() {
               <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
               Resetuj
             </button>
-            <SaveEventButton saveEvent={saveEvent} isDisabled={isParent && !isParentVerified} />
+            <SaveEventButton saveEvent={saveEvent} isDisabled={parentEvent.isParent && !parentEvent.isVerified} />
           </div>
         }
       </div>

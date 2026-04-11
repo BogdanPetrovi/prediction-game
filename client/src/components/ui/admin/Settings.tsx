@@ -1,19 +1,22 @@
 'use client'
 
+interface ParentEvent {
+  isParent: boolean,
+  value: string,
+  isVerified: boolean
+}
+
 interface SettingsProps {
   isActive: boolean,
   setIsActive: Dispatch<SetStateAction<boolean>>,
-  isParent: boolean,
-  setIsParent: Dispatch<SetStateAction<boolean>>,
-  parentEventValue: string,
-  setParentEventValue: Dispatch<SetStateAction<string>>,
-  setIsParentVerified: Dispatch<SetStateAction<boolean>>
+  parentEvent: ParentEvent,
+  setParentEvent: Dispatch<SetStateAction<ParentEvent>>,
 }
 
 import { Dispatch, SetStateAction } from "react"
 import ParentEvent from "./ParentEvent"
 
-export default function Settings({ isActive, isParent, setIsActive, setIsParent, parentEventValue, setParentEventValue, setIsParentVerified }: SettingsProps) { 
+export default function Settings({ isActive, setIsActive, parentEvent, setParentEvent }: SettingsProps) { 
   return (
     <>
       <div className="px-9 py-8 border-green-500/60 border-t-1 slide-down">
@@ -40,19 +43,24 @@ export default function Settings({ isActive, isParent, setIsActive, setIsParent,
         </p>
         <div className="flex gap-2 mb-5">
           <div 
-            className={`${isParent ? 'border-green-500' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
-            onClick={() => setIsParent(true)}>
+            className={`${parentEvent.isParent ? 'border-green-500' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
+            onClick={() => setParentEvent({...parentEvent, isParent: true})}>
             Da, postoji parent turnir
           </div>
           <div 
-            className={`${!isParent ? 'border-red-500/50' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
-            onClick={() => setIsParent(false)}>
+            className={`${!parentEvent.isParent ? 'border-red-500/50' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
+            onClick={() => setParentEvent({...parentEvent, isParent: false})}>
             Ne, nema parent turnira
           </div>
         </div>
 
         {
-          isParent && <ParentEvent parentEventValue={parentEventValue} setParentEventValue={setParentEventValue} setIsParentVerified={setIsParentVerified} />
+          parentEvent.isParent && 
+          <ParentEvent 
+            parentEventValue={parentEvent.value} 
+            setParentEventValue={(value) => setParentEvent({...parentEvent, value, isVerified: false})} 
+            setIsParentVerified={(isVerified) => setParentEvent({...parentEvent, isVerified})} 
+          />
         }
 
       </div>
