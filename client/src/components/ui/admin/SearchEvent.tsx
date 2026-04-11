@@ -13,6 +13,7 @@ export default function SearchEvent ({ onCheck }: SearchEventProps) {
     if(id === "")
       return
 
+    setId("")
     onCheck(Number(id))
   }
 
@@ -28,7 +29,7 @@ export default function SearchEvent ({ onCheck }: SearchEventProps) {
               type="number"
               value={id}
               onChange={(val) => setId(val.target.value)}
-              placeholder="npr. 847291"
+              placeholder="npr. 8042"
               className="w-full bg-admin-input border border-admin-border rounded-lg px-4 py-3 text-[#e8ede8] text-md outline-none transition-all duration-200 focus:border-green-500/60"
             />
           </div>

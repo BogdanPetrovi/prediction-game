@@ -1,12 +1,16 @@
 'use client'
 
-import { useState } from "react"
+interface SettingsProps {
+  isActive: boolean,
+  setIsActive: Dispatch<SetStateAction<boolean>>,
+  isParent: boolean,
+  setIsParent: Dispatch<SetStateAction<boolean>>
+}
+
+import { Dispatch, SetStateAction } from "react"
 import ParentEvent from "./ParentEvent"
 
-export default function Settings() {
-  const [isActive, setIsActive] = useState(true)
-  const [isParent, setIsParent] = useState(false)
-  
+export default function Settings({ isActive, isParent, setIsActive, setIsParent }: SettingsProps) { 
   return (
     <>
       <div className="px-9 py-8 border-green-500/60 border-t-1 slide-down">

@@ -18,11 +18,11 @@ const match = z.object({
 export const matchList = z.array(match)
 
 export const event = z.object({
-    id: z.number().positive(),
+    id: z.coerce.number().positive(),
     logo: z.string(),
     name: z.string(),
-    startDate: z.number(),
-    endDate: z.number(),
+    startDate: z.coerce.number(),
+    endDate: z.coerce.number(),
     isActive: z.boolean(),
-    parentEventId: z.number().optional()
+    parentEventId: z.coerce.number().optional()
 })

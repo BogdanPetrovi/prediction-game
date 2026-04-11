@@ -3,37 +3,107 @@
 import PreviewEvent from "@/components/ui/admin/PreviewEvent";
 import SearchEvent from "@/components/ui/admin/SearchEvent";
 import Settings from "@/components/ui/admin/Settings";
+import backend from "@/services/api/backend";
+import Error from "@/components/shared/Error";
 import { useState } from "react";
+import { useMutation, DefaultError } from "@tanstack/react-query";
+import Toast from "@/components/ui/Toast";
 
 export default function Events() {
   const [isPreview, setIsPreview] = useState(false)
   const [isSettings, setIsSettings] = useState(false)
-  const [event, setEvent] = useState()
+  const [event, setEvent] = useState<FullEvent | null>(null)
+  const [isActive, setIsActive] = useState<boolean>(true)
+  const [isParent, setIsParent] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+  const [toastType, setToastType] = useState<'success' | 'error'>('success')
+  const [error, setError] = useState<DefaultError | null>(null)
 
-  const checkEvent = (id: number) => {
-    setIsPreview(true)
+  const mutation = useMutation({
+    mutationFn: (id: number) => backend.get(`/admin/search-event?eventId=${id}`).then(res => res.data),
+    onSuccess: (data) => {
+      setEvent(data)
+      setIsPreview(true)
+    },
+    onError: (err) => {
+      setError(err)
+    }
+  })
+
+  const checkEvent = async (id: number) => {
+    setIsPreview(false)
+    setIsSettings(false)
+
+    mutation.mutate(id)
   }
 
   const onConfirm = () => {
     setIsSettings(true)
   } 
 
+  const reset = () => {
+    setIsSettings(false)
+    setIsPreview(false)
+    setEvent(null)
+  }
+
+  const saveEvent = async () => {
+    try {
+      console.log({...event, isActive: isActive})
+      await backend.post('/admin/event-upsert', {...event, isActive: isActive})
+      reset()
+      setToastMessage('Novi turnir je ubačen!')
+      setToastType('success')
+      setShowToast(true)
+    } catch (error) {
+      console.error(error)
+      setToastMessage('Nismo uspeli da sačuvamo turnir. Vise informacija u konzoli.')
+      setToastType('error')
+      setShowToast(true)
+    }
+  }
+
+  if(error) <Error err={error} />
+
   return (
-    <div className="w-screen h-[calc(100vh-4.5rem)] pt-12 flex flex-col items-center">
-      <div className="w-full bg-[#2b3040] max-w-[780px] border border-green-500 rounded-[14px] relative z-10 overflow-hidden">
-        <SearchEvent onCheck={checkEvent} />
+    <>
+      <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
+        <div className="w-full bg-[#2b3040] max-w-[780px] border border-green-500 rounded-[14px] relative z-10 overflow-hidden">
+          <SearchEvent onCheck={checkEvent} />
 
-        {/* <div className="px-9 pb-5">Loading...</div> */}
+          {
+            isPreview && <PreviewEvent onConfirm={onConfirm} event={event} reset={reset} />
+          }
 
+          {
+            isSettings && <Settings isActive={isActive} setIsActive={setIsActive} isParent={isParent} setIsParent={setIsParent} />
+          }
+          
+        </div>
         {
-          isPreview && <PreviewEvent onConfirm={onConfirm} />
+        isSettings && 
+          <div className="mt-3 w-[780px] flex justify-end gap-3">
+            <button onClick={reset} className="inline-flex text-center gap-2 px-5 py-3 rounded-lg border border-admin-border text-muted text-md font-bold cursor-pointer hover:border-red-500/40 hover:text-red-500/80 duration-300">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+              Resetuj
+            </button>
+            <button onClick={saveEvent} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-green-300 text-green-300 text-md font-bold cursor-pointer hover:bg-green-500 hover:text-green-900 duration-300">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              Sačuvaj turnir
+            </button>
+          </div>
         }
-
-        {
-          isSettings && <Settings />
-        }
-        
       </div>
-    </div>
+      {
+        showToast && 
+        <Toast 
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setShowToast(false)}
+          duration={3000}
+        />
+      }
+    </>
   )
 }
