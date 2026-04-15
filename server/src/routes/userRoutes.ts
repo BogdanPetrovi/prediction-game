@@ -5,6 +5,7 @@ import { getLastLeaderboardUpdateAt, getLeaderboard, getUsersLeaderboardPlaceAnd
 import { getPredictions, getRecentPredictions, predict } from "../controllers/predictionController.js";
 import { getHistory } from "../controllers/historyController.js";
 import { getEvent } from "../controllers/eventController.js";
+import { getProfile } from "../controllers/userController.js";
 
 const router = Router();
 
@@ -27,5 +28,7 @@ router.get('/users-ledaerboard-page', isLoggedIn, getUsersLeaderboardPlaceAndPag
 router.get('/leaderboard-last-update-at', isLoggedIn, getLastLeaderboardUpdateAt)
 
 router.get('/votes-precentages', isLoggedIn, getVotesPrecentage)
+
+router.get('/profile', isLoggedIn, getProfile)
 
 export default router

@@ -43,7 +43,7 @@ export const getPredictions = async (req: Request, res: Response) => {
   
   return res.status(200).json({ predictions })
 }
-
+// za obrisati ovo dole !!!
 export const getRecentPredictions = async (req: Request, res: Response) => {
   const user = req.user;
   const { id } = UserType.parse(user)
