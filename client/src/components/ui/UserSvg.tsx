@@ -38,7 +38,7 @@ const UserSvg = () => {
       {
         isActive && 
           <div className="w-50 h-30 bg-secondary border-2 absolute top-12 -right-4 rounded-2xl shadow-xl shadow-black/70 flex flex-col divide-y-2 z-50">
-            <Link href={'/moje-predikcije'} onClick={() => setIsActive(false)} className="h-1/2 flex justify-center items-center text-xl font-semibold cursor-pointer hover:text-2xl duration-300">Moje predikcije</Link>
+            <Link href={'/moj-profil'} onClick={() => setIsActive(false)} className="h-1/2 flex justify-center items-center text-xl font-semibold cursor-pointer hover:text-2xl duration-300">Profil</Link>
             <div 
               className="h-1/2 flex justify-center items-center text-xl font-semibold text-red-600 cursor-pointer hover:text-2xl duration-300"
               onClick={handleLogOut}>
