@@ -7,22 +7,33 @@ export const getProfile = async (req: Request, res: Response) => {
   const { id, username } = UserType.parse(user)
 
   const { rows: [stats] } = await database.query(
-    `SELECT
+    `WITH user_events AS (
+      SELECT e.id FROM events e
+      JOIN matches ON matches.event_id = e.id
+      JOIN predictions ON predictions.match_id = matches.id
+      WHERE predictions.user_id = $1 
+      GROUP BY e.id
+      ORDER BY e.start_date DESC LIMIT 2
+    ),
+    recent_form AS (
+      SELECT p2.predicted_winner = m2.winner_team AS is_correct
+      FROM predictions p2
+      JOIN matches m2 ON p2.match_id = m2.id
+      JOIN user_events ue ON ue.id = m2.event_id 
+      WHERE p2.user_id = $1
+        AND m2.winner_team IS NOT NULL
+      ORDER BY m2.id DESC
+      LIMIT 5
+    )
+    SELECT
       COUNT(*) AS total,
       COUNT(*) FILTER (WHERE p.predicted_winner = m.winner_team) AS correct,
       COUNT(*) FILTER (WHERE p.predicted_winner != m.winner_team) AS incorrect,
-      ARRAY(
-        SELECT p2.predicted_winner = m2.winner_team
-        FROM predictions p2
-        JOIN matches m2 ON p2.match_id = m2.id
-        WHERE p2.user_id = $1
-          AND m2.winner_team IS NOT NULL
-        ORDER BY p2.created_at DESC
-        LIMIT 5
-      ) AS form
+      ARRAY(SELECT is_correct FROM recent_form) AS form
     FROM predictions p
     JOIN matches m ON p.match_id = m.id
-    WHERE p.user_id = $1 AND m.winner_team IS NOT NULL;`,
+    WHERE p.user_id = $1 
+      AND m.winner_team IS NOT NULL;`,
     [id]
   );
 

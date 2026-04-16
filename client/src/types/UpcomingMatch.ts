@@ -1,6 +1,6 @@
 import Team from "./Team"
 
-export default interface Match {
+export default interface UpcomingMatch {
   id: number,
   // if match is live there is no date
   date?: number,

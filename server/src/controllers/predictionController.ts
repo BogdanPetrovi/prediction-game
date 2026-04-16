@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import redisClient from "../config/redis.js";
 import database from "../database/database.js";
 import Prediction from "../types/Prediction.js";
-import RecentPredictions from "../types/RecentPredictions.js";
 import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
 
@@ -43,46 +42,98 @@ export const getPredictions = async (req: Request, res: Response) => {
   
   return res.status(200).json({ predictions })
 }
-// za obrisati ovo dole !!!
-export const getRecentPredictions = async (req: Request, res: Response) => {
-  const user = req.user;
-  const { id } = UserType.parse(user)
 
-  const result = await database.query(`SELECT matches.id, team1, team2, predicted_winner, winner_team, result FROM predictions
-                                        JOIN matches ON predictions.match_id = matches.id
-                                        WHERE user_id = $1
-                                        AND predictions.created_at >= NOW() - INTERVAL '21 days'
-                                        ORDER BY predictions.created_at DESC
-                                        LIMIT 30;`, [id])
+export const getPredictionsHistory = async (req: Request, res: Response) => {
+  // const user = req.user;
+  // const { id } = UserType.parse(user)
+  const id = 4;
+
+  const { rows: events } = await database.query(`
+    SELECT e.id, e.name, e.logo, e.start_date, e.end_date, e.is_active FROM events e
+    JOIN matches ON matches.event_id = e.id
+    JOIN predictions ON predictions.match_id = matches.id
+    WHERE predictions.user_id = $1 
+    GROUP BY e.id
+    ORDER BY e.start_date DESC LIMIT 2;
+  `, [id])
   
-  const recentPredictions: RecentPredictions[] = result.rows.map(prediction => {
-    // prediction type is (teamName, teamLogo) and this functions will make a JSON out of it, as well as change naming to camel casing
-    // postgresql sometimes saves name with quotes, resulting in cutting off first or last letter by quotes
-    const team1NameAndLogoWithoutQuotes = prediction.team1.replaceAll('"', '')
-    const team1CommaIndex = team1NameAndLogoWithoutQuotes.indexOf(",")
-    const team1Name = team1NameAndLogoWithoutQuotes.substring(1, team1CommaIndex)
-    const team1Logo = team1NameAndLogoWithoutQuotes.substring(team1CommaIndex + 1, team1NameAndLogoWithoutQuotes.length - 1)
+  if(events.length === 0)
+    return res.json([])
 
-    const team2NameAndLogoWithoutQuotes = prediction.team2.replaceAll('"', '')
-    const team2CommaIndex = team2NameAndLogoWithoutQuotes.indexOf(",")
-    const team2Name = team2NameAndLogoWithoutQuotes.substring(1, team2CommaIndex)
-    const team2Logo = team2NameAndLogoWithoutQuotes.substring(team2CommaIndex + 1, team2NameAndLogoWithoutQuotes.length - 1)
+  const eventIds = events.map((e: { id:number }) => e.id)
 
+  const eventsScoreResults = await database.query(`
+    SELECT 
+     e.id,
+     COUNT(*) FILTER (WHERE p.predicted_winner = m.winner_team) AS correct,
+     COUNT(*) FILTER (WHERE p.predicted_winner != m.winner_team) AS incorrect
+    FROM predictions p
+    JOIN matches m ON m.id = p.match_id
+    JOIN events e ON e.id = m.event_id
+    WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
+    GROUP BY e.id; 
+  `, [id, eventIds])
+
+  const matchesResults = await database.query(`
+    SELECT 
+     m.id, 
+     m.event_id, 
+     (m.team1).name AS team1_name, 
+     (m.team1).logo AS team1_logo,
+     (m.team2).name AS team2_name, 
+     (m.team2).logo AS team2_logo,
+     m.result,
+     m.winner_team,
+     m.date,
+     p.predicted_winner,
+     CASE
+      WHEN m.winner_team = p.predicted_winner THEN 'correct'
+      ELSE 'incorrect'
+     END AS is_correct
+    FROM predictions p
+    JOIN matches m ON m.id = p.match_id
+    JOIN events e ON e.id = m.event_id
+    WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
+    ORDER BY m.id DESC;
+  `, [id, eventIds])
+
+  const scoreMap: Record<number, { correct: number; incorrect: number }> = {};
+  for (const row of eventsScoreResults.rows) {
+    scoreMap[row.id] = {
+      correct: parseInt(row.correct),
+      incorrect: parseInt(row.incorrect)
+    };
+  }
+
+  const matchesMap: Record<number, any[]> = {};
+  for (const row of matchesResults.rows) {
+    if (!matchesMap[row.event_id]) matchesMap[row.event_id] = [];
+    matchesMap[row.event_id].push({
+      id: row.id,
+      team1: { name: row.team1_name, logo: row.team1_logo },
+      team2: { name: row.team2_name, logo: row.team2_logo },
+      result: row.result,
+      winner_team: row.winner_team,
+      date: row.date,
+      predicted_winner: row.predicted_winner,
+      is_correct: row.is_correct
+    });
+  }
+
+  const response = events.map((event: { id: number; name: string; logo: string; start_date: number; end_date: number; is_active: boolean }) => {
+    const allMatches = matchesMap[event.id] || [];
     return {
-      id: prediction.id,
-      team1: {
-        name: team1Name,
-        logo: team1Logo
-      },
-      team2: {
-        name: team2Name,
-        logo: team2Logo
-      },
-      predictedWinner: prediction.predicted_winner,
-      winnerTeam: prediction.winner_team,
-      result: prediction.result
-    }
+      id: event.id,
+      name: event.name,
+      logo: event.logo,
+      start_date: event.start_date,
+      end_date: event.end_date,
+      is_active: event.is_active,
+      score: scoreMap[event.id] || { correct: 0, incorrect: 0 },
+      recentMatches: allMatches.slice(0, 10),
+      allMatches
+    };
   });
 
-  return res.status(200).json(recentPredictions)
+  return res.json(response);
 }

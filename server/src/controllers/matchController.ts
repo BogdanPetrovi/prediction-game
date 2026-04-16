@@ -30,7 +30,7 @@ export const getMatches = async (req: Request, res: Response) => {
       return database.query(`INSERT INTO matches (id, team1, team2, event_id, date, format)
         VALUES ($1, ($2, $3), ($4, $5), $6, $7, $8)
         ON CONFLICT(id)
-        DO UPDATE SET date = EXCLUDED.date;`, 
+        DO NOTHING;`, 
         [match.id, match.team1.name, match.team1.logo, match.team2.name, match.team2.logo, match.event.id, match.date, match.format])
     })
   ).catch(err => {

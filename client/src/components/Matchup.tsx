@@ -1,6 +1,6 @@
 "use client"
 
-import Match from '../types/Match'
+import UpcomingMatch from '../types/UpcomingMatch'
 import React, { useState, memo } from 'react'
 import Prediction from '@/types/Prediction'
 import Team1 from './ui/Team1'
@@ -10,7 +10,7 @@ import PredictedTeamEnum from '@/types/PredictedTeamEnum'
 import { formatDateTime } from '@/utils/formatDate'
 
 interface MatchupProps {
-  match: Match,
+  match: UpcomingMatch,
   setPredictions: (prediction: Prediction) => void,
   backendPrediction: Prediction | undefined,
   votesPrecentages?: VotesPrecentages

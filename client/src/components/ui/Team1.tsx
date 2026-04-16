@@ -1,4 +1,4 @@
-import Match from "@/types/Match"
+import Match from "@/types/UpcomingMatch"
 import React from "react"
 import WinPercent from "./WinPrecent"
 import PredictedTeamEnum from "@/types/PredictedTeamEnum"

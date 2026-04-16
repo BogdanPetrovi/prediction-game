@@ -4,13 +4,13 @@ import Matchup from "@/components/Matchup"
 import { useCallback, useEffect, useState } from "react";
 import type Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
-import Match from "@/types/Match";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
 import Toast from "@/components/ui/Toast";
 import Error from "@/components/shared/Error";
 import VotesPrecentages from "@/types/VotesPrecentages";
+import UpcomingMatch from "@/types/UpcomingMatch";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -32,7 +32,7 @@ export default function Play() {
 
   const matches = useQuery({
     queryKey: ['matches'],
-    queryFn: async (): Promise<Match[]> => {
+    queryFn: async (): Promise<UpcomingMatch[]> => {
       const result = await backend.get('/matches')
       return result.data
     }
