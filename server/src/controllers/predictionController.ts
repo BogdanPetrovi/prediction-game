@@ -44,9 +44,8 @@ export const getPredictions = async (req: Request, res: Response) => {
 }
 
 export const getPredictionsHistory = async (req: Request, res: Response) => {
-  // const user = req.user;
-  // const { id } = UserType.parse(user)
-  const id = 4;
+  const user = req.user;
+  const { id } = UserType.parse(user)
 
   const { rows: events } = await database.query(`
     SELECT e.id, e.name, e.logo, e.start_date, e.end_date, e.is_active FROM events e
