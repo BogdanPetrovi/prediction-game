@@ -4,7 +4,7 @@ import Matchup from "@/components/Matchup"
 import { useCallback, useEffect, useState } from "react";
 import type Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
 import Toast from "@/components/ui/Toast";
@@ -25,6 +25,7 @@ export default function Play() {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     setShowEvent(true)
@@ -35,7 +36,8 @@ export default function Play() {
     queryFn: async (): Promise<UpcomingMatch[]> => {
       const result = await backend.get('/matches')
       return result.data
-    }
+    },
+    staleTime: 1000 * 60 * 5
   })
   const predictions = useQuery({
     queryKey: ['predictions'],
@@ -45,7 +47,7 @@ export default function Play() {
     }
   })
   const votesPrecentages = useQuery({
-    queryKey: ['votes-pecentages'],
+    queryKey: ['votes-precentages'],
     queryFn: async (): Promise<VotesPrecentages[]> => {
       const result = await backend.get('/votes-precentages')
       return result.data
@@ -65,6 +67,9 @@ export default function Play() {
       await backend.post('/predict', {
         predictions: userPredictions
       })
+      await queryClient.invalidateQueries({ queryKey: ['predictions'] })
+      await queryClient.invalidateQueries({ queryKey: ['votes-precentages'] })
+      setUserPredictions([])
       setToastMessage('Predikcije su uspešno sačuvane!')
       setToastType('success')
       setShowToast(true)
