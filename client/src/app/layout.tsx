@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Oxanium } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
 
@@ -12,6 +12,11 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  variable: "--font-oxanium"
+})
 
 export const metadata: Metadata = {
   title: "Counter Site predikcije",
@@ -29,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${oxanium.variable} font-oxanium antialiased`}>
         <QueryProvider>
           {children}
         </QueryProvider>
