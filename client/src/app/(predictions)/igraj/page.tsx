@@ -88,7 +88,7 @@ export default function Play() {
   if(predictions.error) return <Error err={predictions.error} />
 
   if(!matches.data || matches.data.length < 1 || !predictions.data || !votesPrecentages.data) return (
-    <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
+    <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
       <h2>Trenutno nema predstojećih mečeva, proverite kasnije!</h2>
     </div>
   )
