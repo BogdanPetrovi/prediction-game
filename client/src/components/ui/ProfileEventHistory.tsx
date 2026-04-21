@@ -31,7 +31,7 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
       </div>
       <h4 className="ml-9 -mt-1 text-muted text-xs">{ formatDateWithoutYear(Number(data.start_date)) } - { formatDateWithoutYear(Number(data.end_date)) }</h4>
 
-      <div className="bg-secondary rounded-xl border border-zinc-700 overflow-hidden mt-2 mb-2 slide-down">
+      <div className="bg-secondary rounded-xl border border-zinc-700 overflow-hidden mt-2 slide-down">
         {
           showAll ?
           data.allMatches.map(match => (

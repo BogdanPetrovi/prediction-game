@@ -11,6 +11,7 @@ import Toast from "@/components/ui/Toast";
 import Error from "@/components/shared/Error";
 import VotesPrecentages from "@/types/VotesPrecentages";
 import UpcomingMatch from "@/types/UpcomingMatch";
+import SponsorWidget from "@/components/shared/SponsorWidget";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -94,7 +95,7 @@ export default function Play() {
 
   return (
     <>
-      <div className="w-4/5 lg:w-3/5 -mt-4 lg:-mt-6 mx-auto min-h-[calc(100vh-9.5rem)] flex flex-col items-center relative gap-10 pb-10 select-none">
+      <div className="w-4/5 lg:w-3/5 mx-auto min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
         <div className="-mb-7">
           {showEvent && <Event />}
         </div>

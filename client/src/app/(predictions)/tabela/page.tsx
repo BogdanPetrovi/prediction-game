@@ -55,14 +55,14 @@ const LeaderboardPage = () => {
   if(error) return <Error err={error} />
 
   if(!data || !data.leaderboard) return (
-    <div className="w-full lg:mt-20 flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
+    <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
       <h2>Trenutno nema tabele, proverite kasnije!</h2>
     </div>
   )
 
   return (
     <>
-      <div className="w-[90%] xl:w-3/5 h-[46rem] xl:mt-6 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative overflow-hidden xl:overflow-visible">
+      <div className="w-[90%] xl:w-3/5 h-[46rem] xl:mt-12 rounded-2xl mx-auto bg-secondary flex flex-col items-center select-none relative overflow-hidden xl:overflow-visible">
         <div className="hidden xl:block xl:absolute -top-12">
           {showEvent && <Event />}
         </div>
