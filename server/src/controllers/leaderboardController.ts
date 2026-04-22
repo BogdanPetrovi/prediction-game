@@ -65,10 +65,6 @@ export const getLastLeaderboardUpdateAt = async (req: Request, res: Response) =>
                                        ORDER BY updated_at DESC
                                        LIMIT 1;`, [activeParentEventId])
 
-    console.log(result)
-
-  console.log()
-
   if(!result || result.rows.length < 1)
     return res.status(200).json(null)
 
