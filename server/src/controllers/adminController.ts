@@ -108,3 +108,10 @@ export const eventUpsert = async (req: Request, res: Response) => {
 
   return res.sendStatus(200)
 }
+
+export const appVersion = (req: Request, res: Response) => {
+  return res.json({ 
+    version: "1.0.0", 
+    downloadUrl: "https://countersite.gg/app/countersite.apk" 
+  });
+}

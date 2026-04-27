@@ -15,6 +15,7 @@ import configurePassport from './config/passport.js';
 import redisClient from './config/redis.js';
 import { RedisStore } from 'connect-redis';
 import globalErrorHandler from './utils/globalErrorHandler.js';
+import { appVersion } from './controllers/adminController.js';
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production'
@@ -64,6 +65,7 @@ cron.schedule("0 0 * * *", calculatePoints)
 app.use(userRouter)
 app.use("/admin", adminRouter)
 app.use("/auth", authRouter)
+app.get("/app-version", appVersion);
 
 app.use(globalErrorHandler)
 
