@@ -52,3 +52,9 @@ CREATE TABLE leaderboards (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(user_id, event_id)
 );
+
+CREATE TABLE matches_points (
+  match_id BIGINT UNIQUE NOT NULL REFERENCES matches(id),
+  team1_points INT NOT NULL,
+  team2_points INT NOT NULL
+);
