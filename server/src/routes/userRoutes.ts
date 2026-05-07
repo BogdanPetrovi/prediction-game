@@ -1,6 +1,6 @@
 import { Router } from "express";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
-import { getMatches, getVotesPrecentage } from "../controllers/matchController.js";
+import { getMatches, getMatchesPoints } from "../controllers/matchController.js";
 import { getLastLeaderboardUpdateAt, getLeaderboard, getUsersLeaderboardPlaceAndPage } from "../controllers/leaderboardController.js";
 import { getPredictions, getPredictionsHistory, predict } from "../controllers/predictionController.js";
 import { getHistory } from "../controllers/historyController.js";
@@ -25,7 +25,7 @@ router.get('/users-ledaerboard-page', isLoggedIn, getUsersLeaderboardPlaceAndPag
 
 router.get('/leaderboard-last-update-at', isLoggedIn, getLastLeaderboardUpdateAt)
 
-router.get('/votes-precentages', isLoggedIn, getVotesPrecentage)
+router.get('/matches-points', getMatchesPoints)
 
 router.get('/profile', isLoggedIn, getProfile)
 
