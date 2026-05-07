@@ -89,11 +89,15 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
      CASE
       WHEN m.winner_team = p.predicted_winner THEN 'correct'
       ELSE 'incorrect'
-     END AS is_correct
+     END AS is_correct,
+     CASE
+      WHEN mp.match_id IS NULL THEN m.date
+      ELSE NULL
+     END AS date
     FROM predictions p
     JOIN matches m ON m.id = p.match_id
     JOIN events e ON e.id = m.event_id
-    JOIN matches_points mp ON mp.match_id = m.id
+    LEFT JOIN matches_points mp ON mp.match_id = m.id
     WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
     ORDER BY m.id DESC;
   `, [id, eventIds])
@@ -116,7 +120,8 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
       result: row.result,
       winner_team: row.winner_team,
       predicted_winner: row.predicted_winner,
-      is_correct: row.is_correct
+      is_correct: row.is_correct,
+      date: row.date ?? undefined
     });
   }
 

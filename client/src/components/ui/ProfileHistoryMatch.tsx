@@ -3,6 +3,7 @@ import { formatDateTimeWithLetter } from "@/utils/formatDate";
 import Image from "next/image";
 
 export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
+  console.log(data)
   const chosenTeam = data.predicted_winner === 'team1' ? data.team1 : data.team2
   const otherTeam = data.predicted_winner !== 'team1' ? data.team1 : data.team2
   const [first, second] = data.result.split(":");
@@ -48,7 +49,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
             <h3 className="min-w-max text-muted font-semibold text-xs md:text-sm tracking-tighter">{ formatDateTimeWithLetter(data.date) }</h3>
         }
         {
-          chosenTeam.points !== undefined && (
+          (chosenTeam.points !== undefined && chosenTeam.points !== null) && (
             data.is_correct === "correct" ? 
               <h3 className="min-w-max text-green-400 font-semibold text-xs md:text-sm w-11 text-right tabular-nums">{chosenTeam.points}pts</h3>
               :
