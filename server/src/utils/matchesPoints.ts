@@ -15,7 +15,7 @@ const matchesPoints = async (matches: Match[]) => {
           WHERE match_id=$1
         )
         SELECT
-          $1 AS id,
+          $1::int AS id,
           COALESCE(ROUND((team2::numeric / NULLIF(total, 0)) * 100 + 100), 100)::int AS team1,
           COALESCE(ROUND((team1::numeric / NULLIF(total, 0)) * 100 + 100), 100)::int AS team2 
         FROM predictions_count`, [match.id])

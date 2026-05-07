@@ -50,6 +50,7 @@ export default function Play() {
     queryKey: ['matches-points'],
     queryFn: async (): Promise<MatchesPoints[]> => {
       const result = await backend.get('/matches-points')
+      console.log(result.data)
       return result.data
     }
   })

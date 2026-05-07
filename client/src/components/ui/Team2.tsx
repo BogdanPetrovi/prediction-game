@@ -25,7 +25,7 @@ const Team2: React.FC<Team2Props> = ({ selectedTeam, handleChange, match, matchP
       onClick={() => handleChange('team2')}
     >
       {
-        match.team1.logo && !match.team2.logo.startsWith('/') ?
+        match.team2.logo && !match.team2.logo.startsWith('/') ?
         <img 
           src={ match.team2.logo } 
           className={
