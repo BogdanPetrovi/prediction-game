@@ -25,7 +25,7 @@ router.get('/users-ledaerboard-page', isLoggedIn, getUsersLeaderboardPlaceAndPag
 
 router.get('/leaderboard-last-update-at', isLoggedIn, getLastLeaderboardUpdateAt)
 
-router.get('/matches-points', getMatchesPoints)
+router.get('/matches-points', isLoggedIn, getMatchesPoints)
 
 router.get('/profile', isLoggedIn, getProfile)
 

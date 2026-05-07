@@ -79,11 +79,12 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
      m.event_id, 
      (m.team1).name AS team1_name, 
      (m.team1).logo AS team1_logo,
+     mp.team1_points,
      (m.team2).name AS team2_name, 
      (m.team2).logo AS team2_logo,
+     mp.team2_points,
      m.result,
      m.winner_team,
-     m.date,
      p.predicted_winner,
      CASE
       WHEN m.winner_team = p.predicted_winner THEN 'correct'
@@ -92,6 +93,7 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
     FROM predictions p
     JOIN matches m ON m.id = p.match_id
     JOIN events e ON e.id = m.event_id
+    JOIN matches_points mp ON mp.match_id = m.id
     WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
     ORDER BY m.id DESC;
   `, [id, eventIds])
@@ -109,11 +111,10 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
     if (!matchesMap[row.event_id]) matchesMap[row.event_id] = [];
     matchesMap[row.event_id].push({
       id: row.id,
-      team1: { name: row.team1_name, logo: row.team1_logo },
-      team2: { name: row.team2_name, logo: row.team2_logo },
+      team1: { name: row.team1_name, logo: row.team1_logo, points: row.team1_points },
+      team2: { name: row.team2_name, logo: row.team2_logo, points: row.team2_points },
       result: row.result,
       winner_team: row.winner_team,
-      date: row.date,
       predicted_winner: row.predicted_winner,
       is_correct: row.is_correct
     });
