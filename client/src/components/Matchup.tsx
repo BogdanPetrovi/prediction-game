@@ -5,7 +5,7 @@ import React, { useState, memo } from 'react'
 import Prediction from '@/types/Prediction'
 import Team1 from './ui/Team1'
 import Team2 from './ui/Team2'
-import VotesPrecentages from '@/types/VotesPrecentages'
+import MatchesPoints from '@/types/MatchesPoints'
 import PredictedTeamEnum from '@/types/PredictedTeamEnum'
 import { formatDateTime } from '@/utils/formatDate'
 
@@ -13,10 +13,10 @@ interface MatchupProps {
   match: UpcomingMatch,
   setPredictions: (prediction: Prediction) => void,
   backendPrediction: Prediction | undefined,
-  votesPrecentages?: VotesPrecentages
+  matchesPoints?: MatchesPoints
 }
 
-const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction, votesPrecentages }) => {
+const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPrediction, matchesPoints }) => {
   const [selectedTeam, setSelectedTeam] = useState<PredictedTeamEnum>(backendPrediction?.predictedTeam || '')
 
   const formatedDate = formatDateTime(match.date)
@@ -36,14 +36,14 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPredict
         selectedTeam={selectedTeam}
         handleChange={handleChange}
         match={match}
-        votePrecentage={votesPrecentages?.team1 === 0 && votesPrecentages?.team2 === 0 ? selectedTeam === 'team1' ? 100 : 0 : votesPrecentages?.team1}
+        matchPoints={matchesPoints?.team1 || 100}
       />
 
       <Team2
         selectedTeam={selectedTeam}
         handleChange={handleChange}
         match={match}
-        votePrecentage={votesPrecentages?.team1 === 0 && votesPrecentages?.team2 === 0 ? selectedTeam === 'team2' ? 100 : 0 : votesPrecentages?.team2}
+        matchPoints={matchesPoints?.team2 || 100}
       />
       
       

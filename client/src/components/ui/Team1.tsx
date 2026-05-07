@@ -7,10 +7,10 @@ interface Team1Props {
   selectedTeam: PredictedTeamEnum,
   match: Match,
   handleChange: (team: PredictedTeamEnum) => void,
-  votePrecentage?: number
+  matchPoints?: number
 }
 
-const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, votePrecentage }) => {
+const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, matchPoints }) => {
   return (
     <div 
       className={
@@ -25,7 +25,7 @@ const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, votePr
         <h2 className={`${selectedTeam === 'team1' ? 'text-[4.5rem]' : !match.live && 'group-hover:text-[4.5rem]'} text-[4rem] font-bold ml-4 drop-shadow-xl/50 duration-300`}>?</h2>
       }
       <h2 className="hidden md:block text-3xl xl:text-4xl font-semibold w-min 2xl:w-fit">{ match.team1.name }</h2>
-      <WinPercent value={votePrecentage || 0} team="team1" selected={ selectedTeam } isLive={ match.live } />
+      <WinPercent value={matchPoints || 0} team="team1" selected={ selectedTeam } isLive={ match.live } />
     </div>
   )
 }

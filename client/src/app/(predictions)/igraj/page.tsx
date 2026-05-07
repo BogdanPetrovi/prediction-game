@@ -9,7 +9,7 @@ import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
 import Toast from "@/components/ui/Toast";
 import Error from "@/components/shared/Error";
-import VotesPrecentages from "@/types/VotesPrecentages";
+import MatchesPoints from "@/types/MatchesPoints";
 import UpcomingMatch from "@/types/UpcomingMatch";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
@@ -46,10 +46,10 @@ export default function Play() {
       return result.data.predictions
     }
   })
-  const votesPrecentages = useQuery({
-    queryKey: ['votes-precentages'],
-    queryFn: async (): Promise<VotesPrecentages[]> => {
-      const result = await backend.get('/votes-precentages')
+  const matchesPoints = useQuery({
+    queryKey: ['matches-points'],
+    queryFn: async (): Promise<MatchesPoints[]> => {
+      const result = await backend.get('/matches-points')
       return result.data
     }
   })
@@ -86,7 +86,7 @@ export default function Play() {
 
   if(predictions.error) return <Error err={predictions.error} />
 
-  if(!matches.data || matches.data.length < 1 || !predictions.data || !votesPrecentages.data) return (
+  if(!matches.data || matches.data.length < 1 || !predictions.data || !matchesPoints.data) return (
     <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
       <h2>Trenutno nema predstojećih mečeva, proverite kasnije!</h2>
     </div>
@@ -104,7 +104,7 @@ export default function Play() {
               match={match}
               setPredictions={handleUserPredictionChange}
               backendPrediction={predictions.data.find(el => el.matchId === match.id)}
-              votesPrecentages={votesPrecentages.data.find(el => el.id === match.id)}
+              matchesPoints={matchesPoints.data.find(el => el.id === match.id)}
               key={match.id}
             />
           ))
