@@ -11,7 +11,7 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
 
   return (
     <>
-      <div className="flex items-center justify-between gap-2 mt">
+      <div className="flex items-center justify-between gap-2 mt-3">
         <div className="flex gap-2">
           <div className="relative size-7">
             <Image 

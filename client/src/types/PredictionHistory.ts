@@ -23,7 +23,7 @@ export interface FinishedMatch {
   team2: Team,
   result: string,
   winner_team: "team1" | "team2",
-  date: number,
+  date?: number,
   predicted_winner: "team1" | "team2",
   is_correct: "correct" | "incorrect"
 }

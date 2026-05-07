@@ -1,5 +1,6 @@
 export default interface Team {
   id?: number,
   name: string,
-  logo: string
+  logo: string,
+  points?: number
 }

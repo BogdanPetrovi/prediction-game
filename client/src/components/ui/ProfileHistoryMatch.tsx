@@ -41,9 +41,23 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
           { otherTeam.name }
         </h4>
       </div>
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-3 cursor-default">
         <h3 className="min-w-max font-bold text-white md:tracking-[2px] text-xs md:text-md">{ formatedResult }</h3>
-        <h3 className="min-w-max text-muted font-semibold text-xs md:text-sm tracking-tighter">{ formatDateTimeWithLetter(data.date) }</h3>
+        {
+          data.date && 
+            <h3 className="min-w-max text-muted font-semibold text-xs md:text-sm tracking-tighter">{ formatDateTimeWithLetter(data.date) }</h3>
+        }
+        {
+          chosenTeam.points !== undefined &&
+            data.is_correct === "correct" ? 
+              <h3 className="min-w-max text-green-400 font-semibold text-xs md:text-sm w-11 text-right tabular-nums">{chosenTeam.points}pts</h3>
+              :
+              <h3
+                title={`Da ste pogodili osvojili biste ${chosenTeam.points} poena`}
+                className="min-w-max text-muted font-semibold text-xs md:text-sm w-11 text-right tabular-nums">
+                  0pts
+              </h3>
+        }
       </div>
     </div>
   )
