@@ -11,7 +11,6 @@ import Toast from "@/components/ui/Toast";
 import Error from "@/components/shared/Error";
 import VotesPrecentages from "@/types/VotesPrecentages";
 import UpcomingMatch from "@/types/UpcomingMatch";
-import SponsorWidget from "@/components/shared/SponsorWidget";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {

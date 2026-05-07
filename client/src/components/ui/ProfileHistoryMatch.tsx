@@ -48,7 +48,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
             <h3 className="min-w-max text-muted font-semibold text-xs md:text-sm tracking-tighter">{ formatDateTimeWithLetter(data.date) }</h3>
         }
         {
-          chosenTeam.points !== undefined &&
+          chosenTeam.points !== undefined && (
             data.is_correct === "correct" ? 
               <h3 className="min-w-max text-green-400 font-semibold text-xs md:text-sm w-11 text-right tabular-nums">{chosenTeam.points}pts</h3>
               :
@@ -57,6 +57,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
                 className="min-w-max text-muted font-semibold text-xs md:text-sm w-11 text-right tabular-nums">
                   0pts
               </h3>
+          )
         }
       </div>
     </div>
