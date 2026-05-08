@@ -57,7 +57,7 @@ export const getMatches = async (req: Request, res: Response) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        content: "**[Igraj predikcije](<https://predikcije.countersite.gg>)** <@&1496218575428653066>",
+        content: "**[Igraj predikcije](<https://predikcije.countersite.gg/igraj?utm_source=discord>)** <@&1496218575428653066>",
         embeds: [
           {
             title: "📢 Novi mečevi",

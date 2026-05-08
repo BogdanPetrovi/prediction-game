@@ -4,6 +4,7 @@ import database from "../database/database.js";
 import Prediction from "../types/Prediction.js";
 import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
+import posthog from "../config/posthog.js";
 
 export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
@@ -12,13 +13,28 @@ export const predict = async (req: Request, res: Response) => {
 
   const parsedPredictions = PredictionsArray.parse(predictions)
 
-  parsedPredictions.forEach(async prediction => {
-    await database.query(
-      `INSERT INTO predictions (user_id, match_id, predicted_winner) VALUES ($1, $2, $3)
-      ON CONFLICT(user_id, match_id) 
-      DO UPDATE SET predicted_winner = EXCLUDED.predicted_winner;`,
-    [id, prediction.matchId, prediction.predictedTeam])
-  });
+  const results = await Promise.all(
+    parsedPredictions.map(async prediction => {
+      const result = await database.query(
+        `INSERT INTO predictions (user_id, match_id, predicted_winner) VALUES ($1, $2, $3)
+        ON CONFLICT(user_id, match_id) 
+        DO UPDATE SET predicted_winner = EXCLUDED.predicted_winner
+        RETURNING (xmax = 0) AS inserted;`,
+      [id, prediction.matchId, prediction.predictedTeam])
+
+      return result.rows[0].inserted
+    })
+  )
+
+  const isNew = results.every(inserted => inserted === true)
+
+  posthog.capture({
+    distinctId: String(id),
+    event: isNew ? 'prediction_made' : 'prediction_changed',
+    properties: {
+      $ip: req.headers['x-forwarderd-for'] || req.socket.remoteAddress
+    }
+  })
 
   return res.sendStatus(200);
 }

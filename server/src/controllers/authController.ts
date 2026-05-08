@@ -1,9 +1,31 @@
 import { Request, Response } from "express";
+import posthog from "../config/posthog.js";
+import { UserType } from "../schemas/shared.schemas.js";
+import redisClient from "../config/redis.js";
 
-export const getUser = (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
+  const user = req.user;
+  const { id, username } = UserType.parse(user)
+
+  const sessionKey = `tracked:${id}:${req.sessionID}`
+  const alreadyTracked = await redisClient.get(sessionKey)
+
+  if(!alreadyTracked){
+    posthog.capture({
+      distinctId: String(id),
+      event: 'user_active',
+      properties: {
+        $ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+        utm_source: req.headers['x-utm-source'] || 'organic',
+        username: username
+      }
+    })
+    await redisClient.set(sessionKey, '1', { EX: 3600 })
+  }
+
   return res.status(200).json({
     loggedIn: true,
-    user: req.user
+    user: { id, username }
   });
 }
 
