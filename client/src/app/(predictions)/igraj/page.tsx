@@ -50,7 +50,6 @@ export default function Play() {
     queryKey: ['matches-points'],
     queryFn: async (): Promise<MatchesPoints[]> => {
       const result = await backend.get('/matches-points')
-      console.log(result.data)
       return result.data
     }
   })
@@ -69,7 +68,7 @@ export default function Play() {
         predictions: userPredictions
       })
       await queryClient.invalidateQueries({ queryKey: ['predictions'] })
-      await queryClient.invalidateQueries({ queryKey: ['votes-precentages'] })
+      await queryClient.invalidateQueries({ queryKey: ['matches-points'] })
       setUserPredictions([])
       setToastMessage('Predikcije su uspešno sačuvane!')
       setToastType('success')
