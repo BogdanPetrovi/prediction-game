@@ -69,10 +69,9 @@ export const getLastLeaderboardUpdateAt = async (req: Request, res: Response) =>
     return res.status(200).json(null)
 
   const date = new Date(result.rows[0].updated_at)
-  // converting date to right time zone
-  date.setHours(date.getHours() + 1)
 
   const formatedDate = new Intl.DateTimeFormat('sr-RS', {
+                                      timeZone: 'Europe/Belgrade',
                                       day: '2-digit',
                                       month: '2-digit',
                                       hour: '2-digit',
