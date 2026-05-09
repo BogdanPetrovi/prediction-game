@@ -7,6 +7,7 @@ import AppError from "../utils/customErrorHandlers/appError.js";
 import { event, matchList } from "../schemas/admin.schemas.js";
 import Match from "../types/Match.js";
 import z from "zod";
+import calculatePoints from "../utils/calculatePoints.js";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
@@ -114,4 +115,9 @@ export const appVersion = (req: Request, res: Response) => {
     version: "1.0.0", 
     downloadUrl: "https://countersite.gg/app/countersite.apk" 
   });
+}
+
+export const manualCalculation = async (req: Request, res: Response) => {
+  await calculatePoints();
+  return res.sendStatus(200)
 }

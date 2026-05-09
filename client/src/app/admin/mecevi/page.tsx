@@ -51,18 +51,26 @@ export default function Matches() {
     setCurrentButtonOption(currentButtonOption === 0 ? 1 : 0)
   }
 
+  const calculatePoints = async () => {
+    await backend.get('/admin/manual-calculation')
+  }
+
   if(isPending) return <Loading />
 
   if(isError && axios.isAxiosError(error) && error.status === 403) return <Forbidden />
 
   if(isError) return <Error err={error} />
 
-  if(!data || data.expire === null) return <h2>No matches</h2>
+  if(!data || data.expire === null) return <div>
+      <div className="w-1/4 h-10 mb-5 bg-green-500 text-center p-1 cursor-pointer" onClick={calculatePoints}>Izracunaj poene</div>
+      <h2>No matches</h2>
+    </div>
 
   return(
     <>
     
       <div className="w-screen h-[calc(100vh-4.5rem)] pt-12 flex flex-col items-center">
+        <div className="w-1/4 h-10 mb-5 bg-green-500 text-center p-1 cursor-pointer" onClick={calculatePoints}>Izracunaj poene</div>
         <div className="w-4/5 h-40 bg-secondary border-2 border-green-600 rounded-md flex items-center gap-6 px-2 overflow-x-auto">  
         {
           data.matches.map(match => (

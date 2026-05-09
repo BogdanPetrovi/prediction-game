@@ -78,7 +78,7 @@ const calculatePoints = async () => {
         SELECT user_id, event_id, total_points 
         FROM user_scores
         ON CONFLICT (user_id, event_id) 
-        DO UPDATE SET points = EXCLUDED.points;`, [activeParentEventId])
+        DO UPDATE SET points = EXCLUDED.points, updated_at = CURRENT_TIMESTAMP;`, [activeParentEventId])
     })
 
     console.log("Calculation successfully finished at: ", new Date())
