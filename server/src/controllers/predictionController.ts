@@ -5,6 +5,7 @@ import Prediction from "../types/Prediction.js";
 import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import posthog from "../config/posthog.js";
+import { getIp } from "../utils/getIp.js";
 
 export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
@@ -32,7 +33,7 @@ export const predict = async (req: Request, res: Response) => {
     distinctId: String(id),
     event: isNew ? 'prediction_made' : 'prediction_changed',
     properties: {
-      $ip: req.headers['x-forwarderd-for'] || req.socket.remoteAddress
+      $ip: getIp(req)
     }
   })
 
