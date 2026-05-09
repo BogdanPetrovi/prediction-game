@@ -21,7 +21,7 @@ export const getUser = async (req: Request, res: Response) => {
         username: username
       }
     })
-    await redisClient.set(sessionKey, '1', { EX: 3600 })
+    await redisClient.set(sessionKey, '1', { EX: 300 })
   }
 
   return res.status(200).json({
