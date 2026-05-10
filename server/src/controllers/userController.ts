@@ -47,7 +47,7 @@ export const getProfile = async (req: Request, res: Response) => {
       FROM predictions p
       JOIN matches m ON p.match_id = m.id
       WHERE p.user_id = $1 AND m.winner_team IS NOT NULL
-      ORDER BY p.created_at DESC
+      ORDER BY m.id DESC
       LIMIT 120;`,
     [id]
   );
