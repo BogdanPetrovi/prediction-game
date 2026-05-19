@@ -32,13 +32,16 @@ export default function Play() {
   }, [])
 
   const matches = useQuery({
-    queryKey: ['matches'],
-    queryFn: async (): Promise<UpcomingMatch[]> => {
-      const result = await backend.get('/matches')
-      return result.data
-    },
-    staleTime: 1000 * 60 * 5
-  })
+  queryKey: ['matches'],
+  queryFn: async (): Promise<UpcomingMatch[]> => {
+    const result = await backend.get('/matches')
+    return result.data.map((match: UpcomingMatch) => ({
+      ...match,
+      id: Number(match.id)
+    }))
+  },
+  staleTime: 1000 * 60 * 5
+})
   const predictions = useQuery({
     queryKey: ['predictions'],
     queryFn: async (): Promise<Prediction[]> => {
