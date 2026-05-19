@@ -11,7 +11,7 @@ export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
   const user = req.user;
   const { id } = UserType.parse(user)
-
+  console.log(predictions)
   const parsedPredictions = PredictionsArray.parse(predictions)
 
   const results = await Promise.all(
