@@ -20,9 +20,7 @@ const LastUpdated = () => {
   if(isPending || error || data === null) return <></>
 
   return (
-    <div className="text-xl xl:text-2xl font-semibold flex items-end w-1/3">
-      <h2>Ažurirano: {data.lastUpdated}</h2>
-    </div>
+    <h3 className="w-full text-right">Ažurirano: {data.lastUpdated}</h3>
   )
 }
 
