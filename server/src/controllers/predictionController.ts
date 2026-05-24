@@ -6,13 +6,24 @@ import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import posthog from "../config/posthog.js";
 import { getIp } from "../utils/getIp.js";
+import Match from "../types/Match.js";
 
 export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
   const user = req.user;
   const { id } = UserType.parse(user)
-  console.log(predictions)
+
   const parsedPredictions = PredictionsArray.parse(predictions)
+
+  const cachedMatches: Match[] = JSON.parse(await redisClient.get("matches") || "")
+  const predictedMatchesIds = parsedPredictions.map(p => p.matchId)
+
+  const invalidPredictions = predictedMatchesIds.filter(id => {
+    const match = cachedMatches.find(m => m.id === id)
+    return !match || match.live === true
+  })
+
+  if (invalidPredictions.length > 0) return res.sendStatus(422)
 
   const results = await Promise.all(
     parsedPredictions.map(async prediction => {
