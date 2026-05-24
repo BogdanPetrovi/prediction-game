@@ -13,6 +13,8 @@ const Event = () => {
     }
   })
 
+  if(isPending || !data || (Array.isArray(data) && data.length === 0)) return <></>
+
   if(!isPending && data)
     return(
       <div className="flex items-center text-2xl font-semibold gap-2">

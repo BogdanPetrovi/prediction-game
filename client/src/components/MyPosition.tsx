@@ -34,11 +34,20 @@ const MyPosition: React.FC<MyPositionProps> = ({ page, setPage }) => {
   if(data.page === null || data.place === null) return <></>
 
   return(
-    <div className={`${page === data.page ? "hidden" : ""} text-xl xl:text-2xl font-semibold cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200`}
+    <button 
+      className={`
+        ${page === data.page ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-light-secondary"}
+        flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200 `}
       onMouseEnter={prefetchPage}
-      onClick={() => setPage(data.page!)}>
-      <h2>Moja pozicija</h2>
-    </div>
+      onClick={() => setPage(data.page!)}
+    >
+      <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="6" />
+        <circle cx="12" cy="12" r="2" />
+      </svg>
+      Moja pozcija
+    </button>
   )
 }
 

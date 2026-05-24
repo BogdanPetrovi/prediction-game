@@ -15,8 +15,14 @@ const PaginationControl: React.FC<PaginationControlProps> = ({ setPage, page, to
           return totalPages
         } else 
           return prev+1 })} 
-        className={`${page === totalPages ? 'text-neutral-500 cursor-not-allowed ' : 'cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200'} font-extrabold`}> 
-        &gt; 
+        className={
+          `${page === totalPages ? 'opacity-50 cursor-not-allowed' : 
+            'cursor-pointer hover:bg-light-secondary'} 
+          p-2 font-extrabold bg-primary border border-slate-700 rounded-md`}
+      > 
+      <svg className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      </svg>
       </button>
     )
   }
@@ -27,8 +33,14 @@ const PaginationControl: React.FC<PaginationControlProps> = ({ setPage, page, to
         return 1
       } else 
         return prev-1 })} 
-      className={`${page === 1 ? 'text-neutral-500 cursor-not-allowed ' : 'cursor-pointer hover:text-blue-200 active:text-blue-400 duration-200 '} font-extrabold `}> 
-      &lt; 
+      className={
+          `${page === 1 ? 'opacity-50 cursor-not-allowed' : 
+            'cursor-pointer hover:bg-light-secondary'} 
+          p-2 font-extrabold bg-primary border border-slate-700 rounded-md`}
+      >
+      <svg className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
     </button>
   )
 }

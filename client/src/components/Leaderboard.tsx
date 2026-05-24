@@ -1,0 +1,68 @@
+"use client"
+
+import leaderboardQueryOptions from "@/utils/leaderboardQueryOptions";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import Error from "./shared/Error";
+import Loading from "./shared/Loading";
+import ShortcutTableButtons from "./ui/ShortcutTableButtons";
+import PaginationControl from "./ui/PaginationControl";
+import Table from "./ui/Table";
+import dynamic from "next/dynamic";
+
+const LastUpdated = dynamic (() => import('@/components/LastUpdated'), 
+  {
+    ssr: false,
+    loading: () => <></>
+  }
+)
+
+export default function Leaderboard() {
+  const [page, setPage] = useState(1)
+  const [showLastUpdated, setShowLastUpdated] = useState(false)
+
+  const { data, isPending, error } = useQuery(leaderboardQueryOptions(page));
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    setShowLastUpdated(true)
+
+    if(page !== 1)
+      queryClient.prefetchQuery(leaderboardQueryOptions(page-1))
+
+    queryClient.prefetchQuery(leaderboardQueryOptions(page+1))
+  }, [page, queryClient])
+
+  if(error) return <Error err={error} />
+
+  if(isPending) return <Loading />
+
+  if(!data || (Array.isArray(data) && data.length === 0) || data.leaderboard.length < 1) {
+    return (
+      <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
+        <h2>Trenutno nema tabele, proverite kasnije!</h2>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className="w-full h-14 flex justify-between mb-2">
+        <ShortcutTableButtons page={page} setPage={setPage} />
+      </div>
+      <div className="bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50">
+        <div className="overflow-x-auto">
+          <Table data={data} page={page} />
+        </div>
+        <div className="bg-secondary border-t h-12 border-slate-700 p-3 flex justify-center items-center gap-4">
+          <PaginationControl direction="back" page={page} setPage={setPage} totalPages={data.pages} />
+          <h3 className="font-semibold">{page}</h3>
+          <PaginationControl direction="next" page={page} setPage={setPage} totalPages={data.pages} />
+        </div>
+      </div>
+      <div className="w-full h-0.5 bg-slate-700 brightness-50 mt-2 rounded-xl"></div>
+      {
+        showLastUpdated && <LastUpdated />
+      }
+    </>
+  )
+}
