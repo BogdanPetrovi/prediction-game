@@ -36,7 +36,7 @@ export default function Leaderboard() {
 
   if(isPending) return <Loading />
 
-  if(!data || data.leaderboard.length < 1) {
+  if(!data || (Array.isArray(data) && data.length === 0) || data.leaderboard.length < 1) {
     return (
       <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
         <h2>Trenutno nema tabele, proverite kasnije!</h2>
