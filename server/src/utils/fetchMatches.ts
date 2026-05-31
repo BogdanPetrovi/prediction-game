@@ -15,9 +15,10 @@ const fetchMatches = async () => {
   console.log('HLTV is checking for the latest matches... ' + new Date().toISOString())
   const apiResult = await hltvWrapper(HLTV.getMatches(parseInt(activeEventId)))
 
-  redisClient.set("matches", JSON.stringify(apiResult), {
+  await redisClient.set("matches", JSON.stringify(apiResult), {
     EX: 7200
   });
+  console.log('Succesfuly fetched matches from HLTV at ' + new Date().toISOString())
 
   let newMatches: TeamNames[] = []
   await Promise.all(
