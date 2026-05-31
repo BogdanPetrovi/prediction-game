@@ -1,5 +1,5 @@
-import Profile from "@/components/Profile"
-import ProfileHistory from "@/components/ProfileHistory"
+import Profile from "@/components/predictions-pages/profil/Profile"
+import ProfileHistory from "@/components/predictions-pages/profil/ProfileHistory"
 
 const Profil = () => {
   return (

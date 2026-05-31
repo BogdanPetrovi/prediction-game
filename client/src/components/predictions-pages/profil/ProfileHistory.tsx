@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query";
-import ProfileEventHistory from "./ui/ProfileEventHistory";
+import ProfileEventHistory from "./ProfileEventHistory";
 import backend from "@/services/api/backend";
 import PredictionHistory from "@/types/PredictionHistory";
 

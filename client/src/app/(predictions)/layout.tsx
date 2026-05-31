@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import Navbar from "@/components/Navbar";
+import Header from "@/components/layout/header/Header";
+import Navbar from "@/components/layout/navbar/Navbar";
 import PointsUpdateModal from "@/components/PointsUpdateModal";
 
 export default function PredictionsLayout({

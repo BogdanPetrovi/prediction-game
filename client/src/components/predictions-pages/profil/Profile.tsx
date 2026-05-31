@@ -3,7 +3,7 @@
 import backend from "@/services/api/backend"
 import type Profile from "@/types/Profile"
 import { useQuery } from "@tanstack/react-query"
-import Loading from "./shared/Loading"
+import Loading from "@/components/shared/Loading"
 
 export default function Profile() {
   const { data, isPending, isError } = useQuery({

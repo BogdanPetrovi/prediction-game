@@ -1,14 +1,14 @@
 'use client'
 
-import PreviewEvent from "@/components/ui/admin/PreviewEvent";
-import SearchEvent from "@/components/ui/admin/SearchEvent";
-import Settings from "@/components/ui/admin/Settings";
+import PreviewEvent from "@/components/admin/PreviewEvent";
+import SearchEvent from "@/components/admin/SearchEvent";
+import Settings from "@/components/admin/Settings";
 import backend from "@/services/api/backend";
 import Error from "@/components/shared/Error";
 import { useState } from "react";
 import { useMutation, DefaultError } from "@tanstack/react-query";
-import Toast from "@/components/ui/Toast";
-import SaveEventButton from "@/components/ui/admin/SaveEventButton";
+import Toast from "@/components/shared/Toast";
+import SaveEventButton from "@/components/admin/SaveEventButton";
 
 type Step = 'search' | 'preview' | 'settings'
 

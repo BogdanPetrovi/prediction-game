@@ -1,10 +1,10 @@
 "use client"
 
-import UpcomingMatch from '../types/UpcomingMatch'
+import UpcomingMatch from '@/types/UpcomingMatch'
 import React, { useState, memo } from 'react'
 import Prediction from '@/types/Prediction'
-import Team1 from './ui/Team1'
-import Team2 from './ui/Team2'
+import Team1 from './Team1'
+import Team2 from './Team2'
 import MatchesPoints from '@/types/MatchesPoints'
 import PredictedTeamEnum from '@/types/PredictedTeamEnum'
 import { formatDateTime } from '@/utils/formatDate'

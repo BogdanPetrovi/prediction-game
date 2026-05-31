@@ -1,7 +1,7 @@
 'use client'
 
-import SponsorWidget from "./shared/SponsorWidget"
-import NavbarCard from "./ui/NavbarCard"
+import SponsorWidget from "@/components/shared/SponsorWidget"
+import NavbarCard from "./NavbarCard"
 import { usePathname } from "next/navigation"
 
 const Navbar = () => {

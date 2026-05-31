@@ -1,5 +1,5 @@
 import Link from "next/link"
-import UserSvg from "./ui/UserSvg"
+import UserSvg from "./UserSvg"
 import Image from "next/image"
 
 const Header = () => {

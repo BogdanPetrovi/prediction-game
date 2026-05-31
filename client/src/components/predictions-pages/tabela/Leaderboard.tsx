@@ -3,14 +3,14 @@
 import leaderboardQueryOptions from "@/utils/leaderboardQueryOptions";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import Error from "./shared/Error";
-import Loading from "./shared/Loading";
-import ShortcutTableButtons from "./ui/ShortcutTableButtons";
-import PaginationControl from "./ui/PaginationControl";
-import Table from "./ui/Table";
+import Error from "@/components/shared/Error";
+import Loading from "@/components/shared/Loading";
+import ShortcutButtons from "./ShortcutButtons";
+import PaginationControl from "./PaginationControl";
+import Table from "./Table";
 import dynamic from "next/dynamic";
 
-const LastUpdated = dynamic (() => import('@/components/LastUpdated'), 
+const LastUpdated = dynamic (() => import('@/components/predictions-pages/tabela/LastUpdated'), 
   {
     ssr: false,
     loading: () => <></>
@@ -47,7 +47,7 @@ export default function Leaderboard() {
   return (
     <>
       <div className="w-full h-14 flex justify-between mb-2">
-        <ShortcutTableButtons page={page} setPage={setPage} />
+        <ShortcutButtons page={page} setPage={setPage} />
       </div>
       <div className="bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50">
         <div className="overflow-x-auto">

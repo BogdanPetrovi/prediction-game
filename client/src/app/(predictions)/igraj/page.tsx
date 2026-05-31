@@ -1,13 +1,13 @@
 'use client'
 
-import Matchup from "@/components/Matchup"
+import Matchup from "@/components/predictions-pages/igraj/Matchup"
 import { useCallback, useEffect, useState } from "react";
 import type Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
-import Toast from "@/components/ui/Toast";
+import Toast from "@/components/shared/Toast";
 import Error from "@/components/shared/Error";
 import MatchesPoints from "@/types/MatchesPoints";
 import UpcomingMatch from "@/types/UpcomingMatch";

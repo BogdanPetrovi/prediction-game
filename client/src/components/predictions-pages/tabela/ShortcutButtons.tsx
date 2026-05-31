@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react"
-import MyPosition from "../MyPosition";
+import MyPosition from "./MyPosition";
 
-interface ShortcutTableButtonsProps {
+interface ShortcutButtonsProps {
   page: number,
   setPage: Dispatch<SetStateAction<number>>
 }
 
-export default function ShortcutTableButtons({ page, setPage }: ShortcutTableButtonsProps) {
+export default function ShortcutButtons({ page, setPage }: ShortcutButtonsProps) {
   return (
     <>
       <MyPosition page={page} setPage={setPage} />

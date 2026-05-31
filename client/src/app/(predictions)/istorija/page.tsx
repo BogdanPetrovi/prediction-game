@@ -2,7 +2,7 @@
 
 import Error from "@/components/shared/Error"
 import Loading from "@/components/shared/Loading"
-import HistoryCard from "@/components/ui/HistoryCard"
+import HistoryCard from "@/components/predictions-pages/istorija/HistoryCard"
 import backend from "@/services/api/backend"
 import EventHistory from "@/types/EventHistory"
 import { useQuery } from "@tanstack/react-query"

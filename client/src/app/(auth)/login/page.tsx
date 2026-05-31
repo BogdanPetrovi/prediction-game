@@ -1,6 +1,6 @@
 'use client'
 
-import DiscordLogo from "@/components/ui/DiscordLogo";
+import DiscordLogo from "@/components/auth/DiscordLogo";
 import { redirect } from "next/navigation";
 
 export default function Login() {
