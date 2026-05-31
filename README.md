@@ -87,7 +87,7 @@ npm run dev
 
 ## 🗺️ Roadmap
 
-- **Push notifications:** Alert users before a match starts so they don't miss their predictions
+- [x] **Push notifications:** Alert users before a match starts so they don't miss their predictions
 - **Public profiles:** Explore the prediction history and success rates of other players
 
 ## 📄 License
