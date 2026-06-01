@@ -27,9 +27,12 @@ const configurePassport = () => {
             const result = await database.query("SELECT id, username FROM users WHERE discord_id = $1;", [profile.id])
             if(result.rows.length !== 0)
               return cb(null, result.rows[0])
+            if(profile.global_name != null){
+              const newUser = await database.query("INSERT INTO users (username, discord_id) VALUES ($1, $2) RETURNING id, username;", [profile.global_name, profile.id])
+              return cb(null, newUser.rows[0])
+            } 
 
-            const newUser = await database.query("INSERT INTO users (username, discord_id) VALUES ($1, $2) RETURNING id, username;", [profile.global_name, profile.id])
-
+            const newUser = await database.query("INSERT INTO users (username, discord_id) VALUES ($1, $2) RETURNING id, username;", [profile.username, profile.id])
             return cb(null, newUser.rows[0])
           } catch (err) {
             console.log(err)
