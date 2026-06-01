@@ -1,27 +1,22 @@
 "use client"
 
-import leaderboardQueryOptions from "@/utils/leaderboardQueryOptions";
+import backend from "@/services/api/backend";
+import { Prize, TopUser } from "@/types/TopThree";
+import { isPrize } from "@/utils/isPrize";
 import { useQuery } from "@tanstack/react-query";
+import PrizesView from "./PrizesView";
+import UsersView from "./UsersView";
 
 export default function TopThree() {
-  const { data, isPending, error } = useQuery(leaderboardQueryOptions(1));
-  console.log(data)
+  const { data, isPending, isError } = useQuery({
+    queryKey: ['top-three'],
+    queryFn: async (): Promise<Prize[] | TopUser[]>  => {
+      const result = await backend.get("/prizes")
+      return result.data
+    }
+  })
+  
+  if(isPending || isError || !data) return <></>
 
-  if(isPending) return <></>
-
-  if(error || (Array.isArray(data) && data.length === 0) || data.leaderboard.length < 1) return <></>
-
-  return (
-  <div className="w-full flex flex-col md:flex-none md:grid md:grid-cols-3 gap-3 mb-4 md:mb-0 cursor-default">
-    <div className="bg-slate-300/20 brightness-90 flex flex-col justify-center items-center h-30 rounded-lg border border-slate-300 hover:-translate-y-2 duration-200">
-      <h3 className="text-2xl">🥈</h3>
-    </div>
-    <div className="bg-amber-400/20 brightness-125 flex flex-col justify-center items-center h-35 rounded-lg border border-amber-500 md:-translate-y-3 hover:-translate-y-5 duration-200">
-      <h3 className="text-2xl">🏆</h3>
-    </div>
-    <div className="bg-amber-700/20 flex flex-col justify-center items-center h-30 rounded-lg border border-amber-600 hover:-translate-y-2 duration-200">
-      <h3 className="text-2xl">🥉</h3>
-    </div>
-  </div>
-  )
+  return isPrize(data) ? <PrizesView prizes={data} /> : <UsersView topUsers={data} />
 }

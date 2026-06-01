@@ -58,3 +58,12 @@ CREATE TABLE matches_points (
   team1_points INT NOT NULL,
   team2_points INT NOT NULL
 );
+
+CREATE TABLE prizes (
+  id SERIAL PRIMARY KEY,
+  skin_name TEXT NOT NULL,
+  skin_image TEXT NOT NULL,
+  event_id BIGINT NOT NULL REFERENCES events(id),
+  place SMALLINT CHECK (place IN (1, 2 ,3)) NOT NULL,
+  UNIQUE(event_id, place)
+);

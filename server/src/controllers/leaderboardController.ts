@@ -4,6 +4,7 @@ import database from "../database/database.js";
 import User from "../types/User.js";
 import { Page } from "../schemas/leaderboard.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
+import formatRow from "../utils/formatToCamelCase.js";
 
 export const getLeaderboard = async (req: Request, res: Response) => {
   const { page } = req.query
@@ -80,4 +81,26 @@ export const getLastLeaderboardUpdateAt = async (req: Request, res: Response) =>
                                     }).format(date);
 
   return res.status(200).json({ lastUpdated: formatedDate })
+}
+
+export const prizes = async (req: Request, res: Response) => {
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null)
+    return res.status(200).json(null)
+
+  const result = await database.query('SELECT * FROM prizes WHERE event_id = $1;', [activeParentEventId])
+  if(result.rows.length < 1){
+    const result = await database.query(`
+        SELECT users.username, leaderboards.points
+        FROM leaderboards
+        JOIN users ON users.id = leaderboards.user_id
+        WHERE event_id = $1
+        ORDER BY points DESC, discord_id DESC
+        LIMIT 3;
+    `, [activeParentEventId]);
+
+    return res.json(result.rows)
+  }
+
+  return res.json(result.rows.map(formatRow))
 }

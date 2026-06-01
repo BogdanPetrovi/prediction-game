@@ -56,7 +56,7 @@ app.use(passport.session())
 configurePassport()
 
 // cron job
-cron.schedule("0 9,12,15,18,19 * * *", calculatePoints)
+cron.schedule("0 12,14,17,19,22 * * *", calculatePoints)
 
 // routers
 app.use(userRouter)
