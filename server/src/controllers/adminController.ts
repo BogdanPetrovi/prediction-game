@@ -4,7 +4,7 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { event, matchList } from "../schemas/admin.schemas.js";
+import { event, matchList, prize } from "../schemas/admin.schemas.js";
 import Match from "../types/Match.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
@@ -119,5 +119,17 @@ export const appVersion = (req: Request, res: Response) => {
 
 export const manualCalculation = async (req: Request, res: Response) => {
   await calculatePoints();
+  return res.sendStatus(200)
+}
+
+export const addPrize = async (req: Request, res: Response) => {
+   if(!req.body || !req.body.prize)
+    throw new AppError("You need to provide list of matches", 400) 
+
+   const formatedPrize = prize.parse(req.body.prize)
+
+  const result = await database.query('INSERT INTO prizes (event_id, skin_name, skin_image, place) VALUES ($1, $2, $3, $4);', 
+    [formatedPrize.eventId, formatedPrize.skinName, formatedPrize.skinImage, formatedPrize.place])
+
   return res.sendStatus(200)
 }

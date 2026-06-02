@@ -14,8 +14,8 @@ export default function PredictionsLayout({
         <Link href={'/admin/turniri'} className="w-60 h-full flex justify-center items-center cursor-pointer bg-secondary/80 font-bold text-4xl rounded-2xl border-green-600 border-2 shadow-green-600/30 hover:shadow-xl duration-300">
           Turniri
         </Link>
-        <Link href={'/admin/korisnici'} className="w-60 h-full flex justify-center items-center cursor-pointer bg-secondary/80 font-bold text-4xl rounded-2xl border-green-600 border-2 shadow-green-600/30 hover:shadow-xl duration-300">
-          Korisnici
+        <Link href={'/admin/nagrade'} className="w-60 h-full flex justify-center items-center cursor-pointer bg-secondary/80 font-bold text-4xl rounded-2xl border-green-600 border-2 shadow-green-600/30 hover:shadow-xl duration-300">
+          Nagrade
         </Link>
       </div>
       {children}

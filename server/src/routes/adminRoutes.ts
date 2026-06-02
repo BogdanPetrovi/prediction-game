@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminMatches, eventUpsert, manualCalculation, searchEvent, searchParentEvent, updateMatches } from "../controllers/adminController.js";
+import { addPrize, adminMatches, eventUpsert, manualCalculation, searchEvent, searchParentEvent, updateMatches } from "../controllers/adminController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 
@@ -16,5 +16,7 @@ router.get("/search-parent-event", isLoggedIn, isAdmin, searchParentEvent)
 router.post("/event-upsert", isLoggedIn, isAdmin, eventUpsert)
 
 router.get("/manual-calculation", isLoggedIn, isAdmin, manualCalculation)
+
+router.post("/add-prize", isLoggedIn, isAdmin, addPrize)
 
 export default router

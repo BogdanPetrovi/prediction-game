@@ -26,3 +26,16 @@ export const event = z.object({
     isActive: z.boolean(),
     parentEventId: z.coerce.number().optional()
 })
+
+enum Status {
+  First = 1,
+  Second = 2,
+  Third = 3,
+}
+
+export const prize = z.object({
+    skinName: z.string(),
+    skinImage: z.url(),
+    eventId: z.coerce.number(),
+    place: z.enum(Status)
+})
