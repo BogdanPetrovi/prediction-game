@@ -23,7 +23,8 @@ export const metadata: Metadata = {
   description: "Counter strike predikcije. Pogadjaj koje ce ekipe pobediti na najvecim turnirima u counter strikeu!",
   category: "Counter strike",
   icons: {
-    icon: "/favicon.ico"
+    icon: "/favicon.ico",
+    apple: "https://countersite.gg/svojkellogonobg.png"
   }
 };
 
