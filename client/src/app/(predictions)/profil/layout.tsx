@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           width={300}
           height={300}
           alt="logo"
-          src={'/event_logo.png'}
+          src={'/event_logo.webp'}
         />
       </div>
       <div className="hidden 2xl:block">
@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           width={300}
           height={300}
           alt="logo"
-          src={'/event_logo.png'}
+          src={'/event_logo.webp'}
         />
       </div>
     </>

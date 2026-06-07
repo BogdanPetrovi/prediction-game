@@ -10,7 +10,7 @@ export default function SponsorWidget() {
         playsInline
         width="400px"
       >
-        <source src="/video.webm" type="video/webm" />
+        <source src="https://countersite.gg/banner.webm" type="video/webm" />
         Tvoj browser ne podržava video.
       </video>
     </Link>

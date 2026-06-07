@@ -9,7 +9,7 @@ const Header = () => {
         <Link href={'/'} className="flex items-center gap-2 relative">
           <div className="relative size-9">
             <Image
-              src={'/logo.png'}
+              src={'/logo.webp'}
               fill
               alt="Logo"
             />
