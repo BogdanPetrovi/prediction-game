@@ -1,4 +1,7 @@
-CREATE DATABASE predictions;
+CREATE TABLE IF NOT EXISTS schema_migrations (
+  version VARCHAR(255) PRIMARY KEY,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -67,3 +70,5 @@ CREATE TABLE prizes (
   place SMALLINT CHECK (place IN (1, 2 ,3)) NOT NULL,
   UNIQUE(event_id, place)
 );
+
+INSERT INTO schema_migrations (version) VALUES ('001_initial_schema');
