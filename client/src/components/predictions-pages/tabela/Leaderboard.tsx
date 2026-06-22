@@ -9,6 +9,7 @@ import ShortcutButtons from "./ShortcutButtons";
 import PaginationControl from "./PaginationControl";
 import Table from "./Table";
 import dynamic from "next/dynamic";
+import NoResult from "@/components/shared/NoResult";
 
 const LastUpdated = dynamic (() => import('@/components/predictions-pages/tabela/LastUpdated'), 
   {
@@ -38,9 +39,7 @@ export default function Leaderboard() {
 
   if(!data || (Array.isArray(data) && data.length === 0) || data.leaderboard.length < 1) {
     return (
-      <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
-        <h2>Trenutno nema tabele, proverite kasnije!</h2>
-      </div>
+      <NoResult title="Pauza između turnira" subtitle="Trenutno nema aktivne tabele. Novi turnir počinje uskoro." />
     )
   }
 

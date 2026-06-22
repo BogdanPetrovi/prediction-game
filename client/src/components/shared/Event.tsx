@@ -17,7 +17,7 @@ const Event = () => {
 
   if(!isPending && data)
     return(
-      <div className="flex items-center text-2xl font-semibold gap-2">
+      <div className="flex items-center text-2xl font-semibold gap-2 mb-7">
         <img src={data.logo} className="size-10" />
         <h2>{data.name}</h2>
       </div>

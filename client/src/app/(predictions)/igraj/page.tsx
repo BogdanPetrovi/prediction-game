@@ -11,6 +11,7 @@ import Toast from "@/components/shared/Toast";
 import Error from "@/components/shared/Error";
 import MatchesPoints from "@/types/MatchesPoints";
 import UpcomingMatch from "@/types/UpcomingMatch";
+import NoResult from "@/components/shared/NoResult";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -90,9 +91,7 @@ export default function Play() {
   if(predictions.error) return <Error err={predictions.error} />
 
   if(!matches.data || matches.data.length < 1 || !predictions.data || !matchesPoints.data) return (
-    <div className="w-full flex justify-center items-center text-5xl lg:text-4xl text-center font-bold px-5 lg:px-0">
-      <h2>Trenutno nema predstojećih mečeva, proverite kasnije!</h2>
-    </div>
+    <NoResult title="Pauza između turnira" subtitle="Trenutno nema aktivnih mečeva. Novi turnir počinje uskoro." />
   )
 
   return (
