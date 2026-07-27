@@ -30,10 +30,17 @@ export const getMatches = async (req: Request, res: Response) => {
       event_id,
       date,
       format
-    FROM matches
-    WHERE result IS NULL
-    AND event_id=$1;
-  `, [active_event])
+      FROM matches
+      WHERE result IS NULL
+      AND event_id=$1;
+      `, [active_event])
+      
+  if(result.rows.length === 0)
+    return res.status(200).json({
+      matches: null,
+      message: 'Žreb je u toku',
+      description: 'Postoji aktivan turnir, ali mečevi još uvek nisu dostupni. Čim raspored izađe, dobićete obaveštenje na Discordu!'
+    })
 
   const formatedMatches = result.rows.map((m) => ({
     id: m.id,
@@ -52,12 +59,6 @@ export const getMatches = async (req: Request, res: Response) => {
     format: m.format,
   }))
 
-  if(formatedMatches.length === 0)
-    return res.status(200).json({
-      matches: null,
-      message: 'Žreb je u toku',
-      description: 'Postoji aktivan turnir, ali mečevi još uvek nisu dostupni. Čim raspored izađe, dobićete obaveštenje na Discordu!'
-    })
 
   return res.status(200).json({
     matches: formatedMatches,
