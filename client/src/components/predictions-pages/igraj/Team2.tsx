@@ -1,11 +1,11 @@
-import Match from "@/types/UpcomingMatch"
+import { UpcomingMatch } from "@/types/UpcomingMatches"
 import React from "react"
 import WinPercent from "./WinPrecent"
 import PredictedTeamEnum from "@/types/PredictedTeamEnum"
 
 interface Team2Props {
   selectedTeam: PredictedTeamEnum,
-  match: Match,
+  match: UpcomingMatch,
   handleChange: (teamName: PredictedTeamEnum) => void,
   matchPoints?: number
 }

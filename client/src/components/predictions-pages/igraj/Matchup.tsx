@@ -1,6 +1,6 @@
 "use client"
 
-import UpcomingMatch from '@/types/UpcomingMatch'
+import { UpcomingMatch } from '@/types/UpcomingMatches'
 import React, { useState, memo } from 'react'
 import Prediction from '@/types/Prediction'
 import Team1 from './Team1'

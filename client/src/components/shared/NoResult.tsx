@@ -1,6 +1,6 @@
 interface NoResultProps {
   title: string
-  subtitle: string
+  subtitle?: string
 }
 
 const NoResult = ({ title, subtitle }: NoResultProps) => {

@@ -5,9 +5,21 @@ import matchesPoints from "../utils/matchesPoints.js";
 
 export const getMatches = async (req: Request, res: Response) => {
   const matches = await redisClient.get("matches");
-  
+  const active_event = await redisClient.get("active_event")
+  console.log(matches)
+  console.log(active_event)
   if(matches)
-    return res.status(200).json(JSON.parse(matches))
+    return res.status(200).json({
+      matches: JSON.parse(matches),
+      message: "Success"
+    })
+
+  if(!active_event)
+    return res.status(200).json({
+      matches: null,
+      message: "Pauza između turnira",
+      description: "Trenutno nema aktivnih mečeva. Novi turnir počinje uskoro."
+    })
 
  const result = await database.query(`
     SELECT
@@ -20,8 +32,9 @@ export const getMatches = async (req: Request, res: Response) => {
       date,
       format
     FROM matches
-    WHERE result IS NULL;
-  `)
+    WHERE result IS NULL
+    AND event_id=$1;
+  `, [active_event])
 
   const formatedMatches = result.rows.map((m) => ({
     id: m.id,
@@ -40,7 +53,17 @@ export const getMatches = async (req: Request, res: Response) => {
     format: m.format,
   }))
 
-  return res.status(200).json(formatedMatches)
+  if(formatedMatches.length === 0)
+    return res.status(200).json({
+      matches: null,
+      message: 'Žreb je u toku',
+      description: 'Postoji aktivan turnir, ali mečevi još uvek nisu dostupni. Čim raspored izađe, dobićete obaveštenje na Discordu!'
+    })
+
+  return res.status(200).json({
+    matches: formatedMatches,
+    message: "Success"
+  })
 }
 
 export const getMatchesPoints = async (req: Request, res: Response) => {

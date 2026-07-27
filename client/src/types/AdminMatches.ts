@@ -1,4 +1,4 @@
-import Match from "./UpcomingMatch";
+import Match from "./UpcomingMatches";
 
 export interface MatchWithGuesses extends Match {
   guesses: number

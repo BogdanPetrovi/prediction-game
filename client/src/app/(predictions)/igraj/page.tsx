@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import Toast from "@/components/shared/Toast";
 import Error from "@/components/shared/Error";
 import MatchesPoints from "@/types/MatchesPoints";
-import UpcomingMatch from "@/types/UpcomingMatch";
+import UpcomingMatchesApiResponse, { NoMatches, UpcomingMatch } from "@/types/UpcomingMatches";
 import NoResult from "@/components/shared/NoResult";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
@@ -33,16 +33,20 @@ export default function Play() {
   }, [])
 
   const matches = useQuery({
-  queryKey: ['matches'],
-  queryFn: async (): Promise<UpcomingMatch[]> => {
-    const result = await backend.get('/matches')
-    return result.data.map((match: UpcomingMatch) => ({
-      ...match,
-      id: Number(match.id)
-    }))
-  },
-  staleTime: 1000 * 60 * 5
-})
+    queryKey: ['matches'],
+    queryFn: async (): Promise<UpcomingMatch[] | NoMatches> => {
+      const { data }: { data: UpcomingMatchesApiResponse } = await backend.get('/matches')
+    
+      if(!data.matches?.length)
+        return { message: data.message, description: data.description }
+
+      return data.matches.map((match: UpcomingMatch) => ({
+        ...match,
+        id: Number(match.id)
+      }))
+    },
+    staleTime: 1000 * 60 * 5
+  })
   const predictions = useQuery({
     queryKey: ['predictions'],
     queryFn: async (): Promise<Prediction[]> => {
@@ -90,9 +94,11 @@ export default function Play() {
 
   if(predictions.error) return <Error err={predictions.error} />
 
-  if(!matches.data || matches.data.length < 1 || !predictions.data || !matchesPoints.data) return (
-    <NoResult title="Pauza između turnira" subtitle="Trenutno nema aktivnih mečeva. Novi turnir počinje uskoro." />
-  )
+  if(matches.data && !Array.isArray(matches.data))
+    return <NoResult title={ matches.data.message } subtitle={ matches.data.description } />
+
+  if(!predictions.data || !matchesPoints.data)
+    return
 
   return (
     <>
