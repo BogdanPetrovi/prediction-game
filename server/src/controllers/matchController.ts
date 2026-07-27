@@ -5,15 +5,14 @@ import matchesPoints from "../utils/matchesPoints.js";
 
 export const getMatches = async (req: Request, res: Response) => {
   const matches = await redisClient.get("matches");
-  const active_event = await redisClient.get("active_event")
-  console.log(matches)
-  console.log(active_event)
-  if(matches)
+  
+  if(matches?.length)
     return res.status(200).json({
       matches: JSON.parse(matches),
       message: "Success"
     })
 
+  const active_event = await redisClient.get("active_event")
   if(!active_event)
     return res.status(200).json({
       matches: null,
