@@ -1,6 +1,6 @@
-import Match from "./UpcomingMatches";
+import { UpcomingMatch } from "./UpcomingMatches";
 
-export interface MatchWithGuesses extends Match {
+export interface MatchWithGuesses extends UpcomingMatch {
   guesses: number
 }
 
