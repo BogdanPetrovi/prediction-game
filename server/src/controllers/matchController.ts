@@ -6,7 +6,7 @@ import matchesPoints from "../utils/matchesPoints.js";
 export const getMatches = async (req: Request, res: Response) => {
   const matches = await redisClient.get("matches");
   
-  if(matches?.length)
+  if(matches && JSON.parse(matches).length > 0)
     return res.status(200).json({
       matches: JSON.parse(matches),
       message: "Success"
