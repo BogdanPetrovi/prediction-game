@@ -27,7 +27,18 @@ export default function Table({ data, page }: TableProps) {
         </tr>
       </thead>
       <tbody className="divide-y divide-slate-800 slide-down">
-        {data.leaderboard.map((user, index) => {
+        {
+          data.leaderboard.length === 0 ? (
+            <tr>
+              <td
+                colSpan={100}
+                className="text-center text-slate-200 py-58"
+              >
+                Tabela će biti prikazana nakon završetka prvih mečeva!
+              </td>
+            </tr>
+          ) : (
+          data.leaderboard.map((user, index) => {
           const currentPlace = (index + 1) + ((page - 1) * 10)
           const isCurrentUser = currentPlace === Number(myPosition.data?.place)
 
@@ -54,15 +65,17 @@ export default function Table({ data, page }: TableProps) {
               </td>
             </tr>
           );
-        })}
+        }))}
 
-        {Array.from({ length: Math.max(0, 10 - (data.leaderboard?.length ?? 0)) }).map((_, index) => (
+        {
+          data.leaderboard.length > 0 && Array.from({ length: Math.max(0, 10 - (data.leaderboard?.length ?? 0)) }).map((_, index) => (
           <tr key={`ghost-${index}`} className="pointer-events-none select-none">
             <td className="py-3 px-4">&nbsp;</td>
             <td className="py-3 px-4">&nbsp;</td>
             <td className="py-3 px-4">&nbsp;</td>
           </tr>
-        ))}
+          ))
+        }
       </tbody>
     </table>
   )

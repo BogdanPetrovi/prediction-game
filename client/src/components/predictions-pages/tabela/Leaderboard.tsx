@@ -37,7 +37,7 @@ export default function Leaderboard() {
 
   if(isPending) return <Loading />
 
-  if(!data || (Array.isArray(data) && data.length === 0) || data.leaderboard.length < 1) {
+  if(!data) {
     return (
       <NoResult title="Pauza između turnira" subtitle="Trenutno nema aktivne tabele. Novi turnir počinje uskoro." />
     )
@@ -45,9 +45,12 @@ export default function Leaderboard() {
 
   return (
     <>
-      <div className="w-full h-14 flex justify-between mb-2">
-        <ShortcutButtons page={page} setPage={setPage} />
-      </div>
+      {
+        data.leaderboard.length > 0 &&
+        <div className="w-full h-14 flex justify-between mb-2">
+          <ShortcutButtons page={page} setPage={setPage} />
+        </div>
+      }
       <div className="bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50">
         <div className="overflow-x-auto">
           <Table data={data} page={page} />
