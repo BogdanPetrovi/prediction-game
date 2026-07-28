@@ -37,7 +37,7 @@ export default function Leaderboard() {
 
   if(isPending) return <Loading />
 
-  if(!data) {
+  if(!data || data.pages === 0) {
     return (
       <NoResult title="Pauza između turnira" subtitle="Trenutno nema aktivne tabele. Novi turnir počinje uskoro." />
     )

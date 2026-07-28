@@ -10,8 +10,8 @@ export const getLeaderboard = async (req: Request, res: Response) => {
   const { page } = req.query
 
   const activeParentEventId = await redisClient.get("active_parent_event")
-  if(activeParentEventId === null )
-    return res.status(200).json([]) 
+  if(activeParentEventId === null)
+    return res.status(200).json({ pages: 0, leaderboard: [] }) 
 
   const parsedPage = Page.parse(page)
 
