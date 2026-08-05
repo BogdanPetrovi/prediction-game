@@ -6,7 +6,7 @@ interface NoResultProps {
 const NoResult = ({ title, subtitle }: NoResultProps) => {
   return (
     <div
-      className={'flex flex-col items-center justify-center min-h-[60vh] px-6 text-center slide-down'}
+      className={'absolute inset-0 flex flex-col items-center justify-center px-6 text-center slide-down'}
     >
       <div className="mb-8 flex items-center justify-center gap-3.5">
         <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#667EEA] to-[#9333EA]" />
