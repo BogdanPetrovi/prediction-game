@@ -12,6 +12,7 @@ import Error from "@/components/shared/Error";
 import MatchesPoints from "@/types/MatchesPoints";
 import UpcomingMatchesApiResponse, { NoMatches, UpcomingMatch } from "@/types/UpcomingMatches";
 import NoResult from "@/components/shared/NoResult";
+import Submit from "@/components/predictions-pages/igraj/Submit";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -117,9 +118,7 @@ export default function Play() {
             />
           ))
         }
-        <button className="bg-secondary hover:bg-[#2F333F] active:bg-[#3a3e4a] w-4/5 lg:w-1/3 hover:w-2/5 h-16 rounded-3xl cursor-pointer font-bold text-4xl drop-shadow-2xl/100 duration-300" onClick={handleSubmit}>
-          Potvrdi
-        </button>
+        <Submit handleSubmit={handleSubmit} />
       </div>
 
       {showToast && (
