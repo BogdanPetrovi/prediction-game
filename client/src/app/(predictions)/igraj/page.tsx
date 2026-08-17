@@ -7,12 +7,12 @@ import backend from "@/services/api/backend";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
-import Toast from "@/components/shared/Toast";
 import Error from "@/components/shared/Error";
 import MatchesPoints from "@/types/MatchesPoints";
 import UpcomingMatchesApiResponse, { NoMatches, UpcomingMatch } from "@/types/UpcomingMatches";
 import NoResult from "@/components/shared/NoResult";
 import Submit from "@/components/predictions-pages/igraj/Submit";
+import { useToast } from "@/context/ToastContext";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -24,10 +24,8 @@ const Event = dynamic(() => import('@/components/shared/Event'),
 export default function Play() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
   const [showEvent, setShowEvent] = useState(false)
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
-  const [toastType, setToastType] = useState<'success' | 'error'>('success')
   const queryClient = useQueryClient();
+  const { showToast } = useToast()
 
   useEffect(() => {
     setShowEvent(true)
@@ -81,13 +79,9 @@ export default function Play() {
       await queryClient.invalidateQueries({ queryKey: ['predictions'] })
       await queryClient.invalidateQueries({ queryKey: ['matches-points'] })
       setUserPredictions([])
-      setToastMessage('Predikcije su uspešno sačuvane!')
-      setToastType('success')
-      setShowToast(true)
+      showToast('Predikcije su uspešno sačuvane!')
     } catch (error) {
-      setToastMessage('Nismo uspeli da sačuvamo predikcije, pokušajte ponovo.')
-      setToastType('error')
-      setShowToast(true)
+      showToast('Nismo uspeli da sačuvamo predikcije, pokušajte ponovo.', 'error')
     }
   }
 
@@ -104,36 +98,25 @@ export default function Play() {
     return
 
   return (
-    <>
-      <div className="w-4/5 lg:w-3/5 mx-auto mb-8 min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
-        <div className="-mb-7">
-          {showEvent && <Event />}
-        </div>
-        {
-          matches.data.map(match => (
-            <Matchup
-              match={match}
-              setPredictions={handleUserPredictionChange}
-              backendPrediction={predictions.data.find(el => el.matchId === match.id)}
-              matchesPoints={matchesPoints.data.find(el => el.id === match.id)}
-              key={match.id}
-            />
-          ))
-        }
-        <Submit 
-          handleSubmit={handleSubmit} 
-          isDisabled={userPredictions.length === 0}
-        />
+    <div className="w-4/5 lg:w-3/5 mx-auto mb-8 min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
+      <div className="-mb-7">
+        {showEvent && <Event />}
       </div>
-
-      {showToast && (
-        <Toast 
-          message={toastMessage}
-          type={toastType}
-          onClose={() => setShowToast(false)}
-          duration={3000}
-        />
-      )}
-    </>
+      {
+        matches.data.map(match => (
+          <Matchup
+            match={match}
+            setPredictions={handleUserPredictionChange}
+            backendPrediction={predictions.data.find(el => el.matchId === match.id)}
+            matchesPoints={matchesPoints.data.find(el => el.id === match.id)}
+            key={match.id}
+          />
+        ))
+      }
+      <Submit 
+        handleSubmit={handleSubmit} 
+        isDisabled={userPredictions.length === 0}
+      />
+    </div>
   );
 }

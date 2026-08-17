@@ -1,7 +1,7 @@
 "use client"
 
 import PrizesInput from "@/components/admin/PrizesInput"
-import Toast from "@/components/shared/Toast"
+import { useToast } from "@/context/ToastContext"
 import backend from "@/services/api/backend"
 import { useState } from "react"
 
@@ -10,13 +10,11 @@ export default function Nagrade() {
   const [placement, setPlacement] = useState('')
   const [skinName, setSkinName] = useState('')
   const [skinImage, setSkinImage] = useState('')
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
-  const [toastType, setToastType] = useState<'success' | 'error'>('success')
+  const { showToast } = useToast()
 
   const handleClick = async () => {
     try {
-      const result = await backend.post('/admin/add-prize', {
+      await backend.post('/admin/add-prize', {
         prize: {
           eventId,
           place: Number(placement),
@@ -24,19 +22,14 @@ export default function Nagrade() {
           skinImage
         }
       })
-      setToastMessage('Uspešno ste ubacili skin!')
-      setToastType("success")
-      setShowToast(true)
+      showToast('Uspešno ste ubacili skin!')
     } catch (err) {
       console.error(err)
-      setToastMessage("Nismo uspeli da ubacimo skin, pogledajte konzolu!")
-      setToastType("error")
-      setShowToast(true)
+      showToast("Nismo uspeli da ubacimo skin, pogledajte konzolu!")
     }
   }
 
   return(
-  <>
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
       <div className="w-full bg-[#2b3040] max-w-[780px] border border-green-500 rounded-[14px] relative z-10 overflow-hidden">
         <div className="px-9 py-8">
@@ -57,14 +50,5 @@ export default function Nagrade() {
         </button>
       </div>
     </div>
-    {showToast && (
-      <Toast 
-        message={toastMessage}
-        type={toastType}
-        onClose={() => setShowToast(false)}
-        duration={3000}
-      />
-    )}
-  </>
   )
 }

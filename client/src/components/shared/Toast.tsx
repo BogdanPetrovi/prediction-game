@@ -1,13 +1,7 @@
 "use client"
 
+import { ToastProps } from "@/types/Toast"
 import { useEffect } from "react"
-
-interface ToastProps {
-  message: string
-  type?: 'success' | 'error'
-  onClose: () => void
-  duration?: number
-}
 
 const Toast = ({ message, type = 'success', onClose, duration = 10000 }: ToastProps) => {
   useEffect(() => {
