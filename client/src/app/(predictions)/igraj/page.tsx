@@ -72,6 +72,8 @@ export default function Play() {
   }, [])
   
   const handleSubmit = async () => {
+    if(userPredictions.length === 0) return
+
     try {
       await backend.post('/predict', {
         predictions: userPredictions
@@ -118,7 +120,10 @@ export default function Play() {
             />
           ))
         }
-        <Submit handleSubmit={handleSubmit} />
+        <Submit 
+          handleSubmit={handleSubmit} 
+          isDisabled={userPredictions.length === 0}
+        />
       </div>
 
       {showToast && (
