@@ -2,6 +2,7 @@
 
 import backend from "@/services/api/backend"
 import { useQuery } from "@tanstack/react-query"
+import Image from "next/image"
 
 const Event = () => {
   const { data, isPending } = useQuery({
@@ -18,7 +19,14 @@ const Event = () => {
   if(!isPending && data)
     return(
       <div className="flex items-center text-2xl font-semibold gap-2">
-        <img src={data.logo} className="size-10" />
+        <div className="relative size-10">
+          <Image 
+            src={data.logo}
+            fill
+            alt={`${data.name} logo`}
+            unoptimized
+          />
+        </div>
         <h2>{data.name}</h2>
       </div>
     )

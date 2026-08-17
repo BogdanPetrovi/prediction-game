@@ -1,4 +1,5 @@
 import { formatDateOnly } from "@/utils/formatDate"
+import Image from "next/image"
 
 interface PreviewEventProps {
   onConfirm: () => void,
@@ -16,7 +17,14 @@ export default function PreviewEvent({ onConfirm, event, reset }: PreviewEventPr
         Pregled turnira
       </p>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-admin-input border border-admin-border rounded-xl p-7">
-        <img className="size-[90px]" src={event?.logo} alt="Event logo" />
+        <Image
+          className="size-[90px]"
+          src={event?.logo ?? ''}
+          alt="Event logo"
+          width={90}
+          height={90}
+          unoptimized
+        />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold tracking-[2px] uppercase text-accent mb-1">ID: {event?.id}</p>
           <p className="text-3xl font-bold text-[#e8ede8] mb-2 truncate">{event?.name}</p>

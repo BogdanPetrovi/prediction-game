@@ -2,6 +2,7 @@ import { UpcomingMatch } from "@/types/UpcomingMatches"
 import React from "react"
 import WinPercent from "./WinPrecent"
 import PredictedTeamEnum from "@/types/PredictedTeamEnum"
+import Image from "next/image"
 
 interface Team2Props {
   selectedTeam: PredictedTeamEnum,
@@ -26,14 +27,22 @@ const Team2: React.FC<Team2Props> = ({ selectedTeam, handleChange, match, matchP
     >
       {
         match.team2.logo && !match.team2.logo.startsWith('/') ?
-        <img 
-          src={ match.team2.logo } 
+        <Image
+          src={match.team2.logo}
+          alt={match.team2.name}
+          width={72}
+          height={72}
           className={
-            `${selectedTeam === 'team2' ? 'size-[4.5rem]' 
-              : !match.live && selectedTeam === 'team1' ? 'group-hover:size-[4.5rem] opacity-50 group-hover:opacity-80'
-              : !match.live && 'group-hover:size-[4.5rem]'} size-16 mr-4 drop-shadow-xl/50 duration-300`
-            } 
-          />
+            `${
+              selectedTeam === 'team2'
+                ? 'size-[4.5rem]'
+                : !match.live && selectedTeam === 'team1'
+                ? 'group-hover:size-[4.5rem] opacity-50 group-hover:opacity-80'
+                : !match.live && 'group-hover:size-[4.5rem]'
+            } size-16 mr-4 drop-shadow-xl/50 duration-300`
+          }
+          unoptimized
+        />
         :
         <h2 className={
             `${selectedTeam === 'team2' ? 'text-[4.5rem]' 
