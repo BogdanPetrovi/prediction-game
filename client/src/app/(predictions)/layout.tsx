@@ -9,7 +9,7 @@ export default function PredictionsLayout({
 }) {
   return (
     <div className="min-h-screen h-full pb-2 bg-gradient-to-br from-[#0e0b24] via-[#17113d] to-[#060412]">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 mb-4">
         <Header />
         <Navbar />
       </div>

@@ -9,7 +9,7 @@ export default function PrizesView({ prizes }: {prizes: Prize[]}) {
   if(!firstPlace || !secondPlace || !thirdPlace) return null
 
   return (
-    <div className="w-full flex flex-col md:flex-none md:grid md:grid-cols-3 gap-3 mb-4 md:mb-0 cursor-default">
+    <div className="w-full flex flex-col md:flex-none md:grid md:grid-cols-3 gap-3 mt-5 mb-4 md:mb-0 cursor-default">
       <div className="bg-slate-300/20 brightness-90 flex flex-col justify-center items-center h-30 rounded-lg border border-slate-300 hover:-translate-y-2 duration-200">
         <Image
           width={70}

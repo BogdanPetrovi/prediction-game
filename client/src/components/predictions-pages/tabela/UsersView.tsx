@@ -4,7 +4,7 @@ export default function UsersView({ topUsers }: { topUsers: TopUser[] }) {
   const [first, second, third] = topUsers.sort((a, b) => b.points - a.points);
 
   return (
-    <div className="w-full flex flex-col md:flex-none md:grid md:grid-cols-3 gap-3 mb-4 md:mb-0 cursor-default">
+    <div className="w-full flex flex-col md:flex-none md:grid md:grid-cols-3 gap-3 mt-5 mb-4 md:mb-0 cursor-default">
       {
         second &&
         <div className="bg-slate-300/20 brightness-90 flex flex-col justify-center items-center h-30 rounded-lg border border-slate-300 hover:-translate-y-2 duration-200">

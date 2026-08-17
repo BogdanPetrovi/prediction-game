@@ -103,7 +103,7 @@ export default function Play() {
 
   return (
     <>
-      <div className="w-4/5 lg:w-3/5 mx-auto min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
+      <div className="w-4/5 lg:w-3/5 mx-auto mb-8 min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
         <div className="-mb-7">
           {showEvent && <Event />}
         </div>
