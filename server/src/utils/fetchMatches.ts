@@ -3,22 +3,25 @@ import redisClient from "../config/redis.js"
 import database from "../database/database.js"
 import TeamNames from "../types/TeamNames.js"
 import hltvWrapper from "./hltvWrapper.js"
+import formatDateAndTime from "./formatDateAndTime.js"
 
 let isFetching = false;
 
 const fetchMatches = async () => {
   const activeEventId = await redisClient.get("active_event")
-  if(activeEventId === null )
+  if(activeEventId === null ){
+    console.log('There are no active events. Scheduler finished at ' + formatDateAndTime())
     return
+  }
 
   isFetching = true
-  console.log('HLTV is checking for the latest matches... ' + new Date().toISOString())
+  console.log('HLTV is checking for the latest matches... ' + formatDateAndTime())
   const apiResult = await hltvWrapper(HLTV.getMatches(parseInt(activeEventId)))
 
   await redisClient.set("matches", JSON.stringify(apiResult), {
     EX: 7200
   });
-  console.log('Succesfuly fetched matches from HLTV at ' + new Date().toISOString())
+  console.log('Succesfuly fetched matches from HLTV at ' + formatDateAndTime())
 
   let newMatches: TeamNames[] = []
   await Promise.all(

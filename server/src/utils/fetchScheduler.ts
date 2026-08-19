@@ -1,4 +1,5 @@
 import fetchMatches from "./fetchMatches.js"
+import formatDateAndTime from "./formatDateAndTime.js"
 
 const MIN_DELAY = 25 * 60 * 1000
 const MAX_DELAY = 35 * 60 * 1000
@@ -15,7 +16,7 @@ async function runScheduler() {
   try {
     await fetchMatches()
   } catch (err) {
-    console.error('Scheduler error:', err)
+    console.error(`[${formatDateAndTime()}]Scheduler error: ${ err }`)
   }
 
   const nextDelay = getRandomDelay()
@@ -23,7 +24,7 @@ async function runScheduler() {
   console.log(
     `Next matches scrape in ${Math.round(
       nextDelay / 60000
-    )} minutes`
+    )} minutes, at ${ formatDateAndTime(new Date(Date.now() + nextDelay)) }`
   )
 
   setTimeout(runScheduler, nextDelay)

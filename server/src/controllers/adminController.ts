@@ -8,6 +8,7 @@ import { event, matchList, prize } from "../schemas/admin.schemas.js";
 import Match from "../types/Match.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
+import formatDateAndTime from "../utils/formatDateAndTime.js";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
@@ -61,7 +62,7 @@ export const searchEvent = async (req: Request, res: Response) => {
     })
   }
 
-  console.log('Checking HLTV for event...')
+  console.log(`Checking HLTV for event at ${ formatDateAndTime() }`)
   const event = await hltvWrapper(HLTV.getEvent({ id: eventId }))
 
   return res.status(200).json({
