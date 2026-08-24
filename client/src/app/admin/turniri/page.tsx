@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useMutation, DefaultError } from "@tanstack/react-query";
 import SaveEventButton from "@/components/admin/SaveEventButton";
 import { useToast } from "@/context/ToastContext";
+import { FullEvent } from "@/types/Event";
 
 type Step = 'search' | 'preview' | 'settings'
 

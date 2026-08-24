@@ -1,9 +1,9 @@
-interface Event {
+export interface Event {
   name: string,
   logo: string
 }
 
-interface FullEvent extends Event {
+export interface FullEvent extends Event {
   id: number,
   startDate: number,
   endDate: number

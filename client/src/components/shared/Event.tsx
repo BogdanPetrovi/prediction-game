@@ -1,6 +1,7 @@
 "use client"
 
 import backend from "@/services/api/backend"
+import { type Event } from "@/types/Event"
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 

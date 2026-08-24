@@ -1,3 +1,4 @@
+import { FullEvent } from "@/types/Event"
 import { formatDateOnly } from "@/utils/formatDate"
 import Image from "next/image"
 
