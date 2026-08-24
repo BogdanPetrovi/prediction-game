@@ -3,7 +3,7 @@
 import backend from "@/services/api/backend"
 import { useQuery } from "@tanstack/react-query"
 
-const LastUpdated = () => {
+const LastUpdated = ({ text = 'Ažurirano'}: { text?: string }) => {
   interface LastUpdated {
     lastUpdated: number
   }
@@ -20,7 +20,7 @@ const LastUpdated = () => {
   if(isPending || error || data === null) return <></>
 
   return (
-    <h3 className="w-full text-right">Ažurirano: {data.lastUpdated}</h3>
+    <h3 className="w-full text-right">{ text }: {data.lastUpdated}</h3>
   )
 }
 
