@@ -4,12 +4,12 @@ import PreviewEvent from "@/components/admin/PreviewEvent";
 import SearchEvent from "@/components/admin/SearchEvent";
 import Settings from "@/components/admin/Settings";
 import backend from "@/services/api/backend";
-import Error from "@/components/shared/Error";
+import ErrorComponent from "@/components/shared/Error";
 import { useState } from "react";
-import { useMutation, DefaultError } from "@tanstack/react-query";
+import { DefaultError, useQueryClient } from "@tanstack/react-query";
 import SaveEventButton from "@/components/admin/SaveEventButton";
-import { useToast } from "@/context/ToastContext";
 import { FullEvent } from "@/types/Event";
+import useEventUpsert from "@/utils/mutations/useEventUpsert";
 
 type Step = 'search' | 'preview' | 'settings'
 
@@ -22,24 +22,23 @@ export default function Events() {
     value: "",
     isVerified: false
   })
-  const { showToast } = useToast()
   const [error, setError] = useState<DefaultError | null>(null)
-
-  const mutation = useMutation({
-    mutationFn: (id: number) => backend.get(`/admin/search-event?eventId=${id}`).then(res => res.data),
-    onSuccess: (data) => {
-      setEvent(data)
-      setStep('preview')
-    },
-    onError: (err) => {
-      setError(err)
-    }
-  })
+  
+  const queryClient = useQueryClient();
+  const { mutate: mutateEventUpsert, isPending: isEventUpsertPending } = useEventUpsert();
 
   const checkEvent = async (id: number) => {
     setStep('search')
-
-    mutation.mutate(id)
+    try {
+      const data = await queryClient.fetchQuery({
+        queryKey: ['searchEvent', id],
+        queryFn: () => backend.get(`/admin/search-event?eventId=${id}`).then(res => res.data)
+      })
+      setEvent(data)
+      setStep('preview')
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)))
+    }
   }
 
   const onConfirm = () => {
@@ -56,19 +55,7 @@ export default function Events() {
     })
   }
 
-  const saveEvent = async () => {
-    try {
-      console.log({...event, isActive: isActive})
-      await backend.post('/admin/event-upsert', {...event, isActive: isActive, parentEventId: parentEvent.value})
-      reset()
-      showToast('Turnir je uspešno ubačen/promenjen!')
-    } catch (error) {
-      console.error(error)
-      showToast('Nismo uspeli da sačuvamo turnir. Vise informacija u konzoli.')
-    }
-  }
-
-  if(error) <Error err={error} />
+  if(error) <ErrorComponent err={error} />
 
   return (
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
@@ -100,7 +87,17 @@ export default function Events() {
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
             Resetuj
           </button>
-          <SaveEventButton saveEvent={saveEvent} isDisabled={parentEvent.isParent && !parentEvent.isVerified} />
+          <SaveEventButton 
+            saveEvent={() => mutateEventUpsert({
+                event,
+                isActive,
+                parentEventId: Number(parentEvent.value)
+              }, {
+                onSuccess: () => reset()
+              })
+            }
+            isDisabled={(parentEvent.isParent && !parentEvent.isVerified) || isEventUpsertPending}
+          />
         </div>
       }
     </div>

@@ -1,8 +1,8 @@
 "use client"
 
 import PrizesInput from "@/components/admin/PrizesInput"
-import { useToast } from "@/context/ToastContext"
-import backend from "@/services/api/backend"
+import Loading from "@/components/shared/Loading"
+import useAddPrize from "@/utils/mutations/useAddPrize"
 import { useState } from "react"
 
 export default function Nagrade() {
@@ -10,24 +10,19 @@ export default function Nagrade() {
   const [placement, setPlacement] = useState('')
   const [skinName, setSkinName] = useState('')
   const [skinImage, setSkinImage] = useState('')
-  const { showToast } = useToast()
 
-  const handleClick = async () => {
-    try {
-      await backend.post('/admin/add-prize', {
-        prize: {
-          eventId,
-          place: Number(placement),
-          skinName,
-          skinImage
-        }
-      })
-      showToast('Uspešno ste ubacili skin!')
-    } catch (err) {
-      console.error(err)
-      showToast("Nismo uspeli da ubacimo skin, pogledajte konzolu!")
-    }
+  const { mutate, isPending } = useAddPrize()
+
+  const handleClick = () => {
+    mutate({
+      eventId: Number(eventId),
+      place: Number(placement),
+      skinImage: skinImage,
+      skinName: skinName
+    })
   }
+
+  if(isPending) return <Loading />
 
   return(
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">

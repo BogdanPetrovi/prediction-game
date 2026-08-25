@@ -1,7 +1,7 @@
 'use client'
 
 import backend from "@/services/api/backend"
-import { Dispatch, SetStateAction } from "react"
+import { useQuery } from "@tanstack/react-query"
 
 interface ParentEventProps {
   parentEventValue: string,
@@ -10,16 +10,24 @@ interface ParentEventProps {
 }
 
 export default function ParentEvent({ parentEventValue, setIsParentVerified, setParentEventValue }: ParentEventProps) {
+  const { refetch } = useQuery({
+    queryKey: ['parentEvent', parentEventValue],
+    queryFn: () => backend.get(`/admin/search-parent-event?eventId=${parentEventValue}`),
+    enabled: false,
+    retry: false
+  })
+
   const checkParent = async () => {
-    try {
-      const result = await backend.get(`/admin/search-parent-event?eventId=${parentEventValue}`)
-      if(result.status === 200)
-        setIsParentVerified(true)
-    } catch (err) {
-      console.log(err)
-      setIsParentVerified(false)
-      setParentEventValue("")
+    const { data, error } = await refetch();
+
+    if(data?.status === 200){
+      setIsParentVerified(true)
+      return
     }
+
+    console.error(error)
+    setIsParentVerified(false)
+    setParentEventValue("")
   }
 
   return (

@@ -10,10 +10,14 @@ import { formatDateTime } from "@/utils/formatDate"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useState } from "react"
-import { useToast } from "@/context/ToastContext";
+import useUpdateMatches from "@/utils/mutations/useUpdateMatches"
 
 export default function Matches() {
-  const { data, isError, error, isPending, refetch } = useQuery({
+  const [chosenMatch, setChosenMatch] = useState<MatchWithGuesses | null>(null)
+  const buttonOptions = ['Promeni da li je live', 'Potvrdi']
+  const [currentButtonOption, setCurrentButtonOption] = useState(0)
+
+  const { data, isError, error, isPending } = useQuery({
     queryKey: ['admin-matches'],
     queryFn: async (): Promise<AdminMatches> => {
       const result = await backend.get('/admin/matches')
@@ -21,26 +25,17 @@ export default function Matches() {
     },
     retry: false
   })
-  const [chosenMatch, setChosenMatch] = useState<MatchWithGuesses | null>(null)
-  const buttonOptions = ['Promeni da li je live', 'Potvrdi']
-  const [currentButtonOption, setCurrentButtonOption] = useState(0)
-  const { showToast } = useToast()
+
+  const { mutate } = useUpdateMatches()
 
   const handleChange = async () => {
-    if(currentButtonOption === 1){
-      const newArr = data?.matches.map(match => {
+    if(data && currentButtonOption === 1){
+      const updatedList = data.matches.map(match => {
         return match.id === chosenMatch?.id 
         ? {...match, live: !chosenMatch.live} 
         : match
       })
-      try {
-        await backend.post('/admin/matches', { updatedList: newArr })
-        showToast('Uspešno ste prolmenili meč!')
-        setChosenMatch(null)
-        refetch()
-      } catch (err) {
-        showToast('Nismo uspeli da promenimo meč, pokušajte ponovo!')
-      }
+      mutate({ updatedList })
     }
     setCurrentButtonOption(currentButtonOption === 0 ? 1 : 0)
   }

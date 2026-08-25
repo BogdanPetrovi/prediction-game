@@ -4,7 +4,7 @@ import Matchup from "@/components/predictions-pages/igraj/Matchup"
 import { useCallback, useEffect, useState } from "react";
 import type Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
 import dynamic from "next/dynamic";
 import Error from "@/components/shared/Error";
@@ -12,7 +12,7 @@ import MatchesPoints from "@/types/MatchesPoints";
 import UpcomingMatchesApiResponse, { NoMatches, UpcomingMatch } from "@/types/UpcomingMatches";
 import NoResult from "@/components/shared/NoResult";
 import Submit from "@/components/predictions-pages/igraj/Submit";
-import { useToast } from "@/context/ToastContext";
+import usePredict from "@/utils/mutations/usePredict";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -24,12 +24,6 @@ const Event = dynamic(() => import('@/components/shared/Event'),
 export default function Play() {
   const [userPredictions, setUserPredictions] = useState<Array<Prediction>>([])
   const [showEvent, setShowEvent] = useState(false)
-  const queryClient = useQueryClient();
-  const { showToast } = useToast()
-
-  useEffect(() => {
-    setShowEvent(true)
-  }, [])
 
   const matches = useQuery({
     queryKey: ['matches'],
@@ -61,6 +55,12 @@ export default function Play() {
     }
   })
 
+  const { mutate, isPending: isMutatePending } = usePredict()
+
+  useEffect(() => {
+    setShowEvent(true)
+  }, [])
+
   const handleUserPredictionChange = useCallback(({ matchId, predictedTeam }: Prediction) => {
     setUserPredictions(prev => {
       const arrayWithoutMatchId = prev.filter(p => p.matchId !== matchId)
@@ -68,21 +68,16 @@ export default function Play() {
       return arrayWithoutMatchId.concat([{ matchId, predictedTeam }])
     })
   }, [])
-  
-  const handleSubmit = async () => {
-    if(userPredictions.length === 0) return
 
-    try {
-      await backend.post('/predict', {
-        predictions: userPredictions
-      })
-      await queryClient.invalidateQueries({ queryKey: ['predictions'] })
-      await queryClient.invalidateQueries({ queryKey: ['matches-points'] })
-      setUserPredictions([])
-      showToast('Predikcije su uspešno sačuvane!')
-    } catch (error) {
-      showToast('Nismo uspeli da sačuvamo predikcije, pokušajte ponovo.', 'error')
-    }
+  const handleSubmit = () => {
+    mutate(
+      { predictions: userPredictions },
+      { 
+        onSuccess: () => {
+          setUserPredictions([])
+        } 
+      }
+    );
   }
 
   if(matches.isPending) return <Loading />
@@ -115,7 +110,7 @@ export default function Play() {
       }
       <Submit 
         handleSubmit={handleSubmit} 
-        isDisabled={userPredictions.length === 0}
+        isDisabled={userPredictions.length === 0 || isMutatePending}
       />
     </div>
   );
