@@ -17,6 +17,7 @@ export default function Events() {
   const [step, setStep] = useState<Step>('search')
   const [event, setEvent] = useState<FullEvent | null>(null)
   const [isActive, setIsActive] = useState<boolean>(true)
+  const [isSearching, setIsSearching] = useState(false)
   const [parentEvent, setParentEvent] = useState({
     isParent: false,
     value: "",
@@ -29,6 +30,8 @@ export default function Events() {
 
   const checkEvent = async (id: number) => {
     setStep('search')
+    setIsSearching(true)
+    setError(null)
     try {
       const data = await queryClient.fetchQuery({
         queryKey: ['searchEvent', id],
@@ -38,6 +41,8 @@ export default function Events() {
       setStep('preview')
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)))
+    } finally {
+      setIsSearching(false)
     }
   }
 
@@ -60,7 +65,10 @@ export default function Events() {
   return (
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
       <div className="w-full bg-[#2b3040] max-w-[780px] border border-green-500 rounded-[14px] relative z-10 overflow-hidden">
-        <SearchEvent onCheck={checkEvent} />
+        <SearchEvent 
+          onCheck={checkEvent} 
+          isSearching={isSearching}  
+        />
 
         {
           (step === 'preview' || step === 'settings') && <PreviewEvent onConfirm={onConfirm} event={event} reset={reset} />

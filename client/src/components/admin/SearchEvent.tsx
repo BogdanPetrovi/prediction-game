@@ -3,10 +3,11 @@
 import { useState } from "react"
 
 interface SearchEventProps {
-  onCheck: (id: number) => void
+  onCheck: (id: number) => void,
+  isSearching: boolean
 }
 
-export default function SearchEvent ({ onCheck }: SearchEventProps) {
+export default function SearchEvent ({ onCheck, isSearching }: SearchEventProps) {
   const [id, setId] = useState("")
 
   const handleClick = () => {
@@ -33,13 +34,23 @@ export default function SearchEvent ({ onCheck }: SearchEventProps) {
               className="w-full bg-admin-input border border-admin-border rounded-lg px-4 py-3 text-[#e8ede8] text-md outline-none transition-all duration-200 focus:border-green-500/60"
             />
           </div>
-          <button 
-            className="inline-flex items-center gap-2 px-6 py-[13px] rounded-lg text-white text-sm font-bold tracking-wide cursor-pointer duration-300 hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(22,163,74,0.4)] hover:bg-green-500 active:translate-y-0 whitespace-nowrap border-0 relative overflow-hidden"
-            onClick={handleClick}
+          {
+            isSearching ? 
+            <button 
+              className="inline-flex items-center gap-2 px-6 py-[13px] rounded-lg bg-white/5 text-white text-sm font-bold tracking-wide cursor-not-allowed"
             >
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            Pretraži
-          </button>
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              Pretraživanje...
+            </button>
+            :
+            <button 
+              className="inline-flex items-center gap-2 px-6 py-[13px] rounded-lg text-white text-sm font-bold tracking-wide cursor-pointer duration-300 hover:-translate-y-px hover:bg-green-500 active:translate-y-0"
+              onClick={handleClick}
+            >
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              Pretraži
+            </button>
+          }
         </div>
       </div>
   )
