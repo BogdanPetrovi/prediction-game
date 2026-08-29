@@ -16,6 +16,12 @@ const usePredict = () => {
     },
     onError: (err) => {
       if(err instanceof AxiosError){
+        if(err.status === 422){
+          showToast('Meč je već počeo. Odigrajte predikcije iz početka.', 'error')
+          queryClient.invalidateQueries({ queryKey: ['matches'] })
+          return
+        }
+
         showToast(err.response?.data.message || err.message + ' Pokušajte ponovo.', 'error')
         return
       }

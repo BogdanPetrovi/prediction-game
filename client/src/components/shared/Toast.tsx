@@ -12,11 +12,12 @@ const Toast = ({ message, type = 'success', onClose, duration = 10000 }: ToastPr
     return () => clearTimeout(timer)
   }, [duration, onClose])
 
-  const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-500'
-  const progressColor = type === 'success' ? 'bg-green-300' : 'bg-red-300'
+  const color = type === 'success' ? 'green-400' : 'red-400'
 
   return (
-    <div className={`fixed bottom-6 right-2 lg:right-6 ${bgColor} text-white px-6 py-6 rounded-lg shadow-2xl flex items-center gap-3 slide-in z-50 min-w-[350px] overflow-hidden`}>
+    <div 
+      className={`fixed bottom-6 right-2 lg:right-6 bg-secondary brightness-150 border border-${color} text-white px-6 py-6 rounded-lg shadow-2xl flex items-center gap-3 slide-in z-50 min-w-[350px] overflow-hidden`}
+    >
       <div className="flex-1">
         <p className="font-semibold text-lg">{message}</p>
       </div>
@@ -27,7 +28,7 @@ const Toast = ({ message, type = 'success', onClose, duration = 10000 }: ToastPr
         ×
       </button>
       <div 
-        className={`absolute bottom-0 left-0 h-1 ${progressColor} toast-progress`}
+        className={`absolute bottom-0 left-0 h-1 bg-${color} toast-progress`}
         style={{ animationDuration: `${duration}ms` }}
       />
     </div>

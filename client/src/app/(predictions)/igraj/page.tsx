@@ -73,7 +73,7 @@ export default function Play() {
     mutate(
       { predictions: userPredictions },
       { 
-        onSuccess: () => {
+        onSettled: () => {
           setUserPredictions([])
         } 
       }
