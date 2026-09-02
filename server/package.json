@@ -1,11 +1,11 @@
 {
   "name": "predikcije-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/serer.js",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "start": "ts-node dist/index.js"
+    "start": "ts-node dist/server.js"
   },
   "keywords": [],
   "type": "module",
