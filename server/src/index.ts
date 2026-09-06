@@ -35,7 +35,7 @@ if(!fs.existsSync(logsDir)){
 }
 if(isProduction){
   const accessLogStream = fs.createWriteStream(
-    path.join(__dirname, '../logs/access.log'),
+    path.join(logsDir, 'access.log'),
     { flags: 'a' }
   )
   app.use(morgan('combined', { stream: accessLogStream }))
