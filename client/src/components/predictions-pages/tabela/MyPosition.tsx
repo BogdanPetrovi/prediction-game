@@ -36,8 +36,8 @@ const MyPosition: React.FC<MyPositionProps> = ({ page, setPage }) => {
   return(
     <button 
       className={`
-        ${page === data.page ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-light-secondary"}
-        flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200 `}
+        ${page === data.page ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:brightness-120"}
+        flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200 duration-200`}
       onMouseEnter={prefetchPage}
       onClick={() => setPage(data.page!)}
     >

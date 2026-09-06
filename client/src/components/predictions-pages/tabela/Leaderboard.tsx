@@ -61,7 +61,7 @@ export default function Leaderboard() {
           <PaginationControl direction="next" page={page} setPage={setPage} totalPages={data.pages} />
         </div>
       </div>
-      <div className="w-full h-0.5 bg-slate-700 brightness-50 mt-2 rounded-xl"></div>
+      <div className="w-full h-0.5 bg-secondary mt-2 rounded-xl"></div>
       {
         showLastUpdated && <LastUpdated />
       }

@@ -12,8 +12,8 @@ export default function ShortcutButtons({ page, setPage }: ShortcutButtonsProps)
       <MyPosition page={page} setPage={setPage} />
       <button 
         className={`
-          ${page === 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-light-secondary"}
-          flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200`}
+          ${page === 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:brightness-120"}
+          flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200 duration-200`}
         onClick={() => setPage(1)}  
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

@@ -7,7 +7,7 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020617] via-primary to-black">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020617] via-gray-800 to-white/1">
       <div className="rounded-2xl shadow-xl bg-[#020617]/10 border border-white/10 p-8 flex flex-col items-center text-center gap-6">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight text-white">

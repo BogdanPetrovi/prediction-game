@@ -47,8 +47,8 @@ export default function Table({ data, page }: TableProps) {
               key={user.username} 
               className={`transition-colors ${
                 isCurrentUser
-                  ? "bg-light-secondary border-l-4 border-l-orange-500" 
-                  : "hover:bg-light-secondary/40"
+                  ? "bg-indigo-900/35 border-l-4 border-l-orange-500" 
+                  : "hover:bg-secondary hover:brightness-120"
               }`}
             >
               <td className={`py-3 px-4 text-center font-bold ${isCurrentUser ? "text-orange-500" : "text-slate-400"}`}>

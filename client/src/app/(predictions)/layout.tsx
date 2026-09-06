@@ -1,6 +1,5 @@
 import Header from "@/components/layout/header/Header";
 import Navbar from "@/components/layout/navbar/Navbar";
-import PointsUpdateModal from "@/components/PointsUpdateModal";
 
 export default function PredictionsLayout({
   children,
@@ -13,7 +12,6 @@ export default function PredictionsLayout({
         <Header />
         <Navbar />
       </div>
-      <PointsUpdateModal />
       {children}
     </div>
   );
