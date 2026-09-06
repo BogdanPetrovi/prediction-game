@@ -6,6 +6,9 @@ import session from 'express-session'
 import passport from 'passport';
 import cron from "node-cron";
 
+import fs from 'fs'
+import path from 'path'
+
 import userRouter from './routes/userRoutes.js';
 import adminRouter from './routes/adminRoutes.js'
 import authRouter from './routes/authRoutes.js'
@@ -16,6 +19,7 @@ import redisClient from './config/redis.js';
 import { RedisStore } from 'connect-redis';
 import globalErrorHandler from './utils/globalErrorHandler.js';
 import { appVersion } from './controllers/adminController.js';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production'
@@ -23,7 +27,21 @@ const isProduction = process.env.NODE_ENV === 'production'
 app.set('trust proxy', 1)
 
 // app settings
-app.use(morgan(isProduction ? 'common' : 'dev'))
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const logsDir = path.join(__dirname, '../../logs')
+if(!fs.existsSync(logsDir)){
+  fs.mkdirSync(logsDir, { recursive: true })
+}
+if(isProduction){
+  const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, '../logs/access.log'),
+    { flags: 'a' }
+  )
+  app.use(morgan('combined', { stream: accessLogStream }))
+} else {
+  app.use(morgan('dev'))
+}
 app.use(helmet())
 
 app.use(cors({
