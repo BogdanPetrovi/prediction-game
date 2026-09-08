@@ -3,10 +3,13 @@ import backend from "@/services/api/backend"
 import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-const useSearchEvent = () => {
+const useCalculatePoints = () => {
   const { showToast } = useToast()
   return useMutation({
-    mutationFn: (id: number) => backend.get(`/admin/search-event?eventId=${id}`).then(res => res.data),
+    mutationFn: () => backend.post('/admin/manual-calculation'),
+    onSuccess: () => {
+      showToast(`Uspešno ste izračunali poene manuelno`)
+    },
     onError: (err) => {
       console.error(err)
       if(err instanceof AxiosError){
@@ -14,9 +17,9 @@ const useSearchEvent = () => {
         return
       }
 
-      showToast(`Nismo uspeli da sačuvamo turnir. Vise informacija u konzoli.`, 'error')
+      showToast(`Nismo uspeli da izračunamo poene manuelno.`, 'error')
     }
   })
 }
 
-export default useSearchEvent
+export default useCalculatePoints

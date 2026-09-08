@@ -16,7 +16,7 @@ router.get("/search-parent-event", isLoggedIn, isAdmin, searchParentEvent)
 
 router.post("/event-upsert", isLoggedIn, isAdmin, eventUpsert)
 
-router.get("/manual-calculation", isLoggedIn, isAdmin, manualCalculation)
+router.post("/manual-calculation", isLoggedIn, isAdmin, manualCalculation)
 
 router.post("/add-prize", isLoggedIn, isAdmin, addPrize)
 

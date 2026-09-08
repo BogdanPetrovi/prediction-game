@@ -6,6 +6,7 @@ import Error from "@/components/shared/Error"
 import Forbidden from "@/components/shared/Forbidden"
 import backend from "@/services/api/backend"
 import { Event } from "@/types/Event"
+import useCalculatePoints from "@/utils/mutations/useCalculatePoints"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -25,9 +26,7 @@ export default function KontrolnaTabla() {
     }
   })
 
-  const calculatePoints = async () => {
-    await backend.get('/admin/manual-calculation')
-  }
+  const { mutate, isPending } = useCalculatePoints()
 
   if(isEventPending || isParentPanding || !event || !parentEvent) return <></>
 
@@ -52,8 +51,10 @@ export default function KontrolnaTabla() {
         />
       </div>
       <button 
-        className="w-1/3 h-15 bg-secondary rounded-lg text-xl font-semibold cursor-pointer hover:brightness-130 active:brightness-150 duration-300"
-        onClick={calculatePoints}  
+        className={`${isPending ? 'cursor-not-allowed brightness-75' : 'cursor-pointer hover:brightness-130 active:brightness-150'}
+          w-1/3 h-15 bg-secondary rounded-lg text-xl font-semibold duration-300  
+        `}
+        onClick={() => {if(!isPending)mutate()}}  
       >
         Izračunaj poene manuelno
       </button>
