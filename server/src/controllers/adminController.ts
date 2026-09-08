@@ -134,3 +134,23 @@ export const addPrize = async (req: Request, res: Response) => {
 
   return res.sendStatus(200)
 }
+
+export const parentEvent = async (req: Request, res: Response) => {
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null)
+    return res.status(200).json([])
+
+  const result = await database.query("SELECT id, logo, name FROM events WHERE id=$1;", [activeParentEventId])
+
+  return res.status(200).json(result.rows[0])
+}
+
+export const removeParentEvent = async (req: Request, res: Response) => {
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(!activeParentEventId === null)
+    return res.status(400).json({ message: "There is no parent event" })
+
+  await redisClient.del("active_parent_event")
+
+  return res.sendStatus(204)
+}

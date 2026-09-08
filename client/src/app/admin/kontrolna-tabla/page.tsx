@@ -1,5 +1,6 @@
 'use client'
 
+import DashboardButton from "@/components/admin/DashboardButton"
 import DashboardCard from "@/components/admin/DashboardCard"
 import LastUpdated from "@/components/predictions-pages/tabela/LastUpdated"
 import Error from "@/components/shared/Error"
@@ -7,6 +8,7 @@ import Forbidden from "@/components/shared/Forbidden"
 import backend from "@/services/api/backend"
 import { Event } from "@/types/Event"
 import useCalculatePoints from "@/utils/mutations/useCalculatePoints"
+import useRemoveParentEvent from "@/utils/mutations/useRemoveParentEvent"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -26,7 +28,8 @@ export default function KontrolnaTabla() {
     }
   })
 
-  const { mutate, isPending } = useCalculatePoints()
+  const { mutate: mutateCalculatePoints, isPending: isCalculatePointsPending } = useCalculatePoints()
+  const { mutate: mutateRemoveParentEvent, isPending: isRemoveParentEventPending } = useRemoveParentEvent()
 
   if(isEventPending || isParentPanding || !event || !parentEvent) return <></>
 
@@ -50,19 +53,29 @@ export default function KontrolnaTabla() {
           logo={parentEvent.logo}
         />
       </div>
-      <button 
-        className={`${isPending ? 'cursor-not-allowed brightness-75' : 'cursor-pointer hover:brightness-130 active:brightness-150'}
-          w-1/3 h-15 bg-secondary rounded-lg text-xl font-semibold duration-300  
-        `}
-        onClick={() => {if(!isPending)mutate()}}  
-      >
-        Izračunaj poene manuelno
-      </button>
-      <div className="w-1/3">
-        <LastUpdated 
-          text="Poslednji put računato"
-        />
-      </div>
+      {
+        (!event.name && !event.logo) && (parentEvent.name && parentEvent.logo) &&
+          <DashboardButton 
+            handleClick={() => {if(!isRemoveParentEventPending)mutateRemoveParentEvent()}}
+            title="Izbriši parent event (dupli klik)"
+            isDisabled={isRemoveParentEventPending}
+          />
+      }
+      {
+        event.name && event.logo &&
+          <>
+            <DashboardButton 
+              handleClick={() => {if(!isCalculatePointsPending)mutateCalculatePoints()}}
+              title="Izračunaj poene manuelno (dupli klik)"
+              isDisabled={isCalculatePointsPending}
+            />
+            <div className="w-1/3">
+              <LastUpdated 
+                text="Poslednji put računato"
+              />
+            </div>
+          </>
+      }
     </div>
   )
 }
