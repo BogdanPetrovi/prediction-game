@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { type Event } from '../../types/Event'
 
-const DashboardCard = ({ title, name, logo }: Event & { title: string }) => {
+const DashboardCard = ({ title, name, logo, id }: Event & { title: string }) => {
   if(!logo) return (
     <div className="w-1/4 h-80 bg-secondary rounded-xl border p-3 gap-10 flex flex-col text-3xl">
       <h2 className="font-bold">{ title }</h2>
@@ -21,6 +21,7 @@ const DashboardCard = ({ title, name, logo }: Event & { title: string }) => {
         unoptimized
       />
       <h2 className="text-center font-bold">{name}</h2>
+      <h4 className="text-center">ID: { id }</h4>
     </div>
   )
 }

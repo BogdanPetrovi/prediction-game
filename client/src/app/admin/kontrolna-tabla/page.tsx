@@ -29,7 +29,6 @@ export default function KontrolnaTabla() {
     await backend.get('/admin/manual-calculation')
   }
 
-
   if(isEventPending || isParentPanding || !event || !parentEvent) return <></>
 
   if(isError && axios.isAxiosError(error) && error.status === 403) return <Forbidden />
@@ -41,11 +40,13 @@ export default function KontrolnaTabla() {
       <div className="flex w-full justify-center gap-10 mb-8">
         <DashboardCard
           title={'Aktivni turnir'}
+          id={event.id}
           name={event.name}
           logo={event.logo}
         />
         <DashboardCard
           title={'Aktivni parent turnir'}
+          id={parentEvent.id}
           name={parentEvent.name}
           logo={parentEvent.logo}
         />
