@@ -11,3 +11,13 @@ export const getEvent = async (req: Request, res: Response) => {
 
   return res.status(200).json(result.rows[0])
 }
+
+export const getParentEvent = async (req: Request, res: Response) => {
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null)
+    return res.status(200).json([])
+
+  const result = await database.query("SELECT id, logo, name FROM events WHERE id=$1;", [activeParentEventId])
+
+  return res.status(200).json(result.rows[0])
+}

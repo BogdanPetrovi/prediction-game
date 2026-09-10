@@ -4,7 +4,7 @@ import { getMatches, getMatchesPoints } from "../controllers/matchController.js"
 import { getLastLeaderboardUpdateAt, getLeaderboard, getUsersLeaderboardPlaceAndPage, prizes } from "../controllers/leaderboardController.js";
 import { getPredictions, getPredictionsHistory, predict } from "../controllers/predictionController.js";
 import { getHistory } from "../controllers/historyController.js";
-import { getEvent } from "../controllers/eventController.js";
+import { getParentEvent } from "../controllers/eventController.js";
 import { getProfile } from "../controllers/userController.js";
 
 const router = Router();
@@ -13,7 +13,7 @@ router.get('/matches', isLoggedIn, getMatches)
 
 router.get('/leaderboard', isLoggedIn, getLeaderboard)
 
-router.get('/event', isLoggedIn, getEvent)
+router.get('/event', isLoggedIn, getParentEvent)
 
 router.get('/history', isLoggedIn, getHistory)
 

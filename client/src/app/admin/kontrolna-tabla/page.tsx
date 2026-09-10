@@ -16,14 +16,14 @@ export default function KontrolnaTabla() {
   const { data: parentEvent, isPending: isParentPanding, isError, error } = useQuery({
     queryKey: ['parent-event'],
     queryFn: async ():Promise<Event> => {
-      const result = await backend.get('/admin/parent-event')
+      const result = await backend.get('/event')
       return result.data
     }
   })
   const { data: event, isPending: isEventPending } = useQuery({
     queryKey: ['event'],
     queryFn: async ():Promise<Event> => {
-      const result = await backend.get('/event')
+      const result = await backend.get('/admin/child-event')
       return result.data
     }
   })

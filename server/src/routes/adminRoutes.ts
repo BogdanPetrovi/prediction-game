@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { addPrize, adminMatches, eventUpsert, manualCalculation, parentEvent, removeParentEvent, searchEvent, searchParentEvent, updateMatches } from "../controllers/adminController.js";
+import { addPrize, adminMatches, eventUpsert, manualCalculation, removeParentEvent, searchEvent, searchParentEvent, updateMatches } from "../controllers/adminController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
+import { getEvent } from "../controllers/eventController.js";
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post("/manual-calculation", isLoggedIn, isAdmin, manualCalculation)
 
 router.post("/add-prize", isLoggedIn, isAdmin, addPrize)
 
-router.get('/parent-event', isLoggedIn, isAdmin, parentEvent)
+router.get('/child-event', isLoggedIn, isAdmin, getEvent)
 
 router.post('/remove-parent-event', isLoggedIn, isAdmin, removeParentEvent)
 
