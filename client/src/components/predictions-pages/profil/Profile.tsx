@@ -23,17 +23,20 @@ export default function Profile() {
     <div className="flex flex-col md:flex-row justify-between gap-3 md:gap-0">
       <div>
         <h2 className="font-bold text-4xl text-white">{data.username}</h2>
-        <div className="flex items-center gap-2">
-          <h4 className="uppercase tracking-[1.5px] text-lg text-muted">Trenutna forma:</h4>
           {
-            data.form.map((isRight, index) => (
-              isRight ? 
-              <div className="w-4 h-4 rounded-sm bg-green-400 shadow-md shadow-green-400/50" key={index}></div>
-              :
-              <div className="w-4 h-4 rounded-sm bg-red-400 shadow-md shadow-red-400/50" key={index}></div>
-            ))
+            data.form.length > 0 &&
+              <div className="flex items-center gap-2">
+                <h4 className="uppercase tracking-[1.5px] text-lg text-muted">Trenutna forma:</h4>
+                {
+                  data.form.map((isRight, index) => (
+                    isRight ? 
+                    <div className="w-4 h-4 rounded-sm bg-green-400 shadow-md shadow-green-400/50" key={index}></div>
+                    :
+                    <div className="w-4 h-4 rounded-sm bg-red-400 shadow-md shadow-red-400/50" key={index}></div>
+                  ))
+                } 
+              </div>
           }
-        </div>
       </div>
 
       <div className="flex gap-10">
