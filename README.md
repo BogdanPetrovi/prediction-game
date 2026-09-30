@@ -37,10 +37,12 @@ This application is strictly **a point based community engagement tool**. It doe
 
 ### 1. Database Initialization
 
-Ensure PostgreSQL is running.
+Ensure PostgreSQL and Redis are running (Redis on the default `localhost:6379`).
+
+Create the `predictions` database and apply all migrations. The script is safe to re-run; already applied migrations are skipped:
 
 ```
-psql -U your_username -d your_database -f server/src/database/db.sql
+psql -U your_username -d postgres -f server/src/database/migrate.sql
 ```
 
 ### 2. Backend Setup
@@ -59,6 +61,9 @@ SESSION_SECRET=your_secret
 DISCORD_CLIENT_ID=your_id
 DISCORD_SECRET=your_secret
 DISCORD_CALLBACK_URL=/auth/discord/callback
+DISCORD_WEBHOOK_URL=your_webhook_url
+POSTHOG_KEY=your_key
+POSTHOG_HOST=your_host
 ```
 
 Run the server:

@@ -1,1 +1,2 @@
-CREATE DATABASE predictions;
+SELECT 'CREATE DATABASE predictions'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'predictions')\gexec

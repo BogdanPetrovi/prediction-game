@@ -137,7 +137,7 @@ export const addPrize = async (req: Request, res: Response) => {
 
 export const removeParentEvent = async (req: Request, res: Response) => {
   const activeParentEventId = await redisClient.get("active_parent_event")
-  if(!activeParentEventId === null)
+  if(activeParentEventId === null)
     return res.status(400).json({ message: "There is no parent event" })
 
   await redisClient.del("active_parent_event")
