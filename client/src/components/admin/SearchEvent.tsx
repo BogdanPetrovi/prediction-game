@@ -31,7 +31,7 @@ export default function SearchEvent ({ onCheck, isSearching }: SearchEventProps)
               value={id}
               onChange={(val) => setId(val.target.value)}
               placeholder="npr. 8042"
-              className="w-full bg-admin-input border border-admin-border rounded-lg px-4 py-3 text-[#e8ede8] text-md outline-none transition-all duration-200 focus:border-green-500/60"
+              className="w-full bg-white/5 border rounded-lg px-4 py-3 text-md outline-none transition-all duration-200 focus:border-green-500/60"
             />
           </div>
           {

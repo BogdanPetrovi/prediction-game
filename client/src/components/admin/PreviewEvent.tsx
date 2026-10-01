@@ -17,7 +17,7 @@ export default function PreviewEvent({ onConfirm, event, reset }: PreviewEventPr
       <p className="text-sm font-bold tracking-[3px] uppercase text-muted mb-3">
         Pregled turnira
       </p>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-admin-input border border-admin-border rounded-xl p-7">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-white/5 border rounded-xl p-7">
         <Image
           className="size-[90px]"
           src={event?.logo ?? ''}
@@ -28,11 +28,11 @@ export default function PreviewEvent({ onConfirm, event, reset }: PreviewEventPr
         />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold tracking-[2px] uppercase text-accent mb-1">ID: {event?.id}</p>
-          <p className="text-3xl font-bold text-[#e8ede8] mb-2 truncate">{event?.name}</p>
+          <p className="text-3xl font-bold mb-2 truncate">{event?.name}</p>
           <div className="flex items-center gap-2 text-sm text-muted">
-            <span className="bg-[#2b3040] border border-green-500/60 px-3 py-1 rounded-full text-xs font-medium text-[#e8ede8]">{startDate}</span>
+            <span className="bg-secondary border border-green-500/60 px-3 py-1 rounded-full text-xs font-medium">{startDate}</span>
             <span className="text-muted text-xs">→</span>
-            <span className="bg-[#2b3040] border border-green-500/60 px-3 py-1 rounded-full text-xs font-medium text-[#e8ede8]">{endDate}</span>
+            <span className="bg-secondary border border-green-500/60 px-3 py-1 rounded-full text-xs font-medium">{endDate}</span>
           </div>
         </div>
         <div className="flex flex-row sm:flex-col gap-2 shrink-0 w-full sm:w-auto">
@@ -45,7 +45,7 @@ export default function PreviewEvent({ onConfirm, event, reset }: PreviewEventPr
           </button>
           <button
             onClick={reset}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg bg-transparent border border-borderl text-muted text-sm font-bold cursor-pointer duration-300 hover:border-[#f75a5a] hover:text-[#f75a5a]">
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg bg-transparent border text-muted text-sm font-bold cursor-pointer duration-300 hover:border-[#f75a5a] hover:text-[#f75a5a]">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             Odbaci
           </button>

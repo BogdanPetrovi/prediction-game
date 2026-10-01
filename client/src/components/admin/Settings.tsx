@@ -25,12 +25,12 @@ export default function Settings({ isActive, setIsActive, parentEvent, setParent
         </p>
         <div className="flex gap-2">
           <div 
-            className={`${isActive ? 'border-green-500' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
+            className={`${isActive ? 'border-green-500' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-white/5 text-muted text-sm cursor-pointer select-none duration-200`}
             onClick={() => setIsActive(true)}>
             ✅&nbsp; Aktivan
           </div>
           <div 
-            className={`${!isActive ? 'border-red-500/50' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-300`}
+            className={`${!isActive ? 'border-red-500/50' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-white/5 text-muted text-sm cursor-pointer select-none duration-300`}
             onClick={() => setIsActive(false)}>
               ⏸&nbsp; Neaktivan
           </div>
@@ -43,12 +43,12 @@ export default function Settings({ isActive, setIsActive, parentEvent, setParent
         </p>
         <div className="flex gap-2 mb-5">
           <div 
-            className={`${parentEvent.isParent ? 'border-green-500' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
+            className={`${parentEvent.isParent ? 'border-green-500' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-white/5 text-muted text-sm cursor-pointer select-none duration-200`}
             onClick={() => setParentEvent({...parentEvent, isParent: true})}>
             Da, postoji parent turnir
           </div>
           <div 
-            className={`${!parentEvent.isParent ? 'border-red-500/50' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-admin-input text-muted text-sm cursor-pointer select-none duration-200`}
+            className={`${!parentEvent.isParent ? 'border-red-500/50' : ''} flex-1 text-center px-4 py-3 rounded-lg border bg-white/5 text-muted text-sm cursor-pointer select-none duration-200`}
             onClick={() => setParentEvent({...parentEvent, isParent: false})}>
             Ne, nema parent turnira
           </div>

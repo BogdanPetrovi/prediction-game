@@ -2,7 +2,6 @@
 
 @layer base {
   :root {
-    --background: #232833;
     --foreground: #dbdce4;
   }
 
@@ -23,9 +22,6 @@
   --font-oxanium: var(--font-oxanium);
 
   --color-secondary: #17113d;
-  --color-light-secondary: #252830;
-  --color-admin-input: #313749;
-  --color-admin-border: #424860;
   --color-muted: #6c757d;
 }
 

@@ -64,7 +64,7 @@ export default function Events() {
 
   return (
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
-      <div className="w-full bg-[#2b3040] max-w-[780px] border border-green-500 rounded-[14px] relative z-10 overflow-hidden">
+      <div className="w-full bg-secondary max-w-[780px] border rounded-xl relative z-10 overflow-hidden">
         <SearchEvent 
           onCheck={checkEvent} 
           isSearching={isSearching}  
@@ -90,7 +90,7 @@ export default function Events() {
         <div className="mt-3 w-[780px] flex justify-end gap-3">
           <button 
             onClick={reset} 
-            className="inline-flex text-center gap-2 px-5 py-3 rounded-lg border border-admin-border text-muted text-md font-bold cursor-pointer hover:border-red-500/40 hover:text-red-500/80 duration-300"
+            className="inline-flex text-center gap-2 px-5 py-3 rounded-lg border text-muted text-md font-bold cursor-pointer hover:border-red-500/40 hover:text-red-500/80 duration-300"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
             Resetuj

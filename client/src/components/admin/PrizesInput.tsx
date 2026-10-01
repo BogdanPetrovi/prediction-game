@@ -15,7 +15,7 @@ export default function PrizesInput({ title, placeholder, type, value, setValue 
       <input
         type={type}
         placeholder={placeholder}
-        className="w-full bg-admin-input border border-admin-border rounded-lg px-4 py-3 text-[#e8ede8] text-md outline-none transition-all duration-200 focus:border-green-500/60"
+        className="w-full bg-white/5 border rounded-lg px-4 py-3 text-md outline-none transition-all duration-200 focus:border-green-500/60"
         value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
       />

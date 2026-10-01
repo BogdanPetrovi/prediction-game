@@ -26,7 +26,7 @@ export default function Nagrade() {
 
   return(
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
-      <div className="w-full bg-[#2b3040] max-w-[780px] border border-green-500 rounded-[14px] relative z-10 overflow-hidden">
+      <div className="w-full bg-secondary max-w-[780px] border rounded-xl relative z-10 overflow-hidden">
         <div className="px-9 py-8">
           <p className="text-sm font-bold tracking-[3px] uppercase text-muted mb-3">
             Dodaj skinove za turnir
@@ -40,7 +40,7 @@ export default function Nagrade() {
             <PrizesInput title="Slika skina" placeholder="URL Slike sa countersite.gg" type="text" value={skinImage} setValue={setSkinImage} />
           </div>
         </div>
-        <button className="w-full h-10 cursor-pointer bg-admin-input hover:brightness-125 active:brightness-150 duration-300" onClick={handleClick}>
+        <button className="w-full h-10 cursor-pointer bg-white/5 hover:bg-white/10 active:bg-white/15 duration-300" onClick={handleClick}>
           Potvrdi
         </button>
       </div>
