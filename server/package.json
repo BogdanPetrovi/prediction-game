@@ -13,7 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@bogdanpet/hltv": "^1.1.0",
+    "@bogdanpet/hltv": "^1.2.1",
     "body-parser": "^2.2.0",
     "connect-redis": "^9.0.0",
     "cors": "^2.8.5",
