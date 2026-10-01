@@ -1,4 +1,4 @@
-import { date, z } from "zod"
+import { z } from "zod"
 
 const teamObject = z.object({
     id: z.number().positive().nullable(),
@@ -12,6 +12,7 @@ const match = z.object({
     team1: teamObject,
     team2: teamObject,
     format: z.string(),
+    event: z.object({ id: z.number() }),
     live: z.boolean()
 })
 

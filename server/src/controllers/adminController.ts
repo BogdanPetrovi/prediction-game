@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import redisClient from "../config/redis.js";
+import redisClient, { MATCHES_CACHE_TTL } from "../config/redis.js";
 import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
@@ -41,7 +41,7 @@ export const updateMatches = async(req: Request, res: Response) => {
 
   await redisClient.del("matches")
   await redisClient.set("matches", JSON.stringify(parsedUpdatedList), {
-    EX: 1800
+    EX: MATCHES_CACHE_TTL
   })
 
   return res.sendStatus(200)

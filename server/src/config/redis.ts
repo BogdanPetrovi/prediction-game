@@ -4,6 +4,8 @@ import database from '../database/database.js';
 
 export const redisClient = createClient();
 
+export const MATCHES_CACHE_TTL = 7200;
+
 (async () => {
   redisClient.on("error", (err) => { 
     console.error(err)  

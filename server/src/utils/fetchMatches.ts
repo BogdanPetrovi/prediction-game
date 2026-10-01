@@ -1,5 +1,5 @@
 import { HLTV } from "@bogdanpet/hltv"
-import redisClient from "../config/redis.js"
+import redisClient, { MATCHES_CACHE_TTL } from "../config/redis.js"
 import database from "../database/database.js"
 import TeamNames from "../types/TeamNames.js"
 import hltvWrapper from "./hltvWrapper.js"
@@ -19,7 +19,7 @@ const fetchMatches = async () => {
   const apiResult = await hltvWrapper(HLTV.getMatches(parseInt(activeEventId)))
 
   await redisClient.set("matches", JSON.stringify(apiResult), {
-    EX: 7200
+    EX: MATCHES_CACHE_TTL
   });
   console.log('Succesfuly fetched matches from HLTV at ' + formatDateAndTime())
 
