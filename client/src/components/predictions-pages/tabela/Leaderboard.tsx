@@ -51,7 +51,7 @@ export default function Leaderboard() {
           <ShortcutButtons page={page} setPage={setPage} />
         </div>
       }
-      <div className="bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50">
+      <div className={`${data.leaderboard.length === 0 ? "mt-5" : ""} bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50`}>
         <div className="overflow-x-auto">
           <Table data={data} page={page} />
         </div>
