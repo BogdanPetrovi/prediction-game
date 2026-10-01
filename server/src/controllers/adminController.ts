@@ -4,7 +4,7 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { event, matchList, prize } from "../schemas/admin.schemas.js";
+import { event, matchList, newMatch, prize } from "../schemas/admin.schemas.js";
 import Match from "../types/Match.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
@@ -133,6 +133,31 @@ export const addPrize = async (req: Request, res: Response) => {
     [formatedPrize.eventId, formatedPrize.skinName, formatedPrize.skinImage, formatedPrize.place])
 
   return res.sendStatus(200)
+}
+
+export const addMatch = async (req: Request, res: Response) => {
+  if(!req.body || !req.body.match)
+    throw new AppError("You need to provide match", 400)
+
+  const parsedMatch = newMatch.parse(req.body.match)
+
+  const activeEventId = await redisClient.get("active_event")
+  if(activeEventId === null)
+    throw new AppError("There is no active event", 400)
+
+  const result = await database.query(`INSERT INTO matches (id, team1, team2, event_id, date, format)
+    VALUES ($1, ($2, $3), ($4, $5), $6, $7, $8)
+    ON CONFLICT(id)
+    DO NOTHING RETURNING id;`,
+    [parsedMatch.id, parsedMatch.team1.name, parsedMatch.team1.logo, parsedMatch.team2.name, parsedMatch.team2.logo,
+     activeEventId, parsedMatch.date, parsedMatch.format])
+
+  if(result.rows.length === 0)
+    throw new AppError("Match with this id already exists", 409)
+
+  await redisClient.del("matches")
+
+  return res.sendStatus(201)
 }
 
 export const removeParentEvent = async (req: Request, res: Response) => {

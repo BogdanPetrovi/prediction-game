@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const protectedRoutes = ["/igraj", "/tabela", "/profil", "/istorija", "/admin/mecevi", "/admin/turniri", "/admin/korisnici", "/admin/nagrade", "/admin/kontrolna-tabla"];
+  const protectedRoutes = ["/igraj", "/tabela", "/profil", "/istorija", "/admin/mecevi", "/admin/turniri", "/admin/korisnici", "/admin/nagrade", "/admin/kontrolna-tabla", "/admin/dodaj-meceve"];
   const isRouteProtected = protectedRoutes.includes(pathname);
 
   try {
