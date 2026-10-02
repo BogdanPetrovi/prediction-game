@@ -29,7 +29,6 @@ const placementConfig = [
 ] as const
 
 export default function Placements({ placements }: PlacementsProps) {
-  console.log(placements)
   return (
     <>
       {placementConfig.map(({ key, rank, label, textColor, rowBg }) => {
