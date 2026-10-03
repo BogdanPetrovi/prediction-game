@@ -4,7 +4,7 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { event, matchList, newMatch, prize } from "../schemas/admin.schemas.js";
+import { event, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
 import Match from "../types/Match.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
@@ -158,6 +158,57 @@ export const addMatch = async (req: Request, res: Response) => {
   await redisClient.del("matches")
 
   return res.sendStatus(201)
+}
+
+export const matchesWithoutResult = async (req: Request, res: Response) => {
+  const activeParentEventId = await redisClient.get("active_parent_event")
+  if(activeParentEventId === null)
+    return res.status(200).json([])
+
+  const result = await database.query(`
+    SELECT
+      m.id,
+      (m.team1).name AS team1_name,
+      (m.team1).logo AS team1_logo,
+      (m.team2).name AS team2_name,
+      (m.team2).logo AS team2_logo,
+      m.date,
+      m.format
+    FROM matches m
+    JOIN events e ON e.id = m.event_id
+    WHERE (e.id = $1 OR e.parent_event_id = $1)
+    AND m.result IS NULL
+    AND (m.date IS NULL OR m.date <= $2)
+    ORDER BY m.date NULLS FIRST;
+  `, [activeParentEventId, Date.now()])
+
+  const matches = result.rows.map((m) => ({
+    id: Number(m.id),
+    team1: { name: m.team1_name, logo: m.team1_logo },
+    team2: { name: m.team2_name, logo: m.team2_logo },
+    date: m.date ? Number(m.date) : undefined,
+    format: m.format
+  }))
+
+  return res.status(200).json(matches)
+}
+
+export const setResult = async (req: Request, res: Response) => {
+  if(!req.body || !req.body.result)
+    throw new AppError("You need to provide result", 400)
+
+  const parsedResult = matchResult.parse(req.body.result)
+  const winner = parsedResult.team1Score > parsedResult.team2Score ? 'team1' : 'team2'
+
+  const result = await database.query(`UPDATE matches SET winner_team = $1, result = $2
+    WHERE id = $3 AND result IS NULL AND winner_team IS NULL
+    RETURNING id;`,
+    [winner, `${parsedResult.team1Score}:${parsedResult.team2Score}`, parsedResult.matchId])
+
+  if(result.rows.length === 0)
+    throw new AppError("Match doesn't exist or already has result", 409)
+
+  return res.sendStatus(200)
 }
 
 export const removeParentEvent = async (req: Request, res: Response) => {

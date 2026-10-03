@@ -24,6 +24,9 @@ export default function PredictionsLayout({
         <Link href={'/admin/dodaj-meceve'} className={linkDesign + 'text-2xl'}>
           Dodaj mečeve
         </Link>
+        <Link href={'/admin/rezultati'} className={linkDesign + 'text-4xl'}>
+          Rezultati
+        </Link>
       </div>
       {children}
     </>

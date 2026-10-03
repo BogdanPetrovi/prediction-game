@@ -31,6 +31,12 @@ export const newMatch = z.object({
     format: z.enum(['bo1', 'bo3', 'bo5'])
 })
 
+export const matchResult = z.object({
+    matchId: z.number().positive(),
+    team1Score: z.number().int().min(0),
+    team2Score: z.number().int().min(0)
+}).refine(r => r.team1Score !== r.team2Score, { message: "Result can't be a draw" })
+
 export const event = z.object({
     id: z.coerce.number().positive(),
     logo: z.string(),

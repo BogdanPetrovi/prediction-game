@@ -11,14 +11,19 @@ const calculatePoints = async () => {
     if(activeEventId === null || activeParentEventId === null)
       return console.log("There is no active events. Cron job is finished at: ", new Date())
 
-    console.log('Checking HLTV for latest results...')
-    const results = await HLTV.getResults(parseInt(activeEventId))
-    
-    // insert results of the matches into the database
-    for(const match of results) {
-      const winner = match.result.team1 > match.result.team2 ? 'team1' : 'team2';
-      const result = `${match.result.team1}:${match.result.team2}`
-      await database.query('UPDATE matches SET winner_team = $1, result = $2 WHERE id = $3 AND result IS NULL AND winner_team IS NULL;', [winner, result, match.id])
+    // HLTV failing must not block points for results entered manually from admin
+    try {
+      console.log('Checking HLTV for latest results...')
+      const results = await HLTV.getResults(parseInt(activeEventId))
+
+      // insert results of the matches into the database
+      for(const match of results) {
+        const winner = match.result.team1 > match.result.team2 ? 'team1' : 'team2';
+        const result = `${match.result.team1}:${match.result.team2}`
+        await database.query('UPDATE matches SET winner_team = $1, result = $2 WHERE id = $3 AND result IS NULL AND winner_team IS NULL;', [winner, result, match.id])
+      }
+    } catch (err) {
+      console.error("Error fetching results from HLTV, calculating points from database only: ", err)
     }
 
     await database.transaction(async (client) => {
