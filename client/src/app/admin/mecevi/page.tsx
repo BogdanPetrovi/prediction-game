@@ -4,6 +4,7 @@ import Error from "@/components/shared/Error"
 import Forbidden from "@/components/shared/Forbidden"
 import Loading from "@/components/shared/Loading"
 import MatchCard from "@/components/admin/MatchCard"
+import MatchesSourceInfo from "@/components/admin/MatchesSourceInfo"
 import backend from "@/services/api/backend"
 import AdminMatches, { MatchWithGuesses } from "@/types/AdminMatches"
 import { formatDateTime } from "@/utils/formatDate"
@@ -29,7 +30,7 @@ export default function Matches() {
   const { mutate } = useUpdateMatches()
 
   const handleChange = async () => {
-    if(data && currentButtonOption === 1){
+    if(data?.matches && currentButtonOption === 1){
       const updatedList = data.matches.map(match => {
         return match.id === chosenMatch?.id 
         ? {...match, live: !chosenMatch.live} 
@@ -46,12 +47,13 @@ export default function Matches() {
 
   if(isError) return <Error err={error} />
 
-  if(!data || data.expire === null) return <div>
+  if(!data || !data.matches?.length || !data.source) return <div>
       <h2>No matches</h2>
     </div>
 
   return(
     <div className="w-screen h-[calc(100vh-4.5rem)] pt-12 flex flex-col items-center">
+      <MatchesSourceInfo source={data.source} expire={data.expire} />
       <div className="w-4/5 h-40 bg-secondary border-2 border-green-600 rounded-md flex items-center gap-6 px-2 overflow-x-auto">  
       {
         data.matches.map(match => (
@@ -74,9 +76,16 @@ export default function Matches() {
               <h3>Live: {chosenMatch.live ? 'Da' : 'Ne'}</h3>
               <h3>Broj predikcija: { chosenMatch.guesses }</h3>
             </div>
-            <button className="w-2/3 lg:w-1/3 rounded-2xl bg-cyan-900/30 p-2 font-semibold self-center mt-auto mb-2 text-2xl cursor-pointer" onClick={handleChange}>
-              { buttonOptions[currentButtonOption] }
-            </button>
+            {
+              data.source === 'redis' ?
+              <button className="w-2/3 lg:w-1/3 rounded-2xl bg-cyan-900/30 p-2 font-semibold self-center mt-auto mb-2 text-2xl cursor-pointer" onClick={handleChange}>
+                { buttonOptions[currentButtonOption] }
+              </button>
+              :
+              <h3 className="self-center mt-auto mb-2 text-xl font-semibold">
+                Live status se može menjati samo za mečeve iz Redis keša.
+              </h3>
+            }
           </>
         }
       </div>

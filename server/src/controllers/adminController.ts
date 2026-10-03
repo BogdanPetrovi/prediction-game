@@ -5,29 +5,33 @@ import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
 import { event, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
-import Match from "../types/Match.js";
+import getActiveMatches from "../utils/getActiveMatches.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
 import formatDateAndTime from "../utils/formatDateAndTime.js";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
-  const matches = await redisClient.get("matches")
-  const expire = await redisClient.ttl("matches")
+  const activeEvent = await redisClient.get("active_event")
+  if(!activeEvent)
+    return res.status(200).json({ matches: null, expire: null, source: null })
 
-  if(!matches || !expire)
-    return res.status(200).json({ matches: null, expire: null })
-  
+  const expire = await redisClient.ttl("matches")
+  const source = expire === -2 ? 'database' : 'redis'
+
+  const matches = await getActiveMatches(activeEvent)
+
   const matchesArrayWithGuesses = await Promise.all(
-    JSON.parse(matches).map(async (match: Match) => {
+    matches.map(async (match) => {
       const result = await database.query("SELECT COUNT(*) AS guesses FROM predictions WHERE match_id=$1;", [match.id])
       return { ...match, guesses: Number(result.rows[0].guesses) }
     })
-  ) 
+  )
 
-  return res.status(200).json({ 
+  return res.status(200).json({
     matches: matchesArrayWithGuesses,
-    expire
+    expire: source === 'redis' ? expire : null,
+    source
    })
 }
 
