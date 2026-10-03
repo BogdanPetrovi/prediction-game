@@ -4,6 +4,7 @@ import database from "../database/database.js"
 import TeamNames from "../types/TeamNames.js"
 import hltvWrapper from "./hltvWrapper.js"
 import formatDateAndTime from "./formatDateAndTime.js"
+import sendMatchesNotification from "./sendMatchesNotification.js"
 
 let isFetching = false;
 
@@ -42,34 +43,8 @@ const fetchMatches = async () => {
     console.error("DB error: " + err)
   }).finally(() => isFetching = false)
 
-  if(newMatches.length > 0){
-    const embedFields = newMatches.map(match => ({
-      name: "Novi meč",
-      value: `${match.team1Name} 🆚 ${match.team2Name}`,
-      inline: false
-    }))
-
-    await fetch(process.env.DISCORD_WEBHOOK_URL!, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content: "**[Igraj predikcije](<https://predikcije.countersite.gg/igraj?utm_source=discord>)** <@&1496218575428653066>",
-        embeds: [
-          {
-            title: "📢 Novi mečevi",
-            color: 0xFF0000,
-            fields: embedFields,
-            footer: {
-              text: "Automatska notifikacija"
-            },
-            timestamp: new Date().toISOString()
-          }
-        ]
-      }),
-    }).catch(err => console.error('Error with discord webhook: ', err))
-  }
+  if(newMatches.length > 0)
+    await sendMatchesNotification(newMatches).catch(err => console.error('Error with discord webhook: ', err))
 }
 
 export default fetchMatches

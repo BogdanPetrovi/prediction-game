@@ -3,7 +3,16 @@
 import AddMatchFormat from "@/components/admin/AddMatchFormat"
 import AddMatchInput from "@/components/admin/AddMatchInput"
 import AddMatchTeam, { Team } from "@/components/admin/AddMatchTeam"
+import PendingNotifications from "@/components/admin/PendingNotifications"
+import Error from "@/components/shared/Error"
+import Forbidden from "@/components/shared/Forbidden"
+import Loading from "@/components/shared/Loading"
+import backend from "@/services/api/backend"
+import PendingNotification from "@/types/PendingNotification"
 import useAddMatch from "@/utils/mutations/useAddMatch"
+import useSendNotifications from "@/utils/mutations/useSendNotifications"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
 import { useState } from "react"
 
 const emptyTeam: Team = { name: '', logo: '' }
@@ -15,7 +24,17 @@ export default function DodajMeceve() {
   const [date, setDate] = useState('')
   const [format, setFormat] = useState('bo3')
 
+  const { data, isPending: isPendingNotificationsLoading, isError, error } = useQuery({
+    queryKey: ['pending-notifications'],
+    queryFn: async (): Promise<PendingNotification[]> => {
+      const result = await backend.get('/admin/pending-notifications')
+      return result.data
+    },
+    retry: false
+  })
+
   const { mutate, isPending } = useAddMatch()
+  const { mutate: sendNotifications, isPending: isSendPending } = useSendNotifications()
 
   const isDisabled = isPending || !matchId || !team1.name || !team2.name || !date
 
@@ -41,6 +60,12 @@ export default function DodajMeceve() {
     })
   }
 
+  if(isPendingNotificationsLoading) return <Loading />
+
+  if(isError && axios.isAxiosError(error) && error.status === 403) return <Forbidden />
+
+  if(isError) return <Error err={error} />
+
   return (
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col items-center">
       <div className="w-full max-w-[780px] bg-secondary rounded-xl border p-6 flex flex-col gap-6">
@@ -64,6 +89,7 @@ export default function DodajMeceve() {
       >
         Dodaj meč
       </button>
+      <PendingNotifications matches={data} isPending={isSendPending} onSend={() => sendNotifications()} />
     </div>
   )
 }

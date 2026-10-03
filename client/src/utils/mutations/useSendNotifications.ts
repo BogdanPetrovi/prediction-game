@@ -3,27 +3,14 @@ import backend from "@/services/api/backend"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-interface AddMatchTeam {
-  name: string,
-  logo: string
-}
-
-interface AddMatchProps {
-  id: number,
-  team1: AddMatchTeam,
-  team2: AddMatchTeam,
-  date: number,
-  format: string
-}
-
-const useAddMatch = () => {
+const useSendNotifications = () => {
   const { showToast } = useToast()
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (match: AddMatchProps) => backend.post('/admin/add-match', { match }),
+    mutationFn: () => backend.post('/admin/send-notifications'),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['pending-notifications'] })
-      showToast('Uspešno ste ubacili meč!')
+      showToast('Uspešno ste poslali notifikaciju!')
     },
     onError: (err) => {
       console.error(err)
@@ -32,9 +19,9 @@ const useAddMatch = () => {
         return
       }
 
-      showToast(`Nismo uspeli da ubacimo meč, pogledajte konzolu!`, 'error')
+      showToast(`Nismo uspeli da pošaljemo notifikaciju, pogledajte konzolu!`, 'error')
     }
   })
 }
 
-export default useAddMatch
+export default useSendNotifications

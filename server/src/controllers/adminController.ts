@@ -9,6 +9,8 @@ import getActiveMatches from "../utils/getActiveMatches.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
 import formatDateAndTime from "../utils/formatDateAndTime.js";
+import sendMatchesNotification from "../utils/sendMatchesNotification.js";
+import TeamNames from "../types/TeamNames.js";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
@@ -160,8 +162,28 @@ export const addMatch = async (req: Request, res: Response) => {
     throw new AppError("Match with this id already exists", 409)
 
   await redisClient.del("matches")
+  // sent later in one message via sendNotifications
+  const notification: TeamNames = { team1Name: parsedMatch.team1.name, team2Name: parsedMatch.team2.name }
+  await redisClient.rPush("pending_notifications", JSON.stringify(notification))
 
   return res.sendStatus(201)
+}
+
+export const pendingNotifications = async (req: Request, res: Response) => {
+  const pending = await redisClient.lRange("pending_notifications", 0, -1)
+
+  return res.status(200).json(pending.map(p => JSON.parse(p) as TeamNames))
+}
+
+export const sendNotifications = async (req: Request, res: Response) => {
+  const pending = await redisClient.lRange("pending_notifications", 0, -1)
+  if(pending.length === 0)
+    throw new AppError("There are no pending notifications", 400)
+
+  await sendMatchesNotification(pending.map(p => JSON.parse(p) as TeamNames))
+  await redisClient.lTrim("pending_notifications", pending.length, -1)
+
+  return res.sendStatus(200)
 }
 
 export const matchesWithoutResult = async (req: Request, res: Response) => {

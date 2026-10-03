@@ -46,13 +46,14 @@ Redis holds the app's live state, not just a cache:
 - `active_event`: the HLTV event id whose matches are scraped and shown on `/igraj`.
 - `active_parent_event`: the event that leaderboards and points roll up to. Events can have a `parent_event_id`, e.g. playoff stages under a main event. Scoring covers matches from the parent and all its children.
 - `matches`: JSON list of upcoming matches from HLTV (`MATCHES_CACHE_TTL`, 2h). Admins can edit it via `POST /admin/matches`. Read it through `utils/getActiveMatches.ts`, which `getMatches`, `getMatchesPoints`, `predict` and `GET /admin/matches` share. The admin route also reports `source: 'redis' | 'database'` from the key's TTL (`-2` = missing). `[]` means HLTV returned no matches. A missing key means the scrape failed, and the helper falls back to the `matches` table. Either way it marks a match `live` once its start date has passed, so predictions lock at the scheduled time. `predict` rejects predictions for matches not in that list or already `live`.
+- `pending_notifications`: list of matchups added via `POST /admin/add-match`. They are not announced right away. `POST /admin/send-notifications` sends them all in one Discord message, then trims only what it sent.
 - `sess:*` stores sessions, and `tracked:<userId>:<sessionId>` throttles PostHog `user_active` events.
 
 On startup `config/redis.ts` deletes these keys and rebuilds `active_event`/`active_parent_event` from the `events` row with `is_active = true`. `POST /admin/event-upsert` is the other place that sets them.
 
 ### Background jobs
 
-- `utils/fetchScheduler.ts` runs `fetchMatches` every 25–35 minutes. The randomized delay helps avoid HLTV/Cloudflare blocking. It pulls matches for `active_event` through `@bogdanpet/hltv` (the maintainer's own HLTV scraper package), caches them in Redis, inserts new ones into `matches`, and posts new matchups to a Discord webhook.
+- `utils/fetchScheduler.ts` runs `fetchMatches` every 25–35 minutes. The randomized delay helps avoid HLTV/Cloudflare blocking. It pulls matches for `active_event` through `@bogdanpet/hltv` (the maintainer's own HLTV scraper package), caches them in Redis, inserts new ones into `matches`, and posts new matchups to a Discord webhook through `utils/sendMatchesNotification.ts` (shared with the manual send; it splits into 25-field embeds and pings the role only once).
 - `utils/calculatePoints.ts` runs on a cron (`0 12,14,17,19,22 * * *`) and on `POST /admin/manual-calculation`. It writes HLTV results into `matches`, then in one transaction fills `matches_points` and upserts `leaderboards` for `active_parent_event`. An HLTV failure is caught and logged so the DB part still runs. That way results entered manually via `POST /admin/set-result` turn into points even while HLTV is down, and HLTV never overwrites them (`WHERE result IS NULL`). **Scoring:** a correct pick is worth `100 + % of users who picked the other team`, so upsets pay more. Points for a match are frozen once written (`ON CONFLICT DO NOTHING`).
 - Wrap HLTV calls in `hltvWrapper()` so Cloudflare blocks become `CloudflareError`.
 
