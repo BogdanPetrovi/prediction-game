@@ -2,6 +2,7 @@ import 'dotenv/config';
 import app from './index.js';
 import posthog from './config/posthog.js';
 import { startMatchesScheduler } from './utils/fetchScheduler.js';
+import { startCalculationScheduler } from './utils/calculationScheduler.js';
 
 const port = process.env.PORT || 5000;
 
@@ -15,3 +16,4 @@ app.listen(port, () => {
 });
 
 startMatchesScheduler()
+startCalculationScheduler()

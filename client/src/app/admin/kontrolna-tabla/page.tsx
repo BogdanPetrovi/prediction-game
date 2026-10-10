@@ -1,14 +1,17 @@
 'use client'
 
+import CalculationSchedule from "@/components/admin/CalculationSchedule"
 import DashboardButton from "@/components/admin/DashboardButton"
 import DashboardCard from "@/components/admin/DashboardCard"
 import LastUpdated from "@/components/predictions-pages/tabela/LastUpdated"
 import Error from "@/components/shared/Error"
 import Forbidden from "@/components/shared/Forbidden"
 import backend from "@/services/api/backend"
+import type CalculationScheduleType from "@/types/CalculationSchedule"
 import { Event } from "@/types/Event"
 import useCalculatePoints from "@/utils/mutations/useCalculatePoints"
 import useRemoveParentEvent from "@/utils/mutations/useRemoveParentEvent"
+import useUpdateCalculationSchedule from "@/utils/mutations/useUpdateCalculationSchedule"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -27,9 +30,17 @@ export default function KontrolnaTabla() {
       return result.data
     }
   })
+  const { data: schedule } = useQuery({
+    queryKey: ['calculation-schedule'],
+    queryFn: async (): Promise<CalculationScheduleType> => {
+      const result = await backend.get('/admin/calculation-schedule')
+      return result.data
+    }
+  })
 
   const { mutate: mutateCalculatePoints, isPending: isCalculatePointsPending } = useCalculatePoints()
   const { mutate: mutateRemoveParentEvent, isPending: isRemoveParentEventPending } = useRemoveParentEvent()
+  const { mutate: mutateCalculationSchedule, isPending: isCalculationSchedulePending } = useUpdateCalculationSchedule()
 
   if(isEventPending || isParentPanding || !event || !parentEvent) return <></>
 
@@ -38,7 +49,7 @@ export default function KontrolnaTabla() {
   if(isError) return <Error err={error} />
 
   return (
-    <div className="w-screen h-[calc(100vh-4.5rem)] pt-12 flex flex-col gap-2 items-center">
+    <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col gap-2 items-center">
       <div className="flex w-full justify-center gap-10 mb-8">
         <DashboardCard
           title={'Aktivni turnir'}
@@ -75,6 +86,14 @@ export default function KontrolnaTabla() {
               />
             </div>
           </>
+      }
+      {
+        schedule &&
+          <CalculationSchedule
+            schedule={schedule}
+            isPending={isCalculationSchedulePending}
+            onSave={(hours) => mutateCalculationSchedule(hours)}
+          />
       }
     </div>
   )

@@ -37,6 +37,9 @@ export const matchResult = z.object({
     team2Score: z.number().int().min(0)
 }).refine(r => r.team1Score !== r.team2Score, { message: "Result can't be a draw" })
 
+export const calculationHours = z.array(z.number().int().min(0).max(23)).min(1)
+    .transform(hours => [...new Set(hours)].sort((a, b) => a - b))
+
 export const event = z.object({
     id: z.coerce.number().positive(),
     logo: z.string(),

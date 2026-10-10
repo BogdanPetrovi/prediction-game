@@ -4,13 +4,14 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { event, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
+import { calculationHours, event, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
 import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
 import formatDateAndTime from "../utils/formatDateAndTime.js";
 import sendMatchesNotification from "../utils/sendMatchesNotification.js";
 import TeamNames from "../types/TeamNames.js";
+import { getCalculationHours, getNextCalculation, setCalculationHours } from "../utils/calculationScheduler.js";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
@@ -126,6 +127,23 @@ export const appVersion = (req: Request, res: Response) => {
 
 export const manualCalculation = async (req: Request, res: Response) => {
   await calculatePoints();
+  return res.sendStatus(200)
+}
+
+export const calculationSchedule = async (req: Request, res: Response) => {
+  const hours = await getCalculationHours()
+
+  return res.status(200).json({ hours, nextCalculation: getNextCalculation() })
+}
+
+export const updateCalculationSchedule = async (req: Request, res: Response) => {
+  if(!req.body || !req.body.hours)
+    throw new AppError("You need to provide hours", 400)
+
+  const parsedHours = calculationHours.parse(req.body.hours)
+
+  await setCalculationHours(parsedHours)
+
   return res.sendStatus(200)
 }
 

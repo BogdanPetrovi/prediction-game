@@ -4,7 +4,6 @@ import helmet from 'helmet';
 import cors from 'cors'
 import session from 'express-session'
 import passport from 'passport';
-import cron from "node-cron";
 
 import fs from 'fs'
 import path from 'path'
@@ -13,7 +12,6 @@ import userRouter from './routes/userRoutes.js';
 import adminRouter from './routes/adminRoutes.js'
 import authRouter from './routes/authRoutes.js'
 
-import calculatePoints from './utils/calculatePoints.js';
 import configurePassport from './config/passport.js';
 import redisClient from './config/redis.js';
 import { RedisStore } from 'connect-redis';
@@ -72,9 +70,6 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 configurePassport()
-
-// cron job
-cron.schedule("0 12,14,17,19,22 * * *", calculatePoints)
 
 // routers
 app.use(userRouter)
