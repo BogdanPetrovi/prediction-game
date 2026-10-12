@@ -8,13 +8,18 @@ export default async function middleware(req: NextRequest) {
   try {
     const cookieHeader = req.headers.get("cookie");
     const utmSource = req.nextUrl.searchParams.get('utm_source')
+    const clientIp =
+      req.headers.get("cf-connecting-ip") ??
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+      req.headers.get("x-real-ip");
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
       {
         method: "GET",
         headers: {
           Cookie: cookieHeader ?? "",
-          ...(utmSource && { 'x-utm-source': utmSource })
+          ...(utmSource && { 'x-utm-source': utmSource }),
+          ...(clientIp && { 'x-client-ip': clientIp })
         },
       }
     );
