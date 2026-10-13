@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import posthog from "../config/posthog.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import redisClient from "../config/redis.js";
-import { getIp } from "../utils/getIp.js";
+import { getCountry } from "../utils/getCountry.js";
 
 export const getUser = async (req: Request, res: Response) => {
   const user = req.user;
@@ -12,13 +12,14 @@ export const getUser = async (req: Request, res: Response) => {
   const alreadyTracked = await redisClient.get(sessionKey)
 
   if(!alreadyTracked){
+    const country = getCountry(req)
     posthog.capture({
       distinctId: String(id),
       event: 'user_active',
       properties: {
-        $ip: getIp(req),
         utm_source: req.headers['x-utm-source'] || 'organic',
-        username: username
+        country,
+        $set: { country }
       }
     })
     await redisClient.set(sessionKey, '1', { EX: 300 })

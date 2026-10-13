@@ -5,7 +5,6 @@ import Prediction from "../types/Prediction.js";
 import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import posthog from "../config/posthog.js";
-import { getIp } from "../utils/getIp.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
 
 export const predict = async (req: Request, res: Response) => {
@@ -44,10 +43,7 @@ export const predict = async (req: Request, res: Response) => {
 
   posthog.capture({
     distinctId: String(id),
-    event: isNew ? 'prediction_made' : 'prediction_changed',
-    properties: {
-      $ip: getIp(req)
-    }
+    event: isNew ? 'prediction_made' : 'prediction_changed'
   })
 
   return res.sendStatus(200);
