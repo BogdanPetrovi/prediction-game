@@ -6,10 +6,13 @@ import { startCalculationScheduler } from './utils/calculationScheduler.js';
 
 const port = process.env.PORT || 5000;
 
-process.on('SIGTERM', async () => {
-  await posthog.shutdown()
+const shutdown = async () => {
+  await posthog.shutdown(1500).catch(err => console.error('PostHog shutdown error: ', err))
   process.exit(0)
-})
+}
+
+process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown)
 
 app.listen(port, () => {
   console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${port}`);

@@ -9,9 +9,9 @@ export const getUser = async (req: Request, res: Response) => {
   const { id, username } = UserType.parse(user)
 
   const sessionKey = `tracked:${id}:${req.sessionID}`
-  const alreadyTracked = await redisClient.get(sessionKey)
+  const firstInWindow = await redisClient.set(sessionKey, '1', { EX: 300, NX: true })
 
-  if(!alreadyTracked){
+  if(firstInWindow){
     const country = getCountry(req)
     posthog.capture({
       distinctId: String(id),
@@ -22,7 +22,6 @@ export const getUser = async (req: Request, res: Response) => {
         $set: { country }
       }
     })
-    await redisClient.set(sessionKey, '1', { EX: 300 })
   }
 
   return res.status(200).json({
