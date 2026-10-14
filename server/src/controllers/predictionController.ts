@@ -4,8 +4,8 @@ import database from "../database/database.js";
 import Prediction from "../types/Prediction.js";
 import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
-import posthog from "../config/posthog.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
+import trackPredictions from "../utils/trackPredictions.js";
 
 export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
@@ -39,12 +39,8 @@ export const predict = async (req: Request, res: Response) => {
     })
   )
 
-  const isNew = results.every(inserted => inserted === true)
-
-  posthog.capture({
-    distinctId: String(id),
-    event: isNew ? 'prediction_made' : 'prediction_changed'
-  })
+  trackPredictions(id, activeEvent, results.length, results.filter(Boolean).length)
+    .catch(err => console.error('PostHog tracking error: ', err))
 
   return res.sendStatus(200);
 }

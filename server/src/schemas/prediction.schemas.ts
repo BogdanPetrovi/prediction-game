@@ -5,4 +5,4 @@ const Prediction = z.object({
     predictedTeam: z.enum(['team1','team2'])
 })
 
-export const PredictionsArray = z.array(Prediction)
+export const PredictionsArray = z.array(Prediction).min(1)
