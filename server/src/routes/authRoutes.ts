@@ -2,12 +2,13 @@ import { Router } from "express";
 import passport from "passport";
 import { getUser, logOut } from "../controllers/authController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
+import { trackLoginFailed, trackLoginStarted } from "../middlewares/trackLoginAttempts.js";
 
 const router = Router();
 
-router.get("/discord", passport.authenticate('discord'))
+router.get("/discord", trackLoginStarted, passport.authenticate('discord'))
 
-router.get('/discord/callback', passport.authenticate('discord', {
+router.get('/discord/callback', trackLoginFailed, passport.authenticate('discord', {
   successRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/igraj`,
   failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login`
 }))
