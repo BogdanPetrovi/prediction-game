@@ -4,9 +4,8 @@ import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
 import hltvWrapper from "../utils/hltvWrapper.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { calculationHours, event, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
+import { calculationHours, event, eventQuery, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
-import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
 import formatDateAndTime from "../utils/formatDateAndTime.js";
 import sendMatchesNotification from "../utils/sendMatchesNotification.js";
@@ -55,7 +54,7 @@ export const updateMatches = async(req: Request, res: Response) => {
 }
 
 export const searchEvent = async (req: Request, res: Response) => {
-  const { eventId } = z.object({ eventId: z.coerce.number() }).parse(req.query)
+  const { eventId } = eventQuery.parse(req.query)
 
   const result = await database.query("SELECT * FROM events WHERE id=$1;", [eventId])
 
@@ -82,7 +81,7 @@ export const searchEvent = async (req: Request, res: Response) => {
 }
 
 export const searchParentEvent = async (req: Request, res: Response) => {
-  const { eventId } = z.object({ eventId: z.coerce.number() }).parse(req.query)
+  const { eventId } = eventQuery.parse(req.query)
   
   const result = await database.query("SELECT * FROM events WHERE id=$1 AND parent_event_id IS NULL;", [eventId])
 

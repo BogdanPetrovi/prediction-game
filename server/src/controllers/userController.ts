@@ -22,7 +22,7 @@ export const getProfile = async (req: Request, res: Response) => {
       JOIN user_events ue ON ue.id = m2.event_id 
       WHERE p2.user_id = $1
         AND m2.winner_team IS NOT NULL
-      ORDER BY m2.id DESC
+      ORDER BY COALESCE(m2.date, EXTRACT(EPOCH FROM m2.created_at::timestamptz) * 1000) DESC
       LIMIT 5
     )
     SELECT
@@ -47,7 +47,7 @@ export const getProfile = async (req: Request, res: Response) => {
       FROM predictions p
       JOIN matches m ON p.match_id = m.id
       WHERE p.user_id = $1 AND m.winner_team IS NOT NULL
-      ORDER BY m.id DESC
+      ORDER BY COALESCE(m.date, EXTRACT(EPOCH FROM m.created_at::timestamptz) * 1000) DESC
       LIMIT 120;`,
     [id]
   );

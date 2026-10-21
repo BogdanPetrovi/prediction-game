@@ -40,14 +40,18 @@ export const matchResult = z.object({
 export const calculationHours = z.array(z.number().int().min(0).max(23)).min(1)
     .transform(hours => [...new Set(hours)].sort((a, b) => a - b))
 
+const eventId = z.coerce.number().int().min(10000, "Events with id 9999 or lower are from the old HLTV system")
+
+export const eventQuery = z.object({ eventId })
+
 export const event = z.object({
-    id: z.coerce.number().positive(),
+    id: eventId,
     logo: z.string(),
     name: z.string(),
     startDate: z.coerce.number(),
     endDate: z.coerce.number(),
     isActive: z.boolean(),
-    parentEventId: z.coerce.number().optional()
+    parentEventId: eventId.or(z.literal(0)).optional()
 })
 
 enum Status {
