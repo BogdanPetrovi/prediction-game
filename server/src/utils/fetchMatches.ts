@@ -1,8 +1,7 @@
-import { HLTV } from "@bogdanpet/hltv"
 import redisClient, { MATCHES_CACHE_TTL } from "../config/redis.js"
 import database from "../database/database.js"
 import TeamNames from "../types/TeamNames.js"
-import hltvWrapper from "./hltvWrapper.js"
+import { getMatches } from "./pandascore.js"
 import formatDateAndTime from "./formatDateAndTime.js"
 import sendMatchesNotification from "./sendMatchesNotification.js"
 
@@ -16,13 +15,13 @@ const fetchMatches = async () => {
   }
 
   isFetching = true
-  console.log('HLTV is checking for the latest matches... ' + formatDateAndTime())
-  const apiResult = await hltvWrapper(HLTV.getMatches(parseInt(activeEventId)))
+  console.log('PandaScore is checking for the latest matches... ' + formatDateAndTime())
+  const apiResult = await getMatches(parseInt(activeEventId))
 
   await redisClient.set("matches", JSON.stringify(apiResult), {
     EX: MATCHES_CACHE_TTL
   });
-  console.log('Succesfuly fetched matches from HLTV at ' + formatDateAndTime())
+  console.log('Succesfuly fetched matches from PandaScore at ' + formatDateAndTime())
 
   let newMatches: TeamNames[] = []
   await Promise.all(

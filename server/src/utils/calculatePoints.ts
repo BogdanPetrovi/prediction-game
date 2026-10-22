@@ -1,6 +1,6 @@
 import redisClient from "../config/redis.js";
-import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
+import { getResults } from "./pandascore.js";
 
 const calculatePoints = async () => {
   console.log("Starting points calculation at: ", new Date())
@@ -11,19 +11,31 @@ const calculatePoints = async () => {
     if(activeEventId === null || activeParentEventId === null)
       return console.log("There is no active events. Cron job is finished at: ", new Date())
 
-    // HLTV failing must not block points for results entered manually from admin
+    // PandaScore failing must not block points for results entered manually from admin
     try {
-      console.log('Checking HLTV for latest results...')
-      const results = await HLTV.getResults(parseInt(activeEventId))
+      console.log('Checking PandaScore for latest results...')
+      const results = await getResults(parseInt(activeEventId))
+
+      const { rows } = await database.query(`SELECT id, (team1).name AS team1_name, (team2).name AS team2_name FROM matches
+        WHERE id = ANY($1) AND result IS NULL AND winner_team IS NULL;`, [results.map(match => match.id)])
 
       // insert results of the matches into the database
-      for(const match of results) {
-        const winner = match.result.team1 > match.result.team2 ? 'team1' : 'team2';
-        const result = `${match.result.team1}:${match.result.team2}`
-        await database.query('UPDATE matches SET winner_team = $1, result = $2 WHERE id = $3 AND result IS NULL AND winner_team IS NULL;', [winner, result, match.id])
+      for(const row of rows) {
+        const match = results.find(result => result.id === Number(row.id))!
+        const isSameOrder = match.team1.name === row.team1_name && match.team2.name === row.team2_name
+        const isSwapped = match.team1.name === row.team2_name && match.team2.name === row.team1_name
+        if(!isSameOrder && !isSwapped) {
+          console.log(`Skipping result for match ${row.id}: ${match.team1.name} vs ${match.team2.name} doesn't match ${row.team1_name} vs ${row.team2_name} in database`)
+          continue
+        }
+
+        const [team1, team2] = isSameOrder ? [match.team1, match.team2] : [match.team2, match.team1]
+        const winner = team1.score > team2.score ? 'team1' : 'team2';
+        const result = `${team1.score}:${team2.score}`
+        await database.query('UPDATE matches SET winner_team = $1, result = $2 WHERE id = $3 AND result IS NULL AND winner_team IS NULL;', [winner, result, row.id])
       }
     } catch (err) {
-      console.error("Error fetching results from HLTV, calculating points from database only: ", err)
+      console.error("Error fetching results from PandaScore, calculating points from database only: ", err)
     }
 
     await database.transaction(async (client) => {
