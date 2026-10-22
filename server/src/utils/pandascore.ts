@@ -1,8 +1,11 @@
 import Match from "../types/Match.js"
+import { MIN_EVENT_ID } from "../schemas/admin.schemas.js"
 import AppError from "./customErrorHandlers/appError.js"
 
 const API_URL = "https://api.pandascore.co"
 const PER_PAGE = 100
+const COUNTERSITE_LOGO = "https://countersite.gg/svojkellogonobg.png"
+const IGNORED_SEARCH_WORDS = ["season", "stage"]
 
 interface ApiTeam {
   id: number,
@@ -22,34 +25,96 @@ interface ApiMatch {
   results: { team_id: number, score: number }[]
 }
 
+interface ApiSerie {
+  id: number,
+  name: string | null,
+  full_name: string,
+  season: string | null,
+  year: number,
+  slug: string,
+  begin_at: string,
+  end_at: string,
+  league: { name: string, image_url: string | null }
+}
+
 export interface MatchResult {
   id: number,
   team1: { name: string, score: number },
   team2: { name: string, score: number }
 }
 
+const request = async <T>(path: string, params: Record<string, string>) => {
+  const url = new URL(path, API_URL)
+  url.search = new URLSearchParams(params).toString()
+
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${process.env.PANDASCORE_TOKEN}` }
+  })
+  console.log(`PandaScore ${path} responded with ${response.status}, remaining requests: ${response.headers.get('x-rate-limit-remaining')}`)
+
+  if(response.status === 429)
+    throw new AppError(`PandaScore rate limit reached, retry after ${response.headers.get('retry-after')}s`, 429)
+  if(!response.ok)
+    throw new AppError(`PandaScore responded with status ${response.status}`, 502)
+
+  return { data: await response.json() as T, total: Number(response.headers.get('x-total')) }
+}
+
 const requestAll = async <T>(path: string, params: Record<string, string>): Promise<T[]> => {
   const items: T[] = []
 
   for(let page = 1; ; page++) {
-    const url = new URL(path, API_URL)
-    url.search = new URLSearchParams({ ...params, per_page: String(PER_PAGE), page: String(page) }).toString()
-
-    const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${process.env.PANDASCORE_TOKEN}` }
-    })
-    console.log(`PandaScore ${path} responded with ${response.status}, remaining requests: ${response.headers.get('x-rate-limit-remaining')}`)
-
-    if(response.status === 429)
-      throw new AppError(`PandaScore rate limit reached, retry after ${response.headers.get('retry-after')}s`, 429)
-    if(!response.ok)
-      throw new AppError(`PandaScore responded with status ${response.status}`, 502)
-
-    const data = await response.json() as T[]
+    const { data, total } = await request<T[]>(path, { ...params, per_page: String(PER_PAGE), page: String(page) })
     items.push(...data)
 
-    if(data.length < PER_PAGE || items.length >= Number(response.headers.get('x-total')))
+    if(data.length < PER_PAGE || items.length >= total)
       return items
+  }
+}
+
+const toWords = (text: string) => text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(Boolean)
+
+const eventName = (serie: ApiSerie) => {
+  const league = serie.league.name
+  const name = serie.name?.trim()
+
+  let fullName = `${league} ${serie.full_name}`
+  if(serie.season && /^\d+$/.test(serie.season))
+    fullName = `${league} ${name ?? ''} Season ${serie.season}`
+  else if(name)
+    fullName = `${league} ${name} ${serie.year}`
+
+  return fullName.replace(/\s+/g, ' ').trim().slice(0, 100)
+}
+
+export const findEvent = async (query: string) => {
+  const words = toWords(query).filter(word => !IGNORED_SEARCH_WORDS.includes(word))
+  if(words.length === 0)
+    throw new AppError("Search query needs at least one word besides season and stage", 400)
+
+  const { data: series } = await request<ApiSerie[]>('/csgo/series', {
+    'search[slug]': words[0],
+    sort: '-begin_at',
+    per_page: '50'
+  })
+
+  let best: { serie: ApiSerie, score: number } | null = null
+  for(const serie of series.filter(serie => serie.id >= MIN_EVENT_ID)) {
+    const serieWords = new Set(toWords(`${serie.league.name} ${serie.full_name} ${serie.slug}`))
+    const score = words.filter(word => serieWords.has(word)).length
+    if(score > (best?.score ?? 0))
+      best = { serie, score }
+  }
+
+  if(!best)
+    throw new AppError(`No event found for "${query}"`, 404)
+
+  return {
+    id: best.serie.id,
+    logo: best.serie.league.image_url ?? COUNTERSITE_LOGO,
+    name: eventName(best.serie),
+    startDate: Date.parse(best.serie.begin_at),
+    endDate: Date.parse(best.serie.end_at)
   }
 }
 

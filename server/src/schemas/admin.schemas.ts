@@ -40,13 +40,17 @@ export const matchResult = z.object({
 export const calculationHours = z.array(z.number().int().min(0).max(23)).min(1)
     .transform(hours => [...new Set(hours)].sort((a, b) => a - b))
 
-const eventId = z.coerce.number().int().min(10000, "Events with id 9999 or lower are from the old HLTV system")
+export const MIN_EVENT_ID = 10000
+
+const eventId = z.coerce.number().int().min(MIN_EVENT_ID, "Events with id 9999 or lower are from the old HLTV system")
 
 export const eventQuery = z.object({ eventId })
 
+export const eventSearch = z.object({ query: z.string().trim().min(1) })
+
 export const event = z.object({
     id: eventId,
-    logo: z.string(),
+    logo: z.url(),
     name: z.string(),
     startDate: z.coerce.number(),
     endDate: z.coerce.number(),

@@ -3,19 +3,18 @@
 import { useState } from "react"
 
 interface SearchEventProps {
-  onCheck: (id: number) => void,
+  onCheck: (query: string) => void,
   isSearching: boolean
 }
 
 export default function SearchEvent ({ onCheck, isSearching }: SearchEventProps) {
-  const [id, setId] = useState("")
+  const [query, setQuery] = useState("")
 
   const handleClick = () => {
-    if(id === "")
+    if(query.trim() === "")
       return
 
-    setId("")
-    onCheck(Number(id))
+    onCheck(query.trim())
   }
 
   return(
@@ -25,12 +24,12 @@ export default function SearchEvent ({ onCheck, isSearching }: SearchEventProps)
         </p>
         <div className="flex flex-col sm:flex-row gap-3 items-end">
           <div className="flex flex-col gap-2 flex-1">
-            <h4 className="text-xs font-medium text-muted tracking-wide">ID Turnira</h4>
+            <h4 className="text-xs font-medium text-muted tracking-wide">Naziv Turnira</h4>
             <input
-              type="number"
-              value={id}
-              onChange={(val) => setId(val.target.value)}
-              placeholder="npr. 8042"
+              type="text"
+              value={query}
+              onChange={(val) => setQuery(val.target.value)}
+              placeholder="npr. PGL Masters Bucharest"
               className="w-full bg-white/5 border rounded-lg px-4 py-3 text-md outline-none transition-all duration-200 focus:border-green-500/60"
             />
           </div>
