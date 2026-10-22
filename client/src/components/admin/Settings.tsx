@@ -9,6 +9,8 @@ interface ParentEvent {
 interface SettingsProps {
   isActive: boolean,
   setIsActive: Dispatch<SetStateAction<boolean>>,
+  logoUrl: string,
+  setLogoUrl: Dispatch<SetStateAction<string>>,
   parentEvent: ParentEvent,
   setParentEvent: Dispatch<SetStateAction<ParentEvent>>,
 }
@@ -16,7 +18,7 @@ interface SettingsProps {
 import { Dispatch, SetStateAction } from "react"
 import ParentEvent from "./ParentEvent"
 
-export default function Settings({ isActive, setIsActive, parentEvent, setParentEvent }: SettingsProps) { 
+export default function Settings({ isActive, setIsActive, logoUrl, setLogoUrl, parentEvent, setParentEvent }: SettingsProps) {
   return (
     <>
       <div className="px-9 py-8 border-green-500/60 border-t-1 slide-down">
@@ -35,6 +37,19 @@ export default function Settings({ isActive, setIsActive, parentEvent, setParent
               ⏸&nbsp; Neaktivan
           </div>
         </div>
+      </div>
+
+      <div className="px-9 pb-8">
+        <p className="flex items-center text-sm font-bold tracking-[3px] uppercase text-muted mb-3">
+          Logo URL (opciono)
+        </p>
+        <input
+          type="url"
+          value={logoUrl}
+          onChange={(e) => setLogoUrl(e.target.value)}
+          placeholder="https://..."
+          className="w-full bg-white/5 border rounded-lg px-4 py-3 text-md outline-none transition-all duration-200 focus:border-green-500/60"
+        />
       </div>
 
       <div className="px-9 py-8">

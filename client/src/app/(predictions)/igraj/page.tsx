@@ -13,6 +13,7 @@ import UpcomingMatchesApiResponse, { NoMatches, UpcomingMatch } from "@/types/Up
 import NoResult from "@/components/shared/NoResult";
 import Submit from "@/components/predictions-pages/igraj/Submit";
 import usePredict from "@/utils/mutations/usePredict";
+import Footer from "@/components/layout/footer/Footer";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -93,25 +94,28 @@ export default function Play() {
     return
 
   return (
-    <div className="w-4/5 lg:w-3/5 mx-auto mb-8 min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
-      <div className="-mb-7">
-        {showEvent && <Event />}
+    <>
+      <div className="w-4/5 lg:w-3/5 mx-auto mb-4 min-h-[calc(100vh-16rem)] flex flex-col items-center relative gap-10 select-none">
+        <div className="-mb-7">
+          {showEvent && <Event />}
+        </div>
+        {
+          matches.data.map(match => (
+            <Matchup
+              match={match}
+              setPredictions={handleUserPredictionChange}
+              backendPrediction={predictions.data.find(el => el.matchId === match.id)}
+              matchesPoints={matchesPoints.data.find(el => el.id === match.id)}
+              key={match.id}
+            />
+          ))
+        }
+        <Submit
+          handleSubmit={handleSubmit}
+          isDisabled={userPredictions.length === 0 || isMutatePending}
+        />
       </div>
-      {
-        matches.data.map(match => (
-          <Matchup
-            match={match}
-            setPredictions={handleUserPredictionChange}
-            backendPrediction={predictions.data.find(el => el.matchId === match.id)}
-            matchesPoints={matchesPoints.data.find(el => el.id === match.id)}
-            key={match.id}
-          />
-        ))
-      }
-      <Submit 
-        handleSubmit={handleSubmit} 
-        isDisabled={userPredictions.length === 0 || isMutatePending}
-      />
-    </div>
+      <Footer />
+    </>
   );
 }

@@ -121,7 +121,7 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
     JOIN events e ON e.id = m.event_id
     LEFT JOIN matches_points mp ON mp.match_id = m.id
     WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
-    ORDER BY m.id DESC;
+    ORDER BY COALESCE(m.date, EXTRACT(EPOCH FROM m.created_at::timestamptz) * 1000) DESC;
   `, [id, eventIds])
 
   const scoreMap: Record<number, { correct: number; incorrect: number }> = {};

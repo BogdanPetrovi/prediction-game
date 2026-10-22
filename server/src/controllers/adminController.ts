@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import redisClient, { MATCHES_CACHE_TTL } from "../config/redis.js";
-import { HLTV } from "@bogdanpet/hltv";
 import database from "../database/database.js";
-import hltvWrapper from "../utils/hltvWrapper.js";
+import { findEvent } from "../utils/pandascore.js";
 import AppError from "../utils/customErrorHandlers/appError.js";
-import { calculationHours, event, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
+import { calculationHours, event, eventQuery, eventSearch, matchList, matchResult, newMatch, prize } from "../schemas/admin.schemas.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
-import z from "zod";
 import calculatePoints from "../utils/calculatePoints.js";
 import formatDateAndTime from "../utils/formatDateAndTime.js";
 import sendMatchesNotification from "../utils/sendMatchesNotification.js";
@@ -55,9 +53,12 @@ export const updateMatches = async(req: Request, res: Response) => {
 }
 
 export const searchEvent = async (req: Request, res: Response) => {
-  const { eventId } = z.object({ eventId: z.coerce.number() }).parse(req.query)
+  const { query } = eventSearch.parse(req.query)
 
-  const result = await database.query("SELECT * FROM events WHERE id=$1;", [eventId])
+  console.log(`Checking PandaScore for event at ${ formatDateAndTime() }`)
+  const event = await findEvent(query)
+
+  const result = await database.query("SELECT * FROM events WHERE id=$1;", [event.id])
 
   if(result.rows.length > 0){
     return res.status(200).json({
@@ -69,20 +70,11 @@ export const searchEvent = async (req: Request, res: Response) => {
     })
   }
 
-  console.log(`Checking HLTV for event at ${ formatDateAndTime() }`)
-  const event = await hltvWrapper(HLTV.getEvent({ id: eventId }))
-
-  return res.status(200).json({
-      id: event.id,
-      logo: event.logo,
-      name: event.name,
-      startDate: event.dateStart,
-      endDate: event.dateEnd
-    })
+  return res.status(200).json(event)
 }
 
 export const searchParentEvent = async (req: Request, res: Response) => {
-  const { eventId } = z.object({ eventId: z.coerce.number() }).parse(req.query)
+  const { eventId } = eventQuery.parse(req.query)
   
   const result = await database.query("SELECT * FROM events WHERE id=$1 AND parent_event_id IS NULL;", [eventId])
 

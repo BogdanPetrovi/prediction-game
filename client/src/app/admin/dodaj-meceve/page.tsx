@@ -71,7 +71,7 @@ export default function DodajMeceve() {
       <div className="w-full max-w-[780px] bg-secondary rounded-xl border p-6 flex flex-col gap-6">
         <h2 className="text-3xl font-bold">Dodaj meč</h2>
         <div className="flex flex-col sm:flex-row gap-3">
-          <AddMatchInput title="HLTV ID meča" placeholder="npr. 2381234 (iz URL-a na hltv.org)" type="number" value={matchId} setValue={setMatchId} />
+          <AddMatchInput title="PandaScore ID meča" placeholder="npr. 1752686" type="number" value={matchId} setValue={setMatchId} />
           <AddMatchInput title="Datum i vreme" placeholder="" type="datetime-local" value={date} setValue={setDate} />
         </div>
         <div className="flex flex-col sm:flex-row gap-6">
