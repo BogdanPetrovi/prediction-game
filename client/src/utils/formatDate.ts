@@ -31,12 +31,3 @@ export const formatDateTimeWithLetter = (date: number | undefined): string => {
                                     }).format(date);
   return formatedDate || ''
 }
-
-export const formatDateWithoutYear = (date: number | undefined): string => {
-  const formatedDate = date && new Intl.DateTimeFormat('sr-Latn-RS', {
-                                      day: '2-digit',
-                                      month: 'short',
-                                      timeZone: 'Europe/Belgrade'                           
-                                    }).format(date);
-  return formatedDate || ''
-}

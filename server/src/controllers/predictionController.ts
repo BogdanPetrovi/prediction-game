@@ -92,7 +92,29 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
     JOIN matches m ON m.id = p.match_id
     JOIN events e ON e.id = m.event_id
     WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
-    GROUP BY e.id; 
+    GROUP BY e.id;
+  `, [id, eventIds])
+
+  const placementsResults = await database.query(`
+    WITH ranked AS (
+      SELECT
+       l.user_id,
+       l.event_id,
+       ROW_NUMBER() OVER (PARTITION BY l.event_id ORDER BY l.points DESC, u.discord_id DESC, u.id ASC) AS place
+      FROM leaderboards l
+      JOIN users u ON u.id = l.user_id
+      WHERE l.event_id IN (SELECT COALESCE(parent_event_id, id) FROM events WHERE id = ANY($2::bigint[]))
+    )
+    SELECT
+     e.id,
+     r.place,
+     NOT EXISTS (
+      SELECT 1 FROM events f
+      WHERE (f.id = r.event_id OR f.parent_event_id = r.event_id) AND f.is_active = true
+     ) AS is_final
+    FROM events e
+    JOIN ranked r ON r.event_id = COALESCE(e.parent_event_id, e.id)
+    WHERE r.user_id = $1 AND e.id = ANY($2::bigint[]);
   `, [id, eventIds])
 
   const matchesResults = await database.query(`
@@ -132,6 +154,14 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
     };
   }
 
+  const placementMap: Record<number, { place: number; isFinal: boolean }> = {};
+  for (const row of placementsResults.rows) {
+    placementMap[row.id] = {
+      place: parseInt(row.place),
+      isFinal: row.is_final
+    };
+  }
+
   const matchesMap: Record<number, any[]> = {};
   for (const row of matchesResults.rows) {
     if (!matchesMap[row.event_id]) matchesMap[row.event_id] = [];
@@ -157,6 +187,7 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
       end_date: event.end_date,
       is_active: event.is_active,
       score: scoreMap[event.id] || { correct: 0, incorrect: 0 },
+      placement: placementMap[event.id] || null,
       recentMatches: allMatches.slice(0, 10),
       allMatches
     };

@@ -8,6 +8,7 @@ export default interface PredictionHistory {
   end_date: string,
   is_active: boolean,
   score: Score,
+  placement: Placement | null,
   recentMatches: FinishedMatch[],
   allMatches: FinishedMatch[]
 }
@@ -15,6 +16,11 @@ export default interface PredictionHistory {
 interface Score {
   correct: number,
   incorrect: number
+}
+
+interface Placement {
+  place: number,
+  isFinal: boolean
 }
 
 export interface FinishedMatch {

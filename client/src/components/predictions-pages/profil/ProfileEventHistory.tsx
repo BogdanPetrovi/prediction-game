@@ -3,7 +3,6 @@
 import Image from "next/image";
 import ProfileHistoryMatch from "./ProfileHistoryMatch";
 import PredictionHistory from "@/types/PredictionHistory";
-import { formatDateWithoutYear } from "@/utils/formatDate";
 import { useState } from "react";
 
 export default function ProfileEventHistory({ data }: {data: PredictionHistory}) {
@@ -29,7 +28,10 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
           <span className="text-red-400 pl-1.5">{ data.score.incorrect }</span>
         </h3>
       </div>
-      <h4 className="ml-9 -mt-1 text-muted text-xs">{ formatDateWithoutYear(Number(data.start_date)) } - { formatDateWithoutYear(Number(data.end_date)) }</h4>
+      {
+        data.placement &&
+          <h4 className="ml-9 -mt-1 text-muted text-xs">{ data.placement.isFinal ? 'Konačna' : 'Trenutna' } pozicija: { data.placement.place }.</h4>
+      }
 
       <div className="bg-secondary rounded-xl border border-zinc-700 overflow-hidden mt-2 slide-down">
         {
