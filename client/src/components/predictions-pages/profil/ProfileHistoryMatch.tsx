@@ -3,7 +3,6 @@ import { formatDateTimeWithLetter } from "@/utils/formatDate";
 import Image from "next/image";
 
 export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
-  console.log(data)
   const chosenTeam = data.predicted_winner === 'team1' ? data.team1 : data.team2
   const otherTeam = data.predicted_winner !== 'team1' ? data.team1 : data.team2
   const [first, second] = data.result.split(":");
