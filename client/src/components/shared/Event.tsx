@@ -25,6 +25,7 @@ const Event = () => {
             src={data.logo}
             fill
             alt={`${data.name} logo`}
+            className="object-contain"
             unoptimized
           />
         </div>

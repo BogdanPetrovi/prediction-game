@@ -15,7 +15,7 @@ const DashboardCard = ({ title, name, logo, id }: Event & { title: string }) => 
       <Image 
         width={100}
         height={100}
-        className="size-40 self-center"
+        className="size-40 self-center object-contain"
         src={logo}
         alt={`${name} logo`}
         unoptimized

@@ -30,7 +30,7 @@ const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, matchP
             selectedTeam === 'team1'
               ? 'size-[4.5rem]'
               : !match.live && 'group-hover:size-[4.5rem]'
-          } size-16 ml-4 drop-shadow-xl/50 duration-300`}
+          } size-16 ml-4 object-contain drop-shadow-xl/50 duration-300`}
           unoptimized
         />
         :

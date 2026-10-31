@@ -19,7 +19,7 @@ export default function PreviewEvent({ onConfirm, event, reset }: PreviewEventPr
       </p>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-white/5 border rounded-xl p-7">
         <Image
-          className="size-[90px]"
+          className="size-[90px] object-contain"
           src={event?.logo ?? ''}
           alt="Event logo"
           width={90}

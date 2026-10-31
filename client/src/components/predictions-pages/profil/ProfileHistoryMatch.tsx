@@ -22,6 +22,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
             src={chosenTeam.logo}
             alt={`${chosenTeam} logo`}
             fill
+            className="object-contain"
             unoptimized
           />
         </div>
@@ -34,6 +35,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
             src={otherTeam.logo}
             alt={`${otherTeam.name} logo`} 
             fill
+            className="object-contain"
             unoptimized
           />
         </div>

@@ -17,6 +17,7 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
               src={data.logo}
               alt="Logo turnira"
               fill
+              className="object-contain"
               unoptimized
             />
           </div>
