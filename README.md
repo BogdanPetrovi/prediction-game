@@ -2,7 +2,7 @@
 
 **Prediction Game** is a full-stack web application designed to automate and scale CS2 match predictions for gaming communities.
 
-Originally managed manually via Discord for small groups (limited to ~20 participants), this platform was developed to allow unlimited number of users. By implementing automated match data synchronization the system now supports real-time matches and results tracking.
+Originally managed manually via Discord for small groups (limited to ~20 participants), this platform was developed to allow unlimited number of users. Match schedules and results are synchronized automatically from the [PandaScore](https://pandascore.co) API, so the system supports real-time matches and results tracking.
 
 ### ⚠️ Disclaimer: Non-Gambling Platform
 
@@ -11,7 +11,7 @@ This application is strictly **a point based community engagement tool**. It doe
 ## 🚀 Key Features
 
 - **Discord Integration:** Effortless authentication using Discord accounts for community consistency
-- **Automated Match Syncing:** A dedicated background service ensures match schedules and results are always up to date without manual entry
+- **Automated Match Syncing:** A background service pulls match schedules and results from the PandaScore API, so they stay up to date without manual entry
 - **Interactive Predictions:** Users can submit predictions for upcoming professional CS2 matches
 - **Dynamic Leaderboards:** Real-time rankings based on prediction accuracy for the current tournament
 - **Historical Archive:** Access to standings and results from previous tournaments
@@ -31,7 +31,7 @@ This application is strictly **a point based community engagement tool**. It doe
 - **Database:** PostgreSQL (Raw SQL)
 - **Caching & Sessions:** Redis
 - **Validation:** Zod
-- **Data Ingestion:** Custom-built synchronization service
+- **Match Data:** PandaScore REST API
 
 ## ⚙️ Setup & Installation
 
@@ -64,6 +64,7 @@ DISCORD_CALLBACK_URL=/auth/discord/callback
 DISCORD_WEBHOOK_URL=your_webhook_url
 POSTHOG_KEY=your_key
 POSTHOG_HOST=your_host
+PANDASCORE_TOKEN=your_pandascore_api_key
 ```
 
 Run the server:
