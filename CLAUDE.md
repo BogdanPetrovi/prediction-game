@@ -36,7 +36,7 @@ Client `.env.local`: `NEXT_PUBLIC_API_URL`.
 
 - `server.ts` is the entry point: it starts the HTTP app from `index.ts`, the PandaScore matches scheduler and the points calculation cron. `index.ts` wires middleware, a Redis-backed session, Passport, and routers (`userRoutes` at `/`, `adminRoutes` at `/admin`, `authRoutes` at `/auth`).
 - **Relative imports use `.js` extensions** (ESM with `"type": "module"`), even though the files are `.ts`.
-- **Error handling:** controllers are plain async functions with no try/catch. Express 5 forwards thrown errors to `utils/globalErrorHandler.ts`, which maps `ZodError`→400, `AppError(msg, status)`→its status, `CloudflareError`→429 (left over from the HLTV scraper), and pg/redis errors→503. Validate input with Zod schemas from `src/schemas/` via `.parse()` and throw `AppError` for other failures.
+- **Error handling:** controllers are plain async functions with no try/catch. Express 5 forwards thrown errors to `utils/globalErrorHandler.ts`, which maps `ZodError`→400, `AppError(msg, status)`→its status, and pg/redis errors→503. Validate input with Zod schemas from `src/schemas/` via `.parse()` and throw `AppError` for other failures.
 - Auth: routes chain `isLoggedIn` (and `isAdmin`, which checks `users.is_admin` in the DB). The whole user object is serialized into the session. Get the user id with `UserType.parse(req.user)`.
 - `database.query(sql, params)` runs a single query and `database.transaction(async client => ...)` runs a BEGIN/COMMIT/ROLLBACK block. Snake_case DB columns are mapped to camelCase by hand in controllers.
 
@@ -54,7 +54,7 @@ On startup `config/redis.ts` deletes the `matches`/`active_*` keys and rebuilds 
 
 ### Background jobs
 
-- `utils/fetchScheduler.ts` runs `fetchMatches` every 25–35 minutes. The randomized delay comes from the HLTV scraper era and keeps the request rate low. It pulls matches for `active_event` through `utils/pandascore.ts`, caches them in Redis, inserts new ones into `matches`, and posts new matchups to a Discord webhook through `utils/sendMatchesNotification.ts` (shared with the manual send; it splits into 25-field embeds and pings the role only once).
+- `utils/fetchScheduler.ts` runs `fetchMatches` every 25–35 minutes. The randomized delay keeps the request rate low. It pulls matches for `active_event` through `utils/pandascore.ts`, caches them in Redis, inserts new ones into `matches`, and posts new matchups to a Discord webhook through `utils/sendMatchesNotification.ts` (shared with the manual send; it splits into 25-field embeds and pings the role only once).
 - `utils/calculatePoints.ts` runs on a cron and on `POST /admin/manual-calculation`. The cron is owned by `utils/calculationScheduler.ts`: it builds `0 <hours> * * *` (timezone `Europe/Belgrade`) from `calculation_hours` and destroys/recreates the task whenever an admin saves new hours, so no restart is needed. It writes PandaScore results into `matches`, then in one transaction fills `matches_points` and upserts `leaderboards` for `active_parent_event`. A PandaScore failure is caught and logged so the DB part still runs. That way results entered manually via `POST /admin/set-result` turn into points even while PandaScore is down, and PandaScore never overwrites them (`WHERE result IS NULL`). **Scoring:** a correct pick is worth `100 + % of users who picked the other team`, so upsets pay more. Points for a match are frozen once written (`ON CONFLICT DO NOTHING`).
 
 ### PandaScore
@@ -68,7 +68,6 @@ On startup `config/redis.ts` deletes the `matches`/`active_*` keys and rebuilds 
   - Never write to `leaderboards`, `matches_points` or `predictions` rows of old events.
   - PandaScore match ids (about 1.76M in Oct 2026, growing ~1.8k/day) reach the HLTV range around Sep–Oct 2027 and need a fix before then.
   - Because the two id ranges are mixed, profile and history sort matches by time (`COALESCE(date, created_at)`), never by id.
-- **Old scraper:** `@bogdanpet/hltv`, `utils/hltvWrapper.ts` and `CloudflareError` are still in the code but unused until they are removed.
 
 ## Client architecture
 

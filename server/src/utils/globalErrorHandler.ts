@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { DatabaseError } from "pg";
 import { ErrorReply } from "redis";
 import AppError from "./customErrorHandlers/appError.js";
-import CloudflareError from "./customErrorHandlers/cloudflareError.js";
 import z from "zod";
 
 export default function globalErrorHandler(
@@ -22,10 +21,6 @@ export default function globalErrorHandler(
   if(err instanceof TypeError){
     console.error(err.message)
     return res.status(500).send(err.message)
-  }
-  if(err instanceof CloudflareError){
-    console.log(err.timestamp + ' ' + err.message)
-    return res.status(429).send(err.message)
   }
   if(err instanceof AppError){
     return res.status(err.statusCode).send(err.message)

@@ -22,7 +22,7 @@ async function runScheduler() {
   const nextDelay = getRandomDelay()
 
   console.log(
-    `Next matches scrape in ${Math.round(
+    `Next matches fetch in ${Math.round(
       nextDelay / 60000
     )} minutes, at ${ formatDateAndTime(new Date(Date.now() + nextDelay)) }`
   )
