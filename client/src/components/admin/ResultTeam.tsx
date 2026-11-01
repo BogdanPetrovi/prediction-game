@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { isOptimizedImage } from "@/utils/isOptimizedImage"
 import Team from "@/types/Team"
 
 interface ResultTeamProps {
@@ -17,7 +18,7 @@ export default function ResultTeam({ team, isReversed }: ResultTeamProps) {
           width={48}
           height={48}
           className="size-12 shrink-0 object-contain"
-          unoptimized
+          unoptimized={!isOptimizedImage(team.logo)}
         />
         :
         <h3 className="size-12 shrink-0 flex items-center justify-center text-3xl font-bold">?</h3>

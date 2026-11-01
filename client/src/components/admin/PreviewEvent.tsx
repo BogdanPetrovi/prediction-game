@@ -1,6 +1,7 @@
 import { FullEvent } from "@/types/Event"
 import { formatDateOnly } from "@/utils/formatDate"
 import Image from "next/image"
+import { isOptimizedImage } from "@/utils/isOptimizedImage"
 
 interface PreviewEventProps {
   onConfirm: () => void,
@@ -24,7 +25,7 @@ export default function PreviewEvent({ onConfirm, event, reset }: PreviewEventPr
           alt="Event logo"
           width={90}
           height={90}
-          unoptimized
+          unoptimized={!isOptimizedImage(event?.logo ?? '')}
         />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold tracking-[2px] uppercase text-accent mb-1">ID: {event?.id}</p>

@@ -3,6 +3,7 @@ import React from "react"
 import WinPercent from "./WinPrecent"
 import PredictedTeamEnum from "@/types/PredictedTeamEnum"
 import Image from "next/image"
+import { isOptimizedImage } from "@/utils/isOptimizedImage"
 
 interface Team1Props {
   selectedTeam: PredictedTeamEnum,
@@ -31,7 +32,7 @@ const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, matchP
               ? 'size-[4.5rem]'
               : !match.live && 'group-hover:size-[4.5rem]'
           } size-16 ml-4 object-contain drop-shadow-xl/50 duration-300`}
-          unoptimized
+          unoptimized={!isOptimizedImage(match.team1.logo)}
         />
         :
         <h2 className={`${selectedTeam === 'team1' ? 'text-[4.5rem]' : !match.live && 'group-hover:text-[4.5rem]'} text-[4rem] font-bold ml-4 drop-shadow-xl/50 duration-300`}>?</h2>

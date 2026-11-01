@@ -7,6 +7,7 @@ import backend from "@/services/api/backend"
 import EventHistory from "@/types/EventHistory"
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
+import { isOptimizedImage } from "@/utils/isOptimizedImage"
 
 const IstorijaPage = () => {
   const { data, isPending, error } = useQuery({
@@ -36,7 +37,7 @@ const IstorijaPage = () => {
           <div key={i} className="rounded-2xl overflow-hidden border border-white/10">
             <div className="bg-gradient-to-r from-[#667EEA] via-[#9333EA] to-[#F39C12] px-5 py-4 flex items-center gap-4">
               <div className="relative size-11 shrink-0 rounded-lg overflow-hidden bg-white/15 p-1.5">
-                <Image src={event.logo} fill alt={event.name} className="object-contain" unoptimized />
+                <Image src={event.logo} fill sizes="32px" alt={event.name} className="object-contain" unoptimized={!isOptimizedImage(event.logo)} />
               </div>
               <h3 className="text-white font-extrabold text-lg tracking-tight drop-shadow-sm">
                 {event.name}

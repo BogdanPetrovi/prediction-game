@@ -1,14 +1,13 @@
 import type { NextConfig } from "next";
+import { OPTIMIZED_IMAGE_HOSTS } from "./src/utils/isOptimizedImage";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'countersite.gg'
-      }
-    ]
+    remotePatterns: OPTIMIZED_IMAGE_HOSTS.map(hostname => ({
+      protocol: 'https',
+      hostname
+    }))
   }
 };
 

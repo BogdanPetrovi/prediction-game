@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image";
+import { isOptimizedImage } from "@/utils/isOptimizedImage";
 import ProfileHistoryMatch from "./ProfileHistoryMatch";
 import PredictionHistory from "@/types/PredictionHistory";
 import { useState } from "react";
@@ -17,8 +18,9 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
               src={data.logo}
               alt="Logo turnira"
               fill
+              sizes="28px"
               className="object-contain"
-              unoptimized
+              unoptimized={!isOptimizedImage(data.logo)}
             />
           </div>
           <h3 className="text-lg font-semibold tracking-wider">{ data.name }</h3>

@@ -4,6 +4,7 @@ import backend from "@/services/api/backend"
 import { type Event } from "@/types/Event"
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
+import { isOptimizedImage } from "@/utils/isOptimizedImage"
 
 const Event = () => {
   const { data, isPending } = useQuery({
@@ -24,9 +25,10 @@ const Event = () => {
           <Image 
             src={data.logo}
             fill
+            sizes="40px"
             alt={`${data.name} logo`}
             className="object-contain"
-            unoptimized
+            unoptimized={!isOptimizedImage(data.logo)}
           />
         </div>
         <h2>{data.name}</h2>

@@ -1,6 +1,7 @@
 import { FinishedMatch } from "@/types/PredictionHistory";
 import { formatDateTimeWithLetter } from "@/utils/formatDate";
 import Image from "next/image";
+import { isOptimizedImage } from "@/utils/isOptimizedImage";
 
 export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
   const chosenTeam = data.predicted_winner === 'team1' ? data.team1 : data.team2
@@ -22,8 +23,9 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
             src={chosenTeam.logo}
             alt={`${chosenTeam} logo`}
             fill
+            sizes="20px"
             className="object-contain"
-            unoptimized
+            unoptimized={!isOptimizedImage(chosenTeam.logo)}
           />
         </div>
         <h4 className={`font-semibold md:tracking-wider`}>{ chosenTeam.name }</h4>
@@ -35,8 +37,9 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
             src={otherTeam.logo}
             alt={`${otherTeam.name} logo`} 
             fill
+            sizes="20px"
             className="object-contain"
-            unoptimized
+            unoptimized={!isOptimizedImage(otherTeam.logo)}
           />
         </div>
         <h4 className={`font-semibold md:tracking-wider`}>
