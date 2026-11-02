@@ -11,23 +11,36 @@ function getRandomDelay() {
 }
 
 let schedulerRunning = false
+let nextFetch: NodeJS.Timeout | undefined
+let fetchQueue = Promise.resolve()
 
-async function runScheduler() {
-  try {
-    await fetchMatches()
-  } catch (err) {
-    console.error(`[${formatDateAndTime()}]Scheduler error: ${ err }`)
-  }
+function runScheduler() {
+  clearTimeout(nextFetch)
 
-  const nextDelay = getRandomDelay()
+  fetchQueue = fetchQueue.then(async () => {
+    try {
+      await fetchMatches()
+    } catch (err) {
+      console.error(`[${formatDateAndTime()}]Scheduler error: ${ err }`)
+    }
 
-  console.log(
-    `Next matches fetch in ${Math.round(
-      nextDelay / 60000
-    )} minutes, at ${ formatDateAndTime(new Date(Date.now() + nextDelay)) }`
-  )
+    const nextDelay = getRandomDelay()
 
-  setTimeout(runScheduler, nextDelay)
+    console.log(
+      `Next matches fetch in ${Math.round(
+        nextDelay / 60000
+      )} minutes, at ${ formatDateAndTime(new Date(Date.now() + nextDelay)) }`
+    )
+
+    clearTimeout(nextFetch)
+    nextFetch = setTimeout(runScheduler, nextDelay)
+  })
+
+  return fetchQueue
+}
+
+export function fetchMatchesNow() {
+  return runScheduler()
 }
 
 export function startMatchesScheduler() {

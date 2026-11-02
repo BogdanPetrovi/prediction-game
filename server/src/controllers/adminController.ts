@@ -10,6 +10,7 @@ import formatDateAndTime from "../utils/formatDateAndTime.js";
 import sendMatchesNotification from "../utils/sendMatchesNotification.js";
 import TeamNames from "../types/TeamNames.js";
 import { getCalculationHours, getNextCalculation, setCalculationHours } from "../utils/calculationScheduler.js";
+import { fetchMatchesNow } from "../utils/fetchScheduler.js";
 
 
 export const adminMatches = async (req: Request, res: Response) => {
@@ -105,6 +106,7 @@ export const eventUpsert = async (req: Request, res: Response) => {
     await redisClient.del("active_parent_event")
     await redisClient.set("active_event", parsedEvent.id)
     await redisClient.set("active_parent_event", parsedEvent.parentEventId || parsedEvent.id)
+    await fetchMatchesNow()
   }
 
   return res.sendStatus(200)
