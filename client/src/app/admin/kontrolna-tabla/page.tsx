@@ -16,37 +16,39 @@ import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
 export default function KontrolnaTabla() {
-  const { data: parentEvent, isPending: isParentPanding, isError, error } = useQuery({
+  const { data: parentEvent, isPending: isParentPanding } = useQuery({
     queryKey: ['parent-event'],
     queryFn: async ():Promise<Event> => {
       const result = await backend.get('/event')
       return result.data
     }
   })
-  const { data: event, isPending: isEventPending } = useQuery({
-    queryKey: ['event'],
+  const { data: event, isPending: isEventPending, isError, error } = useQuery({
+    queryKey: ['child-event'],
     queryFn: async ():Promise<Event> => {
       const result = await backend.get('/admin/child-event')
       return result.data
-    }
+    },
+    retry: false
   })
   const { data: schedule } = useQuery({
     queryKey: ['calculation-schedule'],
     queryFn: async (): Promise<CalculationScheduleType> => {
       const result = await backend.get('/admin/calculation-schedule')
       return result.data
-    }
+    },
+    retry: false
   })
 
   const { mutate: mutateCalculatePoints, isPending: isCalculatePointsPending } = useCalculatePoints()
   const { mutate: mutateRemoveParentEvent, isPending: isRemoveParentEventPending } = useRemoveParentEvent()
   const { mutate: mutateCalculationSchedule, isPending: isCalculationSchedulePending } = useUpdateCalculationSchedule()
 
-  if(isEventPending || isParentPanding || !event || !parentEvent) return <></>
-
   if(isError && axios.isAxiosError(error) && error.status === 403) return <Forbidden />
 
   if(isError) return <Error err={error} />
+
+  if(isEventPending || isParentPanding || !event || !parentEvent) return <></>
 
   return (
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col gap-2 items-center">
