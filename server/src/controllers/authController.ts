@@ -3,6 +3,7 @@ import posthog from "../config/posthog.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import redisClient from "../config/redis.js";
 import { getCountry } from "../utils/getCountry.js";
+import database from "../database/database.js";
 
 export const getUser = async (req: Request, res: Response) => {
   const user = req.user;
@@ -30,7 +31,15 @@ export const getUser = async (req: Request, res: Response) => {
   });
 }
 
-export const logOut = (req: Request, res: Response) => {
+export const getIsAdmin = async (req: Request, res: Response) => {
+  const { id } = UserType.parse(req.user)
+
+  const result = await database.query("SELECT is_admin FROM users WHERE id = $1;", [id])
+
+  return res.status(200).json({ isAdmin: result.rows[0]?.is_admin === true })
+}
+
+export const logOut =(req: Request, res: Response) => {
   req.logout((err) => {
     if(err) return res.status(500).json(err)
     

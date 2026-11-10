@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { getUser, logOut } from "../controllers/authController.js";
+import { getIsAdmin, getUser, logOut } from "../controllers/authController.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 import { trackLoginFailed, trackLoginStarted } from "../middlewares/trackLoginAttempts.js";
 
@@ -14,6 +14,8 @@ router.get('/discord/callback', trackLoginFailed, passport.authenticate('discord
 }))
 
 router.get("/me", isLoggedIn, getUser);
+
+router.get("/is-admin", isLoggedIn, getIsAdmin);
 
 router.post('/logout', isLoggedIn, logOut);
 

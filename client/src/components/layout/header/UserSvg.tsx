@@ -4,10 +4,21 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import backend from "@/services/api/backend"
 import { redirect } from "next/navigation"
+import { useQuery } from "@tanstack/react-query"
+import IsAdmin from "@/types/IsAdmin"
 
 const UserSvg = () => {
   const [isActive, setIsActive] = useState(false)
   const ref = useRef<HTMLDivElement>(null);
+
+  const { data } = useQuery({
+    queryKey: ['is-admin'],
+    queryFn: async (): Promise<IsAdmin> => {
+      const result = await backend.get('/auth/is-admin')
+      return result.data
+    },
+    staleTime: Infinity
+  })
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -37,10 +48,14 @@ const UserSvg = () => {
       </svg>
       {
         isActive && 
-          <div className="w-50 h-30 bg-secondary border-2 absolute top-12 right-0 lg:-right-4 rounded-2xl shadow-xl shadow-black/70 flex flex-col divide-y-2">
-            <Link href={'/profil'} onClick={() => setIsActive(false)} className="h-1/2 flex justify-center items-center text-xl font-semibold cursor-pointer hover:text-2xl duration-300">Profil</Link>
-            <div 
-              className="h-1/2 flex justify-center items-center text-xl font-semibold text-red-600 cursor-pointer hover:text-2xl duration-300"
+          <div className="w-50 bg-secondary border-2 absolute top-12 right-0 lg:-right-4 rounded-2xl shadow-xl shadow-black/70 flex flex-col divide-y-2">
+            <Link href={'/profil'} onClick={() => setIsActive(false)} className="h-15 flex justify-center items-center text-xl font-semibold cursor-pointer hover:text-2xl duration-300">Profil</Link>
+            {
+              data?.isAdmin &&
+                <Link href={'/admin/kontrolna-tabla'} onClick={() => setIsActive(false)} className="h-15 flex justify-center items-center text-xl font-semibold cursor-pointer hover:text-2xl duration-300">Admin</Link>
+            }
+            <div
+              className="h-15 flex justify-center items-center text-xl font-semibold text-red-600 cursor-pointer hover:text-2xl duration-300"
               onClick={handleLogOut}>
               Izloguj se
             </div>
