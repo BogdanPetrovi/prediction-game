@@ -29,10 +29,12 @@ const fetchMatches = async () => {
       const result = await database.query(`INSERT INTO matches (id, team1, team2, event_id, date, format)
         VALUES ($1, ($2, $3), ($4, $5), $6, $7, $8)
         ON CONFLICT(id)
-        DO NOTHING RETURNING *;`, 
+        DO UPDATE SET date = EXCLUDED.date
+        WHERE matches.event_id = EXCLUDED.event_id AND matches.date IS DISTINCT FROM EXCLUDED.date
+        RETURNING (xmax = 0) AS inserted;`,
         [match.id, match.team1.name, match.team1.logo, match.team2.name, match.team2.logo, match.event.id, match.date, match.format])
 
-      if(result.rows.length > 0) {
+      if(result.rows[0]?.inserted) {
         newMatches.push({ team1Name: match.team1.name, team2Name: match.team2.name })
       }
 
