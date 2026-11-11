@@ -8,7 +8,7 @@ const DashboardButton = ({ handleClick, isDisabled, title }: DashboardButtonProp
   return (
     <button 
       className={`${isDisabled ? 'cursor-not-allowed brightness-75' : 'cursor-pointer hover:brightness-130 active:brightness-150'}
-        w-1/3 h-15 bg-secondary rounded-lg text-xl font-semibold duration-300  
+        w-11/12 md:w-1/2 lg:w-1/3 h-15 bg-secondary rounded-lg text-xl font-semibold duration-300  
       `}
       onDoubleClick={handleClick}  
     >

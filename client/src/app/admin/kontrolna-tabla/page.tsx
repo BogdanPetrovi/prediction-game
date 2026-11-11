@@ -52,7 +52,7 @@ export default function KontrolnaTabla() {
 
   return (
     <div className="w-screen min-h-[calc(100vh-4.5rem)] mb-5 pt-12 flex flex-col gap-2 items-center">
-      <div className="flex w-full justify-center gap-10 mb-8">
+      <div className="flex flex-col lg:flex-row w-full items-center justify-center gap-4 lg:gap-10 mb-8">
         <DashboardCard
           title={'Aktivni turnir'}
           id={event.id}
@@ -82,7 +82,7 @@ export default function KontrolnaTabla() {
               title="Izračunaj poene manuelno (dupli klik)"
               isDisabled={isCalculatePointsPending}
             />
-            <div className="w-1/3">
+            <div className="w-11/12 md:w-1/2 lg:w-1/3">
               <LastUpdated 
                 text="Poslednji put računato"
               />

@@ -26,10 +26,10 @@ export default function CalculationSchedule({ schedule, isPending, onSave }: Cal
   }
 
   return (
-    <div className="w-1/3 mt-8 bg-secondary rounded-xl border p-6 flex flex-col gap-4">
+    <div className="w-11/12 md:w-1/2 lg:w-1/3 mt-8 bg-secondary rounded-xl border p-6 flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Automatsko računanje poena</h2>
       <p className="text-muted">Izaberite sate (po srpskom vremenu) u kojima se poeni računaju.</p>
-      <div className="grid grid-cols-6 gap-2">
+      <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
         {
           allHours.map(hour => (
             <div

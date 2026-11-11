@@ -4,14 +4,14 @@ import { type Event } from '../../types/Event'
 
 const DashboardCard = ({ title, name, logo, id }: Event & { title: string }) => {
   if(!name && !logo) return (
-    <div className="w-1/4 h-80 bg-secondary rounded-xl border p-3 gap-10 flex flex-col text-3xl">
+    <div className="w-11/12 md:w-1/2 lg:w-1/4 h-80 bg-secondary rounded-xl border p-3 gap-10 flex flex-col text-3xl">
       <h2 className="font-bold">{ title }</h2>
       <h3>Nema aktivnog turnira.</h3>
     </div>
   )
 
   return (
-    <div className="w-1/4 h-80 bg-secondary rounded-xl border p-3 flex flex-col text-3xl">
+    <div className="w-11/12 md:w-1/2 lg:w-1/4 h-80 bg-secondary rounded-xl border p-3 flex flex-col text-3xl">
       <h2 className="font-bold">{ title }</h2>
       <Image 
         width={160}
