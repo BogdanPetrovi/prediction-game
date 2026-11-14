@@ -6,6 +6,8 @@ import { PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
 import trackPredictions from "../utils/trackPredictions.js";
+import findUserByUsername from "../utils/findUserByUsername.js";
+import { Username } from "../schemas/user.schemas.js";
 
 export const predict = async (req: Request, res: Response) => {
   const { predictions } = req.body;
@@ -66,9 +68,16 @@ export const getPredictions = async (req: Request, res: Response) => {
 }
 
 export const getPredictionsHistory = async (req: Request, res: Response) => {
-  const user = req.user;
-  const { id } = UserType.parse(user)
+  const { id } = UserType.parse(req.user)
+  return res.json(await buildPredictionsHistory(id))
+}
 
+export const getUserPredictionsHistory = async (req: Request, res: Response) => {
+  const { id } = await findUserByUsername(Username.parse(req.params.username))
+  return res.json(await buildPredictionsHistory(id))
+}
+
+const buildPredictionsHistory = async (id: number) => {
   const { rows: events } = await database.query(`
     SELECT e.id, e.name, e.logo, e.start_date, e.end_date, e.is_active FROM events e
     JOIN matches ON matches.event_id = e.id
@@ -79,7 +88,7 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
   `, [id])
   
   if(events.length === 0)
-    return res.json([])
+    return []
 
   const eventIds = events.map((e: { id:number }) => e.id)
 
@@ -193,5 +202,5 @@ export const getPredictionsHistory = async (req: Request, res: Response) => {
     };
   });
 
-  return res.json(response);
+  return response;
 }

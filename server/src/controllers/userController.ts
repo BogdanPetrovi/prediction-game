@@ -1,11 +1,20 @@
 import { Request, Response } from "express";
 import { UserType } from "../schemas/shared.schemas.js";
 import database from "../database/database.js";
+import findUserByUsername from "../utils/findUserByUsername.js";
+import { Username } from "../schemas/user.schemas.js";
 
 export const getProfile = async (req: Request, res: Response) => {
-  const user = req.user;
-  const { id, username } = UserType.parse(user)
+  const { id, username } = UserType.parse(req.user)
+  return res.json(await buildProfile(id, username))
+}
 
+export const getUserProfile = async (req: Request, res: Response) => {
+  const { id, username } = await findUserByUsername(Username.parse(req.params.username))
+  return res.json(await buildProfile(id, username))
+}
+
+const buildProfile = async (id: number, username: string) => {
   const { rows: [stats] } = await database.query(
     `WITH user_events AS (
       SELECT e.id FROM events e
@@ -65,7 +74,7 @@ export const getProfile = async (req: Request, res: Response) => {
     }
   }
 
-  return res.json({
+  return {
     username: username,
     form,
     streak: { count: streak, type: streakType },
@@ -75,5 +84,5 @@ export const getProfile = async (req: Request, res: Response) => {
       correct,
       incorrect,
     },
-  });
+  };
 }
