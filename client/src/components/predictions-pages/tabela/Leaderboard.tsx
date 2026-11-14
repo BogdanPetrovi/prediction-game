@@ -2,7 +2,9 @@
 
 import leaderboardQueryOptions from "@/utils/leaderboardQueryOptions";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { leaderboardHref, parseLeaderboardPage, saveLeaderboardPage } from "@/utils/leaderboardPage";
 import Error from "@/components/shared/Error";
 import Loading from "@/components/shared/Loading";
 import ShortcutButtons from "./ShortcutButtons";
@@ -19,19 +21,31 @@ const LastUpdated = dynamic (() => import('@/components/predictions-pages/tabela
 )
 
 export default function Leaderboard() {
-  const [page, setPage] = useState(1)
+  const searchParams = useSearchParams()
+  const page = parseLeaderboardPage(searchParams.get('strana'))
   const [showLastUpdated, setShowLastUpdated] = useState(false)
+
+  const setPage: Dispatch<SetStateAction<number>> = (value) => {
+    const nextPage = typeof value === 'function' ? value(page) : value
+    window.history.replaceState(null, '', leaderboardHref(nextPage))
+  }
 
   const { data, isPending, error } = useQuery(leaderboardQueryOptions(page));
   const queryClient = useQueryClient();
   useEffect(() => {
     setShowLastUpdated(true)
+    saveLeaderboardPage(page)
 
     if(page !== 1)
       queryClient.prefetchQuery(leaderboardQueryOptions(page-1))
 
     queryClient.prefetchQuery(leaderboardQueryOptions(page+1))
   }, [page, queryClient])
+
+  useEffect(() => {
+    if(data && data.pages > 0 && page > data.pages)
+      window.history.replaceState(null, '', leaderboardHref(data.pages))
+  }, [data, page])
 
   if(error) return <Error err={error} />
 

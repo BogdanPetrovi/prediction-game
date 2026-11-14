@@ -1,18 +1,17 @@
 "use client"
 
-import backend from "@/services/api/backend"
-import type Profile from "@/types/Profile"
 import { useQuery } from "@tanstack/react-query"
+import { ReactNode } from "react"
 import Loading from "@/components/shared/Loading"
+import { profileQueryOptions } from "@/utils/profileQueryOptions"
 
-export default function Profile() {
-  const { data, isPending, isError } = useQuery({
-    queryKey: ['profile'],
-    queryFn: async (): Promise<Profile> => {
-      const result = await backend.get('/profile')
-      return result.data
-    }
-  })
+interface ProfileProps {
+  username?: string,
+  belowName?: ReactNode
+}
+
+export default function Profile({ username, belowName }: ProfileProps) {
+  const { data, isPending, isError } = useQuery(profileQueryOptions(username))
 
   if(isPending) return <Loading />
 
@@ -21,8 +20,9 @@ export default function Profile() {
   return (
     <>
     <div className="flex flex-col md:flex-row justify-between gap-3 md:gap-0">
-      <div>
-        <h2 className="font-bold text-4xl text-white">{data.username}</h2>
+      <div className="min-w-0">
+        <h2 className="font-bold text-4xl text-white break-words">{data.username}</h2>
+        {belowName}
           {
             data.form.length > 0 &&
               <div className="flex items-center gap-2">

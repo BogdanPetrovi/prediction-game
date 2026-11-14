@@ -2,6 +2,7 @@ import backend from "@/services/api/backend"
 import ApiLeaderboardType from "@/types/ApiLeaderboardType"
 import LeaderboardPlace from "@/types/LeaderboardPlace"
 import { useQuery } from "@tanstack/react-query"
+import Link from "next/link"
 
 interface TableProps {
   data: ApiLeaderboardType,
@@ -55,7 +56,13 @@ export default function Table({ data, page }: TableProps) {
                 {currentPlace}
               </td>
               <td className={`py-3 px-4 font-semibold ${isCurrentUser ? "text-orange-500" : "text-slate-200"}`}>
-                {user.username}
+                <Link
+                  href={isCurrentUser ? '/profil' : `/profil/${encodeURIComponent(user.username)}`}
+                  prefetch={false}
+                  className={`${isCurrentUser ? "hover:text-orange-400" : "hover:text-white"} rounded-sm underline-offset-4 decoration-2 hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-secondary duration-200`}
+                >
+                  {user.username}
+                </Link>
               </td>
               <td className="py-3 px-4 text-right">
                 <span className={`font-bold ${isCurrentUser ? "text-orange-500" : "text-slate-300"}`}>

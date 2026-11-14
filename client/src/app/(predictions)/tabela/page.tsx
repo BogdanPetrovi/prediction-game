@@ -1,6 +1,8 @@
 import Leaderboard from "@/components/predictions-pages/tabela/Leaderboard"
 import Event from "@/components/shared/Event"
 import TopThree from "@/components/predictions-pages/tabela/TopThree"
+import Loading from "@/components/shared/Loading"
+import { Suspense } from "react"
 
 const LeaderboardPage = () => {
   return (
@@ -10,7 +12,9 @@ const LeaderboardPage = () => {
           <Event />
         </div>
         <TopThree />
-        <Leaderboard />
+        <Suspense fallback={<Loading />}>
+          <Leaderboard />
+        </Suspense>
       </div>
     </>
   )

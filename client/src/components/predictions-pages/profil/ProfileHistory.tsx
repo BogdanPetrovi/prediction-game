@@ -2,17 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import ProfileEventHistory from "./ProfileEventHistory";
-import backend from "@/services/api/backend";
-import PredictionHistory from "@/types/PredictionHistory";
+import { predictionHistoryQueryOptions } from "@/utils/profileQueryOptions";
 
-export default function ProfileHistory() {
-  const { data, isPending, isError } = useQuery({
-    queryKey: ['prediction-history'],
-    queryFn: async (): Promise<PredictionHistory[]> => {
-      const result = await backend.get('prediction-history')
-      return result.data
-    }
-  })
+export default function ProfileHistory({ username }: { username?: string }) {
+  const { data, isPending, isError } = useQuery(predictionHistoryQueryOptions(username))
 
   if(isPending) return <></>
 
@@ -30,8 +23,15 @@ export default function ProfileHistory() {
           <div className="w-full flex flex-col items-center mt-2 gap-2">
             <div className="w-40 h-4 rounded-full rounded-b-none bg-gradient-to-l from-[#667EEA] to-[#9333EA]" />
             <h2 className="w-11/12 text-center text-xl font-semibold">
-              Nisi odigrao nijednu predikciju do sada. 
-              Kada budeš napravio svoju prvu predikciju ovde ćeš moći da pratiš svoje rezultate!
+              {
+                username ?
+                  <>Ovaj korisnik još nema završenih predikcija.</>
+                :
+                  <>
+                    Nisi odigrao nijednu predikciju do sada.
+                    Kada budeš napravio svoju prvu predikciju ovde ćeš moći da pratiš svoje rezultate!
+                  </>
+              }
             </h2>
             <div className="w-40 h-4 rounded-full rounded-t-none bg-gradient-to-l from-[#F39C12] to-[#FFA500]" />
           </div>
