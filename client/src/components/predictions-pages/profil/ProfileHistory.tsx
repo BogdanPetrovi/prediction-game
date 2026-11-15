@@ -21,7 +21,7 @@ export default function ProfileHistory({ username }: { username?: string }) {
           ))
         :
           <div className="w-full flex flex-col items-center mt-2 gap-2">
-            <div className="w-40 h-4 rounded-full rounded-b-none bg-gradient-to-l from-[#667EEA] to-[#9333EA]" />
+            <div className="w-40 h-4 rounded-full rounded-b-none bg-gradient-to-l from-[#667EEA] to-[#9333EA] sg:from-sg-red sg:to-sg-wine" />
             <h2 className="w-11/12 text-center text-xl font-semibold">
               {
                 username ?
@@ -33,7 +33,7 @@ export default function ProfileHistory({ username }: { username?: string }) {
                   </>
               }
             </h2>
-            <div className="w-40 h-4 rounded-full rounded-t-none bg-gradient-to-l from-[#F39C12] to-[#FFA500]" />
+            <div className="w-40 h-4 rounded-full rounded-t-none bg-gradient-to-l from-[#F39C12] to-[#FFA500] sg:bg-none sg:bg-white sg:ring-1 sg:ring-sg-red/40" />
           </div>
       }
     </div>

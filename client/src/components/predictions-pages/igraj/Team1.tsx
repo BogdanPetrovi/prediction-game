@@ -17,7 +17,7 @@ const Team1: React.FC<Team1Props> = ({ selectedTeam, handleChange, match, matchP
     <div 
       className={
         `${!match.live && selectedTeam === 'team2' && "opacity-50 hover:opacity-80 "} 
-        group flex items-center gap-3 relative w-1/2 h-full duration-300`}
+        group flex items-center gap-3 relative w-1/2 h-full duration-300 sg:text-white`}
       onClick={() => handleChange('team1')}
     >
       {

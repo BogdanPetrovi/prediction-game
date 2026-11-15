@@ -19,7 +19,8 @@ const Team2: React.FC<Team2Props> = ({ selectedTeam, handleChange, match, matchP
         `${selectedTeam === 'team1' ? "w-1/2  " 
           : selectedTeam === 'team2' ? "w-[63%] " 
           : "w-1/2 "}
-          group absolute flex flex-row-reverse items-center justify-start gap-3 bg-gradient-to-l from-[#F39C12] to-[#FFA500] top-0 right-0 rounded-r-xl h-full duration-300`}
+          group absolute flex flex-row-reverse items-center justify-start gap-3 bg-gradient-to-l from-[#F39C12] to-[#FFA500] top-0 right-0 rounded-r-xl h-full duration-300
+          sg:bg-none sg:bg-white sg:text-sg-crimson sg:rounded-r-[10px]`}
       style={{
         clipPath: selectedTeam === 'team1' ? `polygon(14% 0, 100% 0, 100% 100%, 10% 100%)` 
                 : selectedTeam === 'team2' ? `polygon(10% 0, 100% 0, 100% 100%, 14% 100%)` : 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)',
@@ -53,7 +54,7 @@ const Team2: React.FC<Team2Props> = ({ selectedTeam, handleChange, match, matchP
       }
       <h2 
         className={`${ !match.live && selectedTeam === 'team1' ? 'opacity-50 group-hover:opacity-80 ' : '' } 
-          hidden md:block w-min 2xl:w-fit text-end text-3xl xl:text-4xl text-[#f9fafd] font-semibold ml-4 lg:ml-0 duration-300`}
+          hidden md:block w-min 2xl:w-fit text-end text-3xl xl:text-4xl text-[#f9fafd] font-semibold ml-4 lg:ml-0 duration-300 sg:text-sg-crimson`}
       >
         { match.team2.name }
       </h2>

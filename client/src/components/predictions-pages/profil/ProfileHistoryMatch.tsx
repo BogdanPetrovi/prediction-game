@@ -10,7 +10,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
   const formatedResult = data.predicted_winner === 'team1' ? data.result : `${second}:${first}`
 
   return (
-    <div className="h-13 bg-secondary border-b border-zinc-700 px-2 flex items-center gap-3 hover:brightness-120 duration-200">
+    <div className="h-13 bg-secondary border-b border-zinc-700 px-2 flex items-center gap-3 hover:brightness-120 duration-200 sg:bg-white sg:border-sg-sand sg:hover:bg-sg-red/5 sg:hover:brightness-100">
       {
         data.is_correct === "correct" ? 
         <div className="size-3 rounded-full bg-green-400 shadow-md shadow-green-400/50"></div>
@@ -47,7 +47,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
         </h4>
       </div>
       <div className="ml-auto flex items-center gap-3 cursor-default">
-        <h3 className="min-w-max font-bold text-white md:tracking-[2px] text-xs md:text-md">{ formatedResult }</h3>
+        <h3 className="min-w-max font-bold text-white md:tracking-[2px] text-xs md:text-md sg:text-sg-ink">{ formatedResult }</h3>
         {
           data.date && 
             <h3 className="min-w-max text-muted font-semibold text-xs md:text-sm tracking-tighter">{ formatDateTimeWithLetter(data.date) }</h3>
@@ -55,7 +55,7 @@ export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
         {
           (chosenTeam.points !== undefined && chosenTeam.points !== null) && (
             data.is_correct === "correct" ? 
-              <h3 className="min-w-max text-green-400 font-semibold text-xs md:text-sm w-11 text-right tabular-nums">{chosenTeam.points}pts</h3>
+              <h3 className="min-w-max text-green-400 font-semibold text-xs md:text-sm w-11 text-right tabular-nums sg:text-green-600">{chosenTeam.points}pts</h3>
               :
               <h3
                 title={`Da ste pogodili osvojili biste ${chosenTeam.points} poena`}

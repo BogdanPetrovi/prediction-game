@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import CrescentLoader from "@/themes/singapore/CrescentLoader"
 
 const Loading = () => {
   const phrases = ["Učitavanje", "Plentovanje bombe", "Rotiranje", "Green what is your problem", "Držanje uglova", "Kupovanje AWP-a sa $4750", "Rush B", "Lomljenje stola"]
@@ -21,7 +22,8 @@ const Loading = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-      <div className="relative size-14 mb-8">
+      <CrescentLoader className="hidden sg:block mb-8" />
+      <div className="relative size-14 mb-8 sg:hidden">
         <div className="absolute inset-0 rounded-full border-[3px] border-white/8" />
         <div
           className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#9333EA] animate-spin"
@@ -33,7 +35,7 @@ const Loading = () => {
       </div>
       <h4
         className={`
-          text-slate-300 text-lg font-medium tracking-wide transition-opacity duration-250
+          text-slate-300 text-lg font-medium tracking-wide transition-opacity duration-250 sg:text-stone-600
           ${visible ? "opacity-100" : "opacity-0"}
         `}
       >

@@ -26,9 +26,9 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
           <h3 className="text-lg font-semibold tracking-wider">{ data.name }</h3>
         </div>
         <h3 className="font-semibold text-muted ">
-          <span className="text-green-400 pr-1.5">{ data.score.correct }</span>
+          <span className="text-green-400 pr-1.5 sg:text-green-600">{ data.score.correct }</span>
           -
-          <span className="text-red-400 pl-1.5">{ data.score.incorrect }</span>
+          <span className="text-red-400 pl-1.5 sg:text-red-600">{ data.score.incorrect }</span>
         </h3>
       </div>
       {
@@ -36,7 +36,7 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
           <h4 className="ml-9 -mt-1 text-muted text-xs">{ data.placement.isFinal ? 'Konačna' : 'Trenutna' } pozicija: { data.placement.place }.</h4>
       }
 
-      <div className="bg-secondary rounded-xl border border-zinc-700 overflow-hidden mt-2 slide-down">
+      <div className="bg-secondary rounded-xl border border-zinc-700 overflow-hidden mt-2 slide-down sg:bg-white sg:border-sg-sand sg:shadow-sm">
         {
           showAll ?
           data.allMatches.map(match => (
@@ -51,7 +51,7 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
           (data.recentMatches.length > 9 && !showAll) 
           ?
           <div 
-            className="h-8 w-full bg-secondary flex justify-center items-center font-semibold hover:brightness-120 active:brightness-150 duration-300 cursor-pointer"
+            className="h-8 w-full bg-secondary flex justify-center items-center font-semibold hover:brightness-120 active:brightness-150 duration-300 cursor-pointer sg:bg-sg-crimson sg:text-white sg:hover:brightness-110 sg:active:brightness-90"
             onClick={() => setShowAll(true)}
           >
             Prikaži sve
@@ -59,7 +59,7 @@ export default function ProfileEventHistory({ data }: {data: PredictionHistory})
           :
           (data.recentMatches.length > 9 && showAll) && 
           <div 
-            className="h-8 w-full bg-secondary flex justify-center items-center font-semibold hover:brightness-120 active:brightness-150 duration-300 cursor-pointer"
+            className="h-8 w-full bg-secondary flex justify-center items-center font-semibold hover:brightness-120 active:brightness-150 duration-300 cursor-pointer sg:bg-sg-crimson sg:text-white sg:hover:brightness-110 sg:active:brightness-90"
             onClick={() => setShowAll(false)}
           >
             Prikaži manje

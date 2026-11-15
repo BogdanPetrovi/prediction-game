@@ -65,17 +65,17 @@ export default function Leaderboard() {
           <ShortcutButtons page={page} setPage={setPage} />
         </div>
       }
-      <div className={`${data.leaderboard.length === 0 ? "mt-5" : ""} bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50`}>
+      <div className={`${data.leaderboard.length === 0 ? "mt-5" : ""} bg-secondary/50 border border-slate-700 rounded-lg overflow-hidden shadow-md shadow-slate-900/50 sg:bg-white sg:border-sg-sand sg:shadow-sg-ink/5`}>
         <div className="overflow-x-auto">
           <Table data={data} page={page} />
         </div>
-        <div className="bg-secondary border-t h-12 border-slate-700 p-3 flex justify-center items-center gap-4">
+        <div className="bg-secondary border-t h-12 border-slate-700 p-3 flex justify-center items-center gap-4 sg:bg-sg-cream sg:border-sg-sand">
           <PaginationControl direction="back" page={page} setPage={setPage} totalPages={data.pages} />
           <h3 className="font-semibold">{page}</h3>
           <PaginationControl direction="next" page={page} setPage={setPage} totalPages={data.pages} />
         </div>
       </div>
-      <div className="w-full h-0.5 bg-secondary mt-2 rounded-xl"></div>
+      <div className="w-full h-0.5 bg-secondary mt-2 rounded-xl sg:bg-sg-red/40"></div>
       {
         showLastUpdated && <LastUpdated />
       }

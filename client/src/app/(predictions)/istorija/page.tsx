@@ -45,8 +45,8 @@ const IstorijaPage = () => {
       <div className={`pt-4 pb-6 flex flex-col gap-4 duration-200 ${isPlaceholderData ? "opacity-60" : ""}`}>
 
         {data.events.map((event) => (
-          <div key={event.name} className="rounded-2xl overflow-hidden border border-white/10">
-            <div className="bg-gradient-to-r from-[#667EEA] via-[#9333EA] to-[#F39C12] px-5 py-4 flex items-center gap-4">
+          <div key={event.name} className="rounded-2xl overflow-hidden border border-white/10 sg:border-sg-sand sg:shadow-md sg:shadow-sg-ink/5">
+            <div className="bg-gradient-to-r from-[#667EEA] via-[#9333EA] to-[#F39C12] px-5 py-4 flex items-center gap-4 sg:from-sg-wine sg:via-sg-crimson sg:to-sg-red">
               <div className="relative size-11 shrink-0 rounded-lg overflow-hidden bg-white/15 p-1.5">
                 <Image src={event.logo} fill sizes="32px" alt={event.name} className="object-contain" unoptimized={!isOptimizedImage(event.logo)} />
               </div>
@@ -55,7 +55,7 @@ const IstorijaPage = () => {
               </h3>
             </div>
 
-            <div className="bg-white/[0.04] flex flex-col divide-y divide-white/10">
+            <div className="bg-white/[0.04] flex flex-col divide-y divide-white/10 sg:bg-white sg:divide-sg-sand">
               <Placements placements={event.placements} key={event.name} />
             </div>
           </div>

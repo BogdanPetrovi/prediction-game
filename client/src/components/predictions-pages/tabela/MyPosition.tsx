@@ -37,11 +37,12 @@ const MyPosition: React.FC<MyPositionProps> = ({ page, setPage }) => {
     <button 
       className={`
         ${page === data.page ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:brightness-120"}
-        flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200 duration-200`}
+        flex items-center gap-2 px-2 py-1 bg-secondary border border-slate-700 rounded-md text-sm font-bold text-slate-200 duration-200
+        sg:bg-sg-crimson sg:border-sg-crimson sg:text-white sg:shadow-sm sg:shadow-sg-red/25`}
       onMouseEnter={prefetchPage}
       onClick={() => setPage(data.page!)}
     >
-      <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 text-orange-500 sg:text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10" />
         <circle cx="12" cy="12" r="6" />
         <circle cx="12" cy="12" r="2" />

@@ -43,12 +43,13 @@ const UserSvg = () => {
 
   return(
     <div className="relative select-none xl:opacity-95 z-100" ref={ref}>
-      <svg className="size-9 text-slate-400 hover:text-white cursor-pointer duration-300" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" onClick={() => setIsActive(!isActive)}>
+      <svg className="size-9 text-slate-400 hover:text-white cursor-pointer duration-300 sg:text-stone-500 sg:hover:text-sg-red" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" onClick={() => setIsActive(!isActive)}>
         <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
       </svg>
       {
         isActive && 
-          <div className="w-50 bg-secondary border-2 absolute top-12 right-0 lg:-right-4 rounded-2xl shadow-xl shadow-black/70 flex flex-col divide-y-2">
+          <div className="w-50 bg-secondary border-2 absolute top-12 right-0 lg:-right-4 rounded-2xl shadow-xl shadow-black/70 flex flex-col divide-y-2
+                          sg:bg-white sg:border-sg-red/30 sg:divide-sg-sand sg:shadow-sg-ink/15">
             <Link href={'/profil'} onClick={() => setIsActive(false)} className="h-15 flex justify-center items-center text-xl font-semibold cursor-pointer hover:text-2xl duration-300">Profil</Link>
             {
               data?.isAdmin &&

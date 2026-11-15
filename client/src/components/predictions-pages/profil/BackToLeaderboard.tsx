@@ -12,7 +12,7 @@ export default function BackToLeaderboard() {
   return (
     <Link
       href={href}
-      className="min-h-11 -ml-1 px-1 mb-2 inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-slate-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 duration-200 group"
+      className="min-h-11 -ml-1 px-1 mb-2 inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-slate-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 duration-200 group sg:text-stone-500 sg:hover:text-sg-crimson sg:focus-visible:ring-sg-red"
     >
       <svg className="size-4 group-hover:-translate-x-0.5 duration-200" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />

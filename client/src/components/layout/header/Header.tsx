@@ -4,7 +4,7 @@ import Image from "next/image"
 
 const Header = () => {
   return(
-    <header className="w-full h-16 bg-secondary/70 backdrop-blur-xl border-b border-white/10 z-50">
+    <header className="w-full h-16 bg-secondary/70 backdrop-blur-xl border-b border-white/10 z-50 sg:bg-white/75 sg:border-b-2 sg:border-sg-red/25">
       <div className="w-full h-full flex justify-between items-center px-4 lg:px-15">
         <Link href={'/'} className="flex items-center gap-2 relative">
           <div className="relative size-9">
@@ -14,7 +14,7 @@ const Header = () => {
               alt="Logo"
             />
           </div>
-          <h3 className="text-xl font-extrabold text-white cursor-pointer tracking-wide">Counter <span className="text-orange-500">Site</span></h3>
+          <h3 className="text-xl font-extrabold text-white cursor-pointer tracking-wide sg:text-sg-ink">Counter <span className="text-orange-500 sg:text-sg-red">Site</span></h3>
         </Link>
         <UserSvg />
       </div>

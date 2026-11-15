@@ -1,17 +1,20 @@
 import Link from "next/link";
 import "./globals.css";
+import { ACTIVE_THEME } from "@/config/theme";
+import SingaporeBackdrop from "@/themes/singapore/SingaporeBackdrop";
 
 export default function NotFound() {
   return (
-    <div className="h-screen w-screen flex flex-col items-center justify-center gap-6">
+    <div className="h-screen w-screen flex flex-col items-center justify-center gap-6 sg:isolate sg:bg-sg-cream sg:text-sg-ink">
+      {ACTIVE_THEME === 'singapore' && <SingaporeBackdrop />}
       <h2 className="text-5xl font-bold">
         Upssss, deluje kao da ova stranica ne postoji
       </h2>
-      <h3 className="text-4xl font-semibold text-white/50">
+      <h3 className="text-4xl font-semibold text-white/50 sg:text-stone-500">
         Vratite se nazad na&nbsp;
         <Link
           href="/login"
-          className="text-blue-400 italic underline cursor-pointer"
+          className="text-blue-400 italic underline cursor-pointer sg:text-sg-crimson"
         >
           stranicu za prijavljivanje
         </Link>

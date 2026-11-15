@@ -31,7 +31,8 @@ const Matchup: React.FC<MatchupProps> = ({ match, setPredictions, backendPredict
   return (
     <div 
       className={`${match.live ? "opacity-60 cursor-not-allowed" : "cursor-pointer"} 
-                  relative w-full h-20 bg-gradient-to-l from-30% from-[#667EEA] to-[#9333EA] rounded-xl flex items-center`}>
+                  relative w-full h-20 bg-gradient-to-l from-30% from-[#667EEA] to-[#9333EA] rounded-xl flex items-center
+                  sg:from-sg-red sg:to-sg-wine sg:border-2 sg:border-sg-red sg:shadow-lg sg:shadow-sg-red/15`}>
       <Team1
         selectedTeam={selectedTeam}
         handleChange={handleChange}

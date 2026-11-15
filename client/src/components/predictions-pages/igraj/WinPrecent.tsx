@@ -17,7 +17,7 @@ const WinPercent = ({ value, team, selected, isLive }: WinPrecentProps) => {
             'bg-white/20 slide-in-left' 
             :
             `
-              bg-black/25 slide-in
+              bg-black/25 slide-in sg:bg-sg-red/10
               ${selected === 'team1' && 'opacity-50'} 
               ${!isLive && selected === 'team1' && 'group-hover:opacity-80'}
             `

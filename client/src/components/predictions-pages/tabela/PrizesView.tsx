@@ -10,7 +10,7 @@ export default function PrizesView({ prizes }: {prizes: Prize[]}) {
 
   return (
     <div className="w-full flex flex-col md:flex-none md:grid md:grid-cols-3 gap-3 mt-5 mb-4 md:mb-0 cursor-default">
-      <div className="bg-slate-300/20 brightness-90 flex flex-col justify-center items-center h-30 rounded-lg border border-slate-300 hover:-translate-y-2 duration-200">
+      <div className="bg-slate-300/20 brightness-90 flex flex-col justify-center items-center h-30 rounded-lg border border-slate-300 hover:-translate-y-2 duration-200 sg:bg-slate-100 sg:brightness-100 sg:text-slate-600 sg:shadow-sm">
         <Image
           width={70}
           height={170}
@@ -20,7 +20,7 @@ export default function PrizesView({ prizes }: {prizes: Prize[]}) {
         <h3 className="text-sm">{ secondPlace.skinName }</h3>
         <h2 className="uppercase font-bold text-lg">2. mesto</h2>
       </div>
-      <div className="bg-amber-400/20 brightness-125 flex flex-col justify-center items-center h-35 rounded-lg border border-amber-500 text-amber-500 md:-translate-y-3 hover:-translate-y-5 duration-200">
+      <div className="bg-amber-400/20 brightness-125 flex flex-col justify-center items-center h-35 rounded-lg border border-amber-500 text-amber-500 md:-translate-y-3 hover:-translate-y-5 duration-200 sg:bg-amber-50 sg:brightness-100 sg:border-amber-400 sg:text-amber-700 sg:shadow-md sg:shadow-amber-500/15">
         <Image
           width={80}
           height={180}
@@ -30,7 +30,7 @@ export default function PrizesView({ prizes }: {prizes: Prize[]}) {
         <h3 className="text-md">{ firstPlace.skinName }</h3>
         <h2 className="uppercase font-bold text-xl">1. mesto</h2>
       </div>
-      <div className="bg-amber-700/20 flex flex-col justify-center items-center h-30 rounded-lg border border-amber-600 text-amber-600 hover:-translate-y-2 duration-200">
+      <div className="bg-amber-700/20 flex flex-col justify-center items-center h-30 rounded-lg border border-amber-600 text-amber-600 hover:-translate-y-2 duration-200 sg:bg-orange-50 sg:border-amber-700/50 sg:text-amber-800 sg:shadow-sm">
         <Image
           width={70}
           height={170}

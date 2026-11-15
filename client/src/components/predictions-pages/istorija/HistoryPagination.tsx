@@ -17,11 +17,12 @@ const getPageItems = (page: number, totalPages: number): PageItem[] => {
   return [1, "ellipsis", page - 1, page, page + 1, "ellipsis", totalPages]
 }
 
-const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9333EA]"
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9333EA] sg:focus-visible:outline-sg-red"
 
 const arrowButton = `h-11 min-w-11 px-3 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] text-slate-200 font-semibold text-sm duration-200
   enabled:cursor-pointer enabled:hover:bg-white/10 enabled:hover:border-white/20 enabled:active:scale-95
-  disabled:opacity-40 disabled:cursor-not-allowed ${focusRing}`
+  disabled:opacity-40 disabled:cursor-not-allowed ${focusRing}
+  sg:bg-sg-crimson sg:border-sg-crimson sg:text-white sg:enabled:hover:bg-sg-red sg:enabled:hover:border-sg-red`
 
 export default function HistoryPagination({ page, totalPages, totalEvents, pageSize, onPageChange }: HistoryPaginationProps) {
   const from = (page - 1) * pageSize + 1
@@ -29,7 +30,7 @@ export default function HistoryPagination({ page, totalPages, totalEvents, pageS
 
   return (
     <nav aria-label="Stranice istorije turnira" className="flex flex-col items-center gap-3">
-      <div className="w-full flex items-center justify-between gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
+      <div className="w-full flex items-center justify-between gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-2 sg:bg-white sg:border-sg-sand">
         <button
           type="button"
           onClick={() => onPageChange(page - 1)}
@@ -47,7 +48,7 @@ export default function HistoryPagination({ page, totalPages, totalEvents, pageS
           {getPageItems(page, totalPages).map((item, i) => {
             if (item === "ellipsis") {
               return (
-                <li key={`ellipsis-${i}`} aria-hidden="true" className="w-6 text-center text-slate-500 font-bold select-none">
+                <li key={`ellipsis-${i}`} aria-hidden="true" className="w-6 text-center text-slate-500 font-bold select-none sg:text-stone-400">
                   …
                 </li>
               )
@@ -64,8 +65,8 @@ export default function HistoryPagination({ page, totalPages, totalEvents, pageS
                   aria-current={isActive ? "page" : undefined}
                   className={`size-10 flex items-center justify-center rounded-xl border font-bold tabular-nums duration-200 ${focusRing} ${
                     isActive
-                      ? "border-transparent bg-gradient-to-br from-[#667EEA] to-[#9333EA] text-white shadow-lg shadow-purple-900/40"
-                      : "border-white/10 bg-white/[0.04] text-slate-300 cursor-pointer hover:bg-white/10 hover:border-white/20 hover:text-white active:scale-95"
+                      ? "border-transparent bg-gradient-to-br from-[#667EEA] to-[#9333EA] text-white shadow-lg shadow-purple-900/40 sg:from-sg-red sg:to-sg-wine sg:shadow-sg-red/30"
+                      : "border-white/10 bg-white/[0.04] text-slate-300 cursor-pointer hover:bg-white/10 hover:border-white/20 hover:text-white active:scale-95 sg:bg-white sg:border-sg-sand sg:text-stone-700 sg:hover:bg-sg-red/5 sg:hover:border-sg-red/40 sg:hover:text-sg-crimson"
                   }`}
                 >
                   {item}
@@ -75,8 +76,8 @@ export default function HistoryPagination({ page, totalPages, totalEvents, pageS
           })}
         </ol>
 
-        <p className="sm:hidden text-sm font-semibold text-slate-400 tabular-nums">
-          Strana <span className="text-white">{page}</span> od {totalPages}
+        <p className="sm:hidden text-sm font-semibold text-slate-400 tabular-nums sg:text-stone-500">
+          Strana <span className="text-white sg:text-sg-ink">{page}</span> od {totalPages}
         </p>
 
         <button
@@ -93,7 +94,7 @@ export default function HistoryPagination({ page, totalPages, totalEvents, pageS
         </button>
       </div>
 
-      <p className="text-xs text-slate-500 tabular-nums">
+      <p className="text-xs text-slate-500 tabular-nums sg:text-stone-500">
         Turniri {from}–{to} od {totalEvents}
       </p>
     </nav>

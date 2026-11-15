@@ -33,11 +33,11 @@ export default function UserProfile({ username }: { username: string }) {
         <BackToLeaderboard />
         <div className="mt-16 flex flex-col items-center text-center slide-down">
           <div className="mb-6 flex items-center gap-3.5" aria-hidden="true">
-            <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#667EEA] to-[#9333EA]" />
-            <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#F39C12] to-[#FFA500]" />
+            <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#667EEA] to-[#9333EA] sg:from-sg-red sg:to-sg-wine" />
+            <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#F39C12] to-[#FFA500] sg:bg-none sg:bg-white sg:ring-1 sg:ring-sg-red/40" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight">Korisnik ne postoji</h2>
-          <p className="text-slate-300 text-base leading-relaxed max-w-[300px]">
+          <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight sg:text-sg-ink">Korisnik ne postoji</h2>
+          <p className="text-slate-300 text-base leading-relaxed max-w-[300px] sg:text-stone-600">
             Proveri da li je ime tačno napisano ili pronađi korisnika na tabeli.
           </p>
         </div>

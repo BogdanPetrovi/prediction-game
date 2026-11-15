@@ -9,19 +9,19 @@ const NoResult = ({ title, subtitle }: NoResultProps) => {
       className={'absolute inset-0 flex flex-col items-center justify-center px-6 text-center slide-down'}
     >
       <div className="mb-8 flex items-center justify-center gap-3.5">
-        <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#667EEA] to-[#9333EA]" />
-        <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#F39C12] to-[#FFA500]" />
+        <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#667EEA] to-[#9333EA] sg:from-sg-red sg:to-sg-wine" />
+        <div className="w-4 h-14 rounded-full bg-gradient-to-b from-[#F39C12] to-[#FFA500] sg:bg-none sg:bg-white sg:ring-1 sg:ring-sg-red/40" />
       </div>
 
-      <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight">{title}</h2>
+      <h2 className="text-2xl font-extrabold text-white mb-3 tracking-tight sg:text-sg-ink">{title}</h2>
 
-      <p className="text-slate-300 text-base leading-relaxed max-w-[280px]">
+      <p className="text-slate-300 text-base leading-relaxed max-w-[280px] sg:text-stone-600">
         {subtitle}
       </p>
 
       <div className="mt-8 flex items-center gap-0.5">
-        <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#667EEA]" />
-        <div className="h-px w-16 bg-gradient-to-r from-[#F39C12] to-transparent" />
+        <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#667EEA] sg:to-sg-red" />
+        <div className="h-px w-16 bg-gradient-to-r from-[#F39C12] to-transparent sg:from-sg-red" />
       </div>
     </div>
   )
