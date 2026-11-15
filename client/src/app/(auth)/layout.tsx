@@ -4,7 +4,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main>
+    <main data-theme="default">
       {children}
     </main>
   );

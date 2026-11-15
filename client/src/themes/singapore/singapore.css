@@ -1,0 +1,71 @@
+@custom-variant sg (&:where([data-theme=singapore] *):not(:where([data-theme=default] *)));
+
+@theme {
+  --color-sg-red: #EF3340;
+  --color-sg-crimson: #D7263D;
+  --color-sg-wine: #A8182C;
+  --color-sg-cream: #FBF8F3;
+  --color-sg-ink: #2A2321;
+  --color-sg-sand: #EDE3D6;
+}
+
+@keyframes sg-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+@keyframes sg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sg-twinkle {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes sg-spout {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.sg-float {
+  animation: sg-float 7s ease-in-out infinite;
+}
+
+.sg-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sg-spin 90s linear infinite;
+}
+
+.sg-spout {
+  stroke-dasharray: 6 6;
+  animation: sg-spout 1.2s linear infinite;
+}
+
+.sg-star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sg-twinkle 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-float,
+  .sg-wheel,
+  .sg-spout {
+    animation: none;
+  }
+}

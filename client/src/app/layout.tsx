@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Oxanium } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
 import { ToastProvider } from "@/context/ToastContext";
+import { ACTIVE_THEME } from "@/config/theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme={ACTIVE_THEME}>
       <body className={`${geistSans.variable} ${geistMono.variable} ${oxanium.variable} font-oxanium antialiased`}>
         <QueryProvider>
           <ToastProvider>
