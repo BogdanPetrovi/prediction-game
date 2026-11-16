@@ -37,7 +37,7 @@ Client `.env.local`: `NEXT_PUBLIC_API_URL`.
 - `server.ts` is the entry point: it starts the HTTP app from `index.ts`, the PandaScore matches scheduler and the points calculation cron. `index.ts` wires middleware, a Redis-backed session, Passport, and routers (`userRoutes` at `/`, `adminRoutes` at `/admin`, `authRoutes` at `/auth`).
 - **Relative imports use `.js` extensions** (ESM with `"type": "module"`), even though the files are `.ts`.
 - **Error handling:** controllers are plain async functions with no try/catch. Express 5 forwards thrown errors to `utils/globalErrorHandler.ts`, which maps `ZodError`→400, `AppError(msg, status)`→its status, and pg/redis errors→503. Validate input with Zod schemas from `src/schemas/` via `.parse()` and throw `AppError` for other failures.
-- Auth: routes chain `isLoggedIn` (and `isAdmin`, which checks `users.is_admin` in the DB). The whole user object is serialized into the session. Get the user id with `UserType.parse(req.user)`.
+- Auth: routes chain `isLoggedIn` (and `isAdmin`, which checks `users.is_admin` in the DB). The whole user object is serialized into the session. Get the user id with `UserType.parse(req.user)`. The session `username` goes stale once the user changes it (`PUT /profile/username`, one change per 7 days via `users.username_changed_at`), so read the username from the DB (`utils/findUserById.ts`).
 - `database.query(sql, params)` runs a single query and `database.transaction(async client => ...)` runs a BEGIN/COMMIT/ROLLBACK block. Snake_case DB columns are mapped to camelCase by hand in controllers.
 
 ### Redis as the source of "current state"

@@ -5,7 +5,7 @@ import { getLastLeaderboardUpdateAt, getLeaderboard, getUsersLeaderboardPlaceAnd
 import { getPredictions, getPredictionsHistory, getUserPredictionsHistory, predict } from "../controllers/predictionController.js";
 import { getHistory } from "../controllers/historyController.js";
 import { getParentEvent } from "../controllers/eventController.js";
-import { getProfile, getUserProfile } from "../controllers/userController.js";
+import { changeUsername, getProfile, getUserProfile, getUsername } from "../controllers/userController.js";
 
 const router = Router();
 
@@ -28,6 +28,10 @@ router.get('/leaderboard-last-update-at', isLoggedIn, getLastLeaderboardUpdateAt
 router.get('/matches-points', isLoggedIn, getMatchesPoints)
 
 router.get('/profile', isLoggedIn, getProfile)
+
+router.get('/profile/username', isLoggedIn, getUsername)
+
+router.put('/profile/username', isLoggedIn, changeUsername)
 
 router.get('/prediction-history', isLoggedIn, getPredictionsHistory)
 

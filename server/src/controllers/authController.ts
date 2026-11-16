@@ -4,10 +4,10 @@ import { UserType } from "../schemas/shared.schemas.js";
 import redisClient from "../config/redis.js";
 import { getCountry } from "../utils/getCountry.js";
 import database from "../database/database.js";
+import findUserById from "../utils/findUserById.js";
 
 export const getUser = async (req: Request, res: Response) => {
-  const user = req.user;
-  const { id, username } = UserType.parse(user)
+  const { id, username } = await findUserById(UserType.parse(req.user).id)
 
   const sessionKey = `tracked:${id}:${req.sessionID}`
   const firstInWindow = await redisClient.set(sessionKey, '1', { EX: 300, NX: true })
