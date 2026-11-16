@@ -3,6 +3,7 @@ import { isAxiosError } from "axios"
 import backend from "@/services/api/backend"
 import type Profile from "@/types/Profile"
 import type PredictionHistory from "@/types/PredictionHistory"
+import type UsernameStatus from "@/types/UsernameStatus"
 
 export const profileQueryOptions = (username?: string) => queryOptions({
   queryKey: username ? ['profile', username] : ['profile'],
@@ -26,4 +27,13 @@ export const predictionHistoryQueryOptions = (username?: string) => queryOptions
   retry: (failureCount, error) => !isNotFound(error) && failureCount < 3
 })
 
-export const isNotFound = (error: unknown) => isAxiosError(error) && error.response?.status === 404
+export const usernameStatusQueryOptions = () => queryOptions({
+  queryKey: ['username-status'],
+  queryFn: async (): Promise<UsernameStatus> => {
+    const result = await backend.get('/profile/username')
+    return result.data
+  },
+  staleTime: 60_000
+})
+
+export const isNotFound =(error: unknown) => isAxiosError(error) && error.response?.status === 404

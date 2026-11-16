@@ -7,7 +7,7 @@ const Profil = () => {
   return (
     <>
       <div className="min-h-[calc(100vh-11.5rem)] max-w-3xl mx-3 md:mx-auto">
-        <Profile belowName={<CurrentPlacement />} />
+        <Profile editable belowName={<CurrentPlacement />} />
         <ProfileHistory />
       </div>
       <Footer />

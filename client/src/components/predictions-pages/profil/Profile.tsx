@@ -4,13 +4,15 @@ import { useQuery } from "@tanstack/react-query"
 import { ReactNode } from "react"
 import Loading from "@/components/shared/Loading"
 import { profileQueryOptions } from "@/utils/profileQueryOptions"
+import EditableUsername from "./EditableUsername"
 
 interface ProfileProps {
   username?: string,
-  belowName?: ReactNode
+  belowName?: ReactNode,
+  editable?: boolean
 }
 
-export default function Profile({ username, belowName }: ProfileProps) {
+export default function Profile({ username, belowName, editable = false }: ProfileProps) {
   const { data, isPending, isError } = useQuery(profileQueryOptions(username))
 
   if(isPending) return <Loading />
@@ -20,8 +22,12 @@ export default function Profile({ username, belowName }: ProfileProps) {
   return (
     <>
     <div className="flex flex-col md:flex-row justify-between gap-3 md:gap-0">
-      <div className="min-w-0">
-        <h2 className="font-bold text-4xl text-white break-words sg:text-sg-ink">{data.username}</h2>
+      <div className="min-w-0 md:flex-1 md:pr-6">
+        {
+          editable
+            ? <EditableUsername username={data.username} />
+            : <h2 className="font-bold text-4xl text-white break-words sg:text-sg-ink">{data.username}</h2>
+        }
         {belowName}
           {
             data.form.length > 0 &&

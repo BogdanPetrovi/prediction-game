@@ -96,3 +96,20 @@
 .slide-down {
   animation: slide-down 0.4s forwards;
 }
+
+@keyframes name-highlight {
+  0%, 35% {
+    color: var(--name-glow, var(--color-orange-500));
+    text-shadow: 0 0 16px currentColor;
+  }
+}
+
+.name-highlight {
+  animation: name-highlight 1.6s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-highlight {
+    animation: none;
+  }
+}
