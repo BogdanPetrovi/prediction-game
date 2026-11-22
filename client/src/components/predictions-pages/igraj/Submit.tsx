@@ -9,7 +9,8 @@ const Submit = ({ handleSubmit, isDisabled }: SubmitProps) => {
       onClick={handleSubmit}
       disabled={isDisabled}
       className="bg-secondary hover:brightness-125 active:brightness-150
-              w-4/5 lg:w-1/3 h-16 rounded-3xl font-bold text-4xl
+              w-4/5 lg:w-1/3 xl:w-96 h-16 xl:h-12 rounded-3xl font-bold text-4xl xl:text-3xl
+              xl:enabled:sticky xl:bottom-4 xl:z-10
               cursor-pointer shadow-lg shadow-black/40
               hover:scale-[1.02] active:scale-[0.97] duration-300
               disabled:brightness-65 disabled:cursor-not-allowed disabled:hover:scale-100
