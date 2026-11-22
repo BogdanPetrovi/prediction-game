@@ -1,6 +1,6 @@
 'use client'
 
-import Matchup from "@/components/predictions-pages/igraj/Matchup"
+import BracketMatch from "@/components/predictions-pages/igraj/BracketMatch"
 import { useCallback, useEffect, useState } from "react";
 import type Prediction from "@/types/Prediction";
 import backend from "@/services/api/backend";
@@ -14,8 +14,6 @@ import NoResult from "@/components/shared/NoResult";
 import Submit from "@/components/predictions-pages/igraj/Submit";
 import usePredict from "@/utils/mutations/usePredict";
 import Footer from "@/components/layout/footer/Footer";
-import BracketMatch from "@/components/predictions-pages/igraj/BracketMatch";
-import useMediaQuery from "@/utils/useMediaQuery";
 
 const Event = dynamic(() => import('@/components/shared/Event'),
   {
@@ -59,8 +57,6 @@ export default function Play() {
   })
 
   const { mutate, isPending: isMutatePending } = usePredict()
-  const isDesktop = useMediaQuery('(min-width: 1280px)')
-  const MatchComponent = isDesktop ? BracketMatch : Matchup
 
   useEffect(() => {
     setShowEvent(true)
@@ -99,20 +95,17 @@ export default function Play() {
 
   return (
     <>
-      <div className="w-4/5 lg:w-3/5 xl:w-[calc(100%-10rem)] xl:max-w-[1400px] mx-auto mb-4 min-h-[calc(100vh-16rem)] xl:min-h-[calc(100vh-17rem)] flex flex-col items-center relative gap-10 xl:gap-4 select-none">
-        <div className="-mb-7 xl:-mb-1">
+      <div className="w-[calc(100%-2rem)] lg:w-[calc(100%-10rem)] max-w-[1400px] mx-auto mb-4 min-h-[calc(100vh-16rem)] xl:min-h-[calc(100vh-17rem)] flex flex-col items-center relative gap-4 select-none">
+        <div className="-mb-1">
           {showEvent && <Event />}
         </div>
-        <div className="w-full flex flex-col gap-10 xl:flex-row xl:flex-wrap xl:justify-center xl:gap-5">
+        <div className="w-full flex flex-wrap justify-center gap-4 sm:gap-5">
           {
             matches.data.map(match => (
-              <MatchComponent
+              <BracketMatch
                 match={match}
                 setPredictions={handleUserPredictionChange}
-                backendPrediction={
-                  userPredictions.find(el => el.matchId === match.id)
-                  ?? predictions.data.find(el => el.matchId === match.id)
-                }
+                backendPrediction={predictions.data.find(el => el.matchId === match.id)}
                 matchesPoints={matchesPoints.data.find(el => el.id === match.id)}
                 key={match.id}
               />

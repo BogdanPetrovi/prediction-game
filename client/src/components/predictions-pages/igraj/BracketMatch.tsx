@@ -40,12 +40,12 @@ const TeamRow = ({ team, match, selectedTeam, points, onSelect }: TeamRowProps) 
           ? 'bg-gradient-to-r from-[#9333EA] to-[#667EEA] text-white sg:from-sg-red sg:to-sg-wine'
           : 'bg-white/[0.04] text-white enabled:hover:bg-white/10 sg:bg-white sg:text-sg-ink sg:enabled:hover:bg-sg-red/5'}
         ${isDimmed ? 'opacity-50 hover:opacity-80' : ''}
-        w-full h-12 2xl:h-16 px-3 2xl:px-4 flex items-center gap-2.5 2xl:gap-3 text-left
+        w-full h-14 lg:h-12 2xl:h-16 px-4 lg:px-3 2xl:px-4 flex items-center gap-3 lg:gap-2.5 2xl:gap-3 text-left
         cursor-pointer disabled:cursor-not-allowed duration-300
         focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white sg:focus-visible:outline-sg-ink`}
     >
       <span className={`${isSelected ? 'scale-110 shadow-md shadow-black/25' : isDimmed ? 'scale-80' : ''}
-        size-9 2xl:size-12 shrink-0 p-1 rounded-lg bg-white flex items-center justify-center duration-300`}>
+        size-10 lg:size-9 2xl:size-12 shrink-0 p-1 rounded-lg bg-white flex items-center justify-center duration-300`}>
         {
           logo && !logo.startsWith('/') ?
             <Image
@@ -57,17 +57,17 @@ const TeamRow = ({ team, match, selectedTeam, points, onSelect }: TeamRowProps) 
               unoptimized={!isOptimizedImage(logo)}
             />
           :
-            <span aria-hidden="true" className="text-xl 2xl:text-3xl leading-none font-bold text-secondary sg:text-sg-ink">?</span>
+            <span aria-hidden="true" className="text-2xl lg:text-xl 2xl:text-3xl leading-none font-bold text-secondary sg:text-sg-ink">?</span>
         }
       </span>
-      <span title={name} className={`${isSelected ? 'font-bold' : 'font-semibold'} min-w-0 flex-1 truncate text-sm 2xl:text-lg`}>
+      <span title={name} className={`${isSelected ? 'font-bold' : 'font-semibold'} min-w-0 flex-1 truncate text-base lg:text-sm 2xl:text-lg`}>
         { name }
       </span>
       {
         showPoints &&
           <span
             className={`${isSelected ? 'bg-white/20' : 'bg-white/10 sg:bg-sg-red/10 sg:text-sg-crimson'}
-              shrink-0 rounded-md px-1.5 py-0.5 text-xs 2xl:text-sm font-semibold`}
+              shrink-0 rounded-md px-1.5 py-0.5 text-sm lg:text-xs 2xl:text-sm font-semibold`}
             title="Broj poena koji osvajas ako ova ekipa pobedi"
           >
             {points}pts
@@ -90,10 +90,10 @@ const BracketMatch = ({ match, setPredictions, backendPrediction, matchesPoints 
   return (
     <div
       className={`${match.live ? 'opacity-60' : ''}
-        w-[calc((100%-3*1.25rem)/4)] rounded-xl overflow-hidden bg-secondary ring-1 ring-white/10 shadow-lg shadow-black/40
+        w-full sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2*1.25rem)/3)] xl:w-[calc((100%-3*1.25rem)/4)] rounded-xl overflow-hidden bg-secondary ring-1 ring-white/10 shadow-lg shadow-black/40
         sg:bg-white sg:ring-2 sg:ring-sg-red sg:shadow-sg-red/15`}
     >
-      <div className="h-7 2xl:h-8 px-3 2xl:px-4 flex items-center justify-between text-xs 2xl:text-sm font-semibold text-white/75 sg:bg-sg-sand sg:text-sg-ink/80">
+      <div className="h-8 lg:h-7 2xl:h-8 px-4 lg:px-3 2xl:px-4 flex items-center justify-between text-sm lg:text-xs 2xl:text-sm font-semibold text-white/75 sg:bg-sg-sand sg:text-sg-ink/80">
         {
           match.live ?
             <span className="text-red-400 sg:text-sg-red animate-pulse">Live</span>
