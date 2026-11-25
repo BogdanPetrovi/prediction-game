@@ -2,22 +2,28 @@
 
 import { useQuery } from "@tanstack/react-query";
 import ProfileEventHistory from "./ProfileEventHistory";
+import ProfileHistoryError from "./ProfileHistoryError";
 import { predictionHistoryQueryOptions } from "@/utils/profileQueryOptions";
 
 export default function ProfileHistory({ username }: { username?: string }) {
-  const { data, isPending, isError } = useQuery(predictionHistoryQueryOptions(username))
+  const { data, isPending, refetch } = useQuery(predictionHistoryQueryOptions(username))
 
   if(isPending) return <></>
 
-  if(!data || isError) return <></>
+  if(!data)
+    return (
+      <div className="mt-5">
+        <ProfileHistoryError message="Nismo uspeli da učitamo istoriju predikcija." onRetry={() => refetch()} />
+      </div>
+    )
 
   return (
     <div className="slide-down">
       <h2 className="text-xl text-muted uppercase tracking-[1.5px] mt-5 mb-1">Istorija predikcija</h2>
       {
         data.length ?
-          data.map(event => (
-            <ProfileEventHistory data={event} key={event.id} />
+          data.map((event, index) => (
+            <ProfileEventHistory data={event} username={username} collapsible={index > 0} key={event.id} />
           ))
         :
           <div className="w-full flex flex-col items-center mt-2 gap-2">

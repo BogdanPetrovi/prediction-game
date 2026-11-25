@@ -1,70 +1,77 @@
-import { FinishedMatch } from "@/types/PredictionHistory";
-import { formatDateTimeWithLetter } from "@/utils/formatDate";
 import Image from "next/image";
+import { FinishedMatch, FinishedMatchTeam } from "@/types/PredictionHistory";
+import { formatDateTimeWithLetter } from "@/utils/formatDate";
 import { isOptimizedImage } from "@/utils/isOptimizedImage";
+import PendingIcon from "./PendingIcon";
 
-export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
-  const chosenTeam = data.predicted_winner === 'team1' ? data.team1 : data.team2
-  const otherTeam = data.predicted_winner !== 'team1' ? data.team1 : data.team2
-  const [first, second] = data.result.split(":");
-  const formatedResult = data.predicted_winner === 'team1' ? data.result : `${second}:${first}`
+const Team = ({ team, isLoser }: { team: FinishedMatchTeam, isLoser: boolean }) => (
+  <div className={`${isLoser ? 'opacity-60' : ''} min-w-0 flex gap-1.5 items-center`}>
+    <span className="relative size-5 shrink-0 flex items-center justify-center">
+      {
+        team.logo && !team.logo.startsWith('/') ?
+          <Image
+            src={team.logo}
+            alt=""
+            fill
+            sizes="20px"
+            className="object-contain"
+            unoptimized={!isOptimizedImage(team.logo)}
+          />
+        :
+          <span aria-hidden="true" className="font-bold leading-none">?</span>
+      }
+    </span>
+    <span title={team.name} className="truncate text-sm md:text-base font-semibold md:tracking-wider">{team.name}</span>
+  </div>
+)
+
+const Points = ({ data, points }: { data: FinishedMatch, points: number | null }) => {
+  if(points === null) {
+    const label = `Čeka obračun poena, odigran ${formatDateTimeWithLetter(data.playedAt)}`
+
+    return (
+      <span title={label} className="justify-self-end text-slate-400 sg:text-stone-500">
+        <PendingIcon />
+        <span className="sr-only">{label}</span>
+      </span>
+    )
+  }
+
+  if(data.isCorrect)
+    return <span className="text-green-400 font-semibold text-xs md:text-sm text-right tabular-nums sg:text-green-700">{points}pts</span>
 
   return (
-    <div className="h-13 bg-secondary border-b border-zinc-700 px-2 flex items-center gap-3 hover:brightness-120 duration-200 sg:bg-white sg:border-sg-sand sg:hover:bg-sg-red/5 sg:hover:brightness-100">
-      {
-        data.is_correct === "correct" ? 
-        <div className="size-3 rounded-full bg-green-400 shadow-md shadow-green-400/50"></div>
-        :
-        <div className="size-3 rounded-full bg-red-400 shadow-md shadow-red-400/50"></div>
-      }
-      <div className={`${ data.is_correct === 'incorrect' && 'opacity-60' } flex gap-1 items-center`}>
-        <div className="relative size-5">
-          <Image
-            src={chosenTeam.logo}
-            alt={`${chosenTeam} logo`}
-            fill
-            sizes="20px"
-            className="object-contain"
-            unoptimized={!isOptimizedImage(chosenTeam.logo)}
-          />
-        </div>
-        <h4 className={`font-semibold md:tracking-wider`}>{ chosenTeam.name }</h4>
-      </div>
-      <h4 className="text-muted/60 font-bold text-sm">VS</h4>
-      <div className={`${ data.is_correct === 'correct' && 'opacity-60' } flex gap-1 items-center`}>
-        <div className="relative size-5">
-          <Image
-            src={otherTeam.logo}
-            alt={`${otherTeam.name} logo`} 
-            fill
-            sizes="20px"
-            className="object-contain"
-            unoptimized={!isOptimizedImage(otherTeam.logo)}
-          />
-        </div>
-        <h4 className={`font-semibold md:tracking-wider`}>
-          { otherTeam.name }
-        </h4>
-      </div>
-      <div className="ml-auto flex items-center gap-3 cursor-default">
-        <h3 className="min-w-max font-bold text-white md:tracking-[2px] text-xs md:text-md sg:text-sg-ink">{ formatedResult }</h3>
-        {
-          data.date && 
-            <h3 className="min-w-max text-muted font-semibold text-xs md:text-sm tracking-tighter">{ formatDateTimeWithLetter(data.date) }</h3>
-        }
-        {
-          (chosenTeam.points !== undefined && chosenTeam.points !== null) && (
-            data.is_correct === "correct" ? 
-              <h3 className="min-w-max text-green-400 font-semibold text-xs md:text-sm w-11 text-right tabular-nums sg:text-green-600">{chosenTeam.points}pts</h3>
-              :
-              <h3
-                title={`Da ste pogodili osvojili biste ${chosenTeam.points} poena`}
-                className="min-w-max text-muted font-semibold text-xs md:text-sm w-11 text-right tabular-nums">
-                  0pts
-              </h3>
-          )
-        }
-      </div>
-    </div>
+    <span
+      title={`Da ste pogodili osvojili biste ${points} poena`}
+      className="text-slate-400 font-semibold text-xs md:text-sm text-right tabular-nums sg:text-stone-500"
+    >
+      0pts
+    </span>
+  )
+}
+
+export default function ProfileHistoryMatch({ data }: { data: FinishedMatch }) {
+  const chosenTeam = data.predictedWinner === 'team1' ? data.team1 : data.team2
+  const otherTeam = data.predictedWinner === 'team1' ? data.team2 : data.team1
+  const [first, second] = data.result.split(":")
+  const formatedResult = data.predictedWinner === 'team1' ? data.result : `${second}:${first}`
+
+  return (
+    <li className="min-h-13 px-3 grid grid-cols-[1rem_minmax(0,1fr)_auto_minmax(0,1fr)_3.25rem] items-center gap-2 md:gap-3 hover:bg-white/5 duration-200 sg:hover:bg-sg-red/5">
+      <span className={data.isCorrect ? 'text-green-400 sg:text-green-700' : 'text-red-400 sg:text-red-600'}>
+        <svg className="size-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24" aria-hidden="true">
+          {
+            data.isCorrect
+              ? <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              : <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+          }
+        </svg>
+        <span className="sr-only">{data.isCorrect ? 'Pogođeno' : 'Promašeno'}</span>
+      </span>
+      <Team team={chosenTeam} isLoser={!data.isCorrect} />
+      <span className="px-1 font-bold text-white text-sm md:tracking-[2px] tabular-nums sg:text-sg-ink">{formatedResult}</span>
+      <Team team={otherTeam} isLoser={data.isCorrect} />
+      <Points data={data} points={chosenTeam.points} />
+    </li>
   )
 }

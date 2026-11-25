@@ -1,5 +1,3 @@
-import Team from "./Team"
-
 export default interface PredictionHistory {
   id: number,
   name: string,
@@ -7,10 +5,10 @@ export default interface PredictionHistory {
   start_date: string,
   end_date: string,
   is_active: boolean,
+  durationDays: number | null,
   score: Score,
-  placement: Placement | null,
-  recentMatches: FinishedMatch[],
-  allMatches: FinishedMatch[]
+  points: number,
+  placement: Placement | null
 }
 
 interface Score {
@@ -23,13 +21,24 @@ interface Placement {
   isFinal: boolean
 }
 
+export interface EventMatches {
+  total: number,
+  matches: FinishedMatch[]
+}
+
 export interface FinishedMatch {
   id: number,
-  team1: Team,
-  team2: Team,
+  playedAt: number,
+  team1: FinishedMatchTeam,
+  team2: FinishedMatchTeam,
   result: string,
-  winner_team: "team1" | "team2",
-  date?: number,
-  predicted_winner: "team1" | "team2",
-  is_correct: "correct" | "incorrect"
+  winnerTeam: "team1" | "team2",
+  predictedWinner: "team1" | "team2",
+  isCorrect: boolean
+}
+
+export interface FinishedMatchTeam {
+  name: string,
+  logo: string,
+  points: number | null
 }

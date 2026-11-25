@@ -3,6 +3,7 @@ import { isAxiosError } from "axios"
 import backend from "@/services/api/backend"
 import type Profile from "@/types/Profile"
 import type PredictionHistory from "@/types/PredictionHistory"
+import type { EventMatches } from "@/types/PredictionHistory"
 import type UsernameStatus from "@/types/UsernameStatus"
 
 export const profileQueryOptions = (username?: string) => queryOptions({
@@ -21,6 +22,17 @@ export const predictionHistoryQueryOptions = (username?: string) => queryOptions
   queryFn: async (): Promise<PredictionHistory[]> => {
     const url = username ? `/users/${encodeURIComponent(username)}/prediction-history` : '/prediction-history'
     const result = await backend.get(url)
+    return result.data
+  },
+  staleTime: 60_000,
+  retry: (failureCount, error) => !isNotFound(error) && failureCount < 3
+})
+
+export const eventMatchesQueryOptions = (eventId: number, username?: string) => queryOptions({
+  queryKey: ['prediction-history-matches', { eventId, username }],
+  queryFn: async (): Promise<EventMatches> => {
+    const base = username ? `/users/${encodeURIComponent(username)}` : ''
+    const result = await backend.get(`${base}/prediction-history/${eventId}/matches`)
     return result.data
   },
   staleTime: 60_000,
