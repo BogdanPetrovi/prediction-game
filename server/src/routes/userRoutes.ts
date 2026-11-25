@@ -2,7 +2,7 @@ import { Router } from "express";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 import { getMatches, getMatchesPoints } from "../controllers/matchController.js";
 import { getLastLeaderboardUpdateAt, getLeaderboard, getUsersLeaderboardPlaceAndPage, prizes } from "../controllers/leaderboardController.js";
-import { getPredictions, getPredictionsHistory, getUserPredictionsHistory, predict } from "../controllers/predictionController.js";
+import { getPredictions, getPredictionsHistory, getPredictionsHistoryMatches, getUserPredictionsHistory, getUserPredictionsHistoryMatches, predict } from "../controllers/predictionController.js";
 import { getHistory } from "../controllers/historyController.js";
 import { getParentEvent } from "../controllers/eventController.js";
 import { changeUsername, getProfile, getUserProfile, getUsername } from "../controllers/userController.js";
@@ -35,9 +35,13 @@ router.put('/profile/username', isLoggedIn, changeUsername)
 
 router.get('/prediction-history', isLoggedIn, getPredictionsHistory)
 
+router.get('/prediction-history/:eventId/matches', isLoggedIn, getPredictionsHistoryMatches)
+
 router.get('/users/:username/profile', isLoggedIn, getUserProfile)
 
 router.get('/users/:username/prediction-history', isLoggedIn, getUserPredictionsHistory)
+
+router.get('/users/:username/prediction-history/:eventId/matches', isLoggedIn, getUserPredictionsHistoryMatches)
 
 router.get('/prizes', isLoggedIn, prizes)
 

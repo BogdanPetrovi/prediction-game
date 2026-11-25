@@ -96,7 +96,7 @@ const buildProfile = async (id: number, username: string) => {
       JOIN user_events ue ON ue.id = m2.event_id 
       WHERE p2.user_id = $1
         AND m2.winner_team IS NOT NULL
-      ORDER BY COALESCE(m2.date, EXTRACT(EPOCH FROM m2.created_at::timestamptz) * 1000) DESC
+      ORDER BY COALESCE(m2.date, EXTRACT(EPOCH FROM m2.created_at::timestamptz) * 1000) DESC, m2.id DESC
       LIMIT 5
     )
     SELECT
@@ -121,7 +121,7 @@ const buildProfile = async (id: number, username: string) => {
       FROM predictions p
       JOIN matches m ON p.match_id = m.id
       WHERE p.user_id = $1 AND m.winner_team IS NOT NULL
-      ORDER BY COALESCE(m.date, EXTRACT(EPOCH FROM m.created_at::timestamptz) * 1000) DESC
+      ORDER BY COALESCE(m.date, EXTRACT(EPOCH FROM m.created_at::timestamptz) * 1000) DESC, m.id DESC
       LIMIT 120;`,
     [id]
   );

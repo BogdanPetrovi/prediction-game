@@ -6,3 +6,5 @@ const Prediction = z.object({
 })
 
 export const PredictionsArray = z.array(Prediction).min(1)
+
+export const EventId = z.coerce.number().int().positive()

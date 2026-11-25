@@ -67,7 +67,7 @@ On startup `config/redis.ts` deletes the `matches`/`active_*` keys and rebuilds 
   - Admin event routes reject event ids below `MIN_EVENT_ID` (10000), so those rows can't change.
   - Never write to `leaderboards`, `matches_points` or `predictions` rows of old events.
   - PandaScore match ids (about 1.76M in Oct 2026, growing ~1.8k/day) reach the HLTV range around Sep–Oct 2027 and need a fix before then.
-  - Because the two id ranges are mixed, profile and history sort matches by time (`COALESCE(date, created_at)`), never by id.
+  - Because the two id ranges are mixed, profile and history sort matches by time (`COALESCE(date, created_at)`), never by id; the id only breaks ties between matches at the same time.
 
 ## Client architecture
 

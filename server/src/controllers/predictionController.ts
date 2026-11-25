@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import redisClient from "../config/redis.js";
 import database from "../database/database.js";
 import Prediction from "../types/Prediction.js";
-import { PredictionsArray } from "../schemas/prediction.schemas.js";
+import { EventId, PredictionsArray } from "../schemas/prediction.schemas.js";
 import { UserType } from "../schemas/shared.schemas.js";
 import getActiveMatches from "../utils/getActiveMatches.js";
 import trackPredictions from "../utils/trackPredictions.js";
 import findUserByUsername from "../utils/findUserByUsername.js";
+import AppError from "../utils/customErrorHandlers/appError.js";
 import { Username } from "../schemas/user.schemas.js";
 
 export const predict = async (req: Request, res: Response) => {
@@ -77,89 +78,80 @@ export const getUserPredictionsHistory = async (req: Request, res: Response) => 
   return res.json(await buildPredictionsHistory(id))
 }
 
+export const getPredictionsHistoryMatches = async (req: Request, res: Response) => {
+  const { id } = UserType.parse(req.user)
+  return res.json(await buildEventMatches(id, EventId.parse(req.params.eventId)))
+}
+
+export const getUserPredictionsHistoryMatches = async (req: Request, res: Response) => {
+  const eventId = EventId.parse(req.params.eventId)
+  const { id } = await findUserByUsername(Username.parse(req.params.username))
+  return res.json(await buildEventMatches(id, eventId))
+}
+
 const buildPredictionsHistory = async (id: number) => {
   const { rows: events } = await database.query(`
-    SELECT e.id, e.name, e.logo, e.start_date, e.end_date, e.is_active FROM events e
+    SELECT
+     e.id, e.name, e.logo, e.start_date, e.end_date, e.is_active,
+     (to_timestamp(e.end_date / 1000) AT TIME ZONE 'Europe/Belgrade')::date
+      - (to_timestamp(e.start_date / 1000) AT TIME ZONE 'Europe/Belgrade')::date + 1 AS duration_days
+    FROM events e
     JOIN matches ON matches.event_id = e.id
     JOIN predictions ON predictions.match_id = matches.id
-    WHERE predictions.user_id = $1 
+    WHERE predictions.user_id = $1
     GROUP BY e.id
     ORDER BY e.start_date DESC LIMIT 2;
   `, [id])
-  
+
   if(events.length === 0)
     return []
 
   const eventIds = events.map((e: { id:number }) => e.id)
 
-  const eventsScoreResults = await database.query(`
-    SELECT 
-     e.id,
-     COUNT(*) FILTER (WHERE p.predicted_winner = m.winner_team) AS correct,
-     COUNT(*) FILTER (WHERE p.predicted_winner != m.winner_team) AS incorrect
-    FROM predictions p
-    JOIN matches m ON m.id = p.match_id
-    JOIN events e ON e.id = m.event_id
-    WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
-    GROUP BY e.id;
-  `, [id, eventIds])
-
-  const placementsResults = await database.query(`
-    WITH ranked AS (
+  const [eventsScoreResults, placementsResults] = await Promise.all([
+    database.query(`
       SELECT
-       l.user_id,
-       l.event_id,
-       ROW_NUMBER() OVER (PARTITION BY l.event_id ORDER BY l.points DESC, u.discord_id DESC, u.id ASC) AS place
-      FROM leaderboards l
-      JOIN users u ON u.id = l.user_id
-      WHERE l.event_id IN (SELECT COALESCE(parent_event_id, id) FROM events WHERE id = ANY($2::bigint[]))
-    )
-    SELECT
-     e.id,
-     r.place,
-     NOT EXISTS (
-      SELECT 1 FROM events f
-      WHERE (f.id = r.event_id OR f.parent_event_id = r.event_id) AND f.is_active = true
-     ) AS is_final
-    FROM events e
-    JOIN ranked r ON r.event_id = COALESCE(e.parent_event_id, e.id)
-    WHERE r.user_id = $1 AND e.id = ANY($2::bigint[]);
-  `, [id, eventIds])
+       m.event_id AS id,
+       COUNT(*) FILTER (WHERE p.predicted_winner = m.winner_team) AS correct,
+       COUNT(*) FILTER (WHERE p.predicted_winner != m.winner_team) AS incorrect,
+       COALESCE(SUM(
+        CASE WHEN m.winner_team = 'team1' THEN mp.team1_points ELSE mp.team2_points END
+       ) FILTER (WHERE p.predicted_winner = m.winner_team), 0)::int AS points
+      FROM predictions p
+      JOIN matches m ON m.id = p.match_id
+      LEFT JOIN matches_points mp ON mp.match_id = m.id
+      WHERE p.user_id = $1 AND m.event_id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
+      GROUP BY m.event_id;
+    `, [id, eventIds]),
+    database.query(`
+      WITH ranked AS (
+        SELECT
+         l.user_id,
+         l.event_id,
+         ROW_NUMBER() OVER (PARTITION BY l.event_id ORDER BY l.points DESC, u.discord_id DESC, u.id ASC) AS place
+        FROM leaderboards l
+        JOIN users u ON u.id = l.user_id
+        WHERE l.event_id IN (SELECT COALESCE(parent_event_id, id) FROM events WHERE id = ANY($2::bigint[]))
+      )
+      SELECT
+       e.id,
+       r.place,
+       NOT EXISTS (
+        SELECT 1 FROM events f
+        WHERE (f.id = r.event_id OR f.parent_event_id = r.event_id) AND f.is_active = true
+       ) AS is_final
+      FROM events e
+      JOIN ranked r ON r.event_id = COALESCE(e.parent_event_id, e.id)
+      WHERE r.user_id = $1 AND e.id = ANY($2::bigint[]);
+    `, [id, eventIds])
+  ])
 
-  const matchesResults = await database.query(`
-    SELECT 
-     m.id, 
-     m.event_id, 
-     (m.team1).name AS team1_name, 
-     (m.team1).logo AS team1_logo,
-     mp.team1_points,
-     (m.team2).name AS team2_name, 
-     (m.team2).logo AS team2_logo,
-     mp.team2_points,
-     m.result,
-     m.winner_team,
-     p.predicted_winner,
-     CASE
-      WHEN m.winner_team = p.predicted_winner THEN 'correct'
-      ELSE 'incorrect'
-     END AS is_correct,
-     CASE
-      WHEN mp.match_id IS NULL THEN m.date
-      ELSE NULL
-     END AS date
-    FROM predictions p
-    JOIN matches m ON m.id = p.match_id
-    JOIN events e ON e.id = m.event_id
-    LEFT JOIN matches_points mp ON mp.match_id = m.id
-    WHERE p.user_id = $1 AND e.id = ANY($2::bigint[]) AND m.winner_team IS NOT NULL
-    ORDER BY COALESCE(m.date, EXTRACT(EPOCH FROM m.created_at::timestamptz) * 1000) DESC;
-  `, [id, eventIds])
-
-  const scoreMap: Record<number, { correct: number; incorrect: number }> = {};
+  const scoreMap: Record<number, { correct: number; incorrect: number; points: number }> = {};
   for (const row of eventsScoreResults.rows) {
     scoreMap[row.id] = {
       correct: parseInt(row.correct),
-      incorrect: parseInt(row.incorrect)
+      incorrect: parseInt(row.incorrect),
+      points: row.points
     };
   }
 
@@ -171,23 +163,8 @@ const buildPredictionsHistory = async (id: number) => {
     };
   }
 
-  const matchesMap: Record<number, any[]> = {};
-  for (const row of matchesResults.rows) {
-    if (!matchesMap[row.event_id]) matchesMap[row.event_id] = [];
-    matchesMap[row.event_id].push({
-      id: row.id,
-      team1: { name: row.team1_name, logo: row.team1_logo, points: row.team1_points },
-      team2: { name: row.team2_name, logo: row.team2_logo, points: row.team2_points },
-      result: row.result,
-      winner_team: row.winner_team,
-      predicted_winner: row.predicted_winner,
-      is_correct: row.is_correct,
-      date: row.date ?? undefined
-    });
-  }
-
-  const response = events.map((event: { id: number; name: string; logo: string; start_date: number; end_date: number; is_active: boolean }) => {
-    const allMatches = matchesMap[event.id] || [];
+  return events.map((event: { id: number; name: string; logo: string; start_date: number; end_date: number; is_active: boolean; duration_days: number | null }) => {
+    const { correct, incorrect, points } = scoreMap[event.id] || { correct: 0, incorrect: 0, points: 0 };
     return {
       id: event.id,
       name: event.name,
@@ -195,12 +172,51 @@ const buildPredictionsHistory = async (id: number) => {
       start_date: event.start_date,
       end_date: event.end_date,
       is_active: event.is_active,
-      score: scoreMap[event.id] || { correct: 0, incorrect: 0 },
+      durationDays: event.duration_days,
+      score: { correct, incorrect },
+      points,
       placement: placementMap[event.id] || null,
-      recentMatches: allMatches.slice(0, 10),
-      allMatches
+      recentMatches: [],
+      allMatches: []
     };
   });
+}
 
-  return response;
+const buildEventMatches = async (userId: number, eventId: number) => {
+  const { rows: [event] } = await database.query('SELECT 1 FROM events WHERE id = $1::bigint;', [eventId])
+  if(!event) throw new AppError('Turnir ne postoji', 404)
+
+  const { rows } = await database.query(`
+    SELECT
+     m.id,
+     (m.team1).name AS team1_name,
+     (m.team1).logo AS team1_logo,
+     mp.team1_points,
+     (m.team2).name AS team2_name,
+     (m.team2).logo AS team2_logo,
+     mp.team2_points,
+     m.result,
+     m.winner_team,
+     p.predicted_winner,
+     FLOOR(COALESCE(m.date, EXTRACT(EPOCH FROM m.created_at::timestamptz) * 1000))::bigint AS played_at
+    FROM predictions p
+    JOIN matches m ON m.id = p.match_id
+    LEFT JOIN matches_points mp ON mp.match_id = m.id
+    WHERE p.user_id = $1 AND m.event_id = $2::bigint AND m.winner_team IS NOT NULL
+    ORDER BY played_at DESC, m.id DESC;
+  `, [userId, eventId])
+
+  return {
+    total: rows.length,
+    matches: rows.map((row: any) => ({
+      id: Number(row.id),
+      playedAt: Number(row.played_at),
+      team1: { name: row.team1_name, logo: row.team1_logo, points: row.team1_points },
+      team2: { name: row.team2_name, logo: row.team2_logo, points: row.team2_points },
+      result: row.result,
+      winnerTeam: row.winner_team,
+      predictedWinner: row.predicted_winner,
+      isCorrect: row.winner_team === row.predicted_winner
+    }))
+  }
 }
